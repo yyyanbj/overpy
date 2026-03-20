@@ -821,7 +821,7 @@ export const constantValues: Record<string, { description?: string } & Record<st
             "en-US": "White",
             "es-MX": "Blanco",
             "fr-FR": "Blanc",
-            "ja-JP": "白",
+            "ja-JP": "ホワイト",
             "pt-BR": "Branco",
             "th-TH": "ขาว",
             "tr-TR": "Beyaz",
