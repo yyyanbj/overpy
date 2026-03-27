@@ -186,7 +186,6 @@
     },
     "dependencies": {
         "@jitl/quickjs-ng-wasmfile-release-sync": "^0.31.0",
-        "babel-plugin-polyfill-es-shims": "^0.10.8",
         "colors": "^1.4.0",
         "diff": "^8.0.2",
         "dotenv": "^17.2.3",
