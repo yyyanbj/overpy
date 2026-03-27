@@ -186,9 +186,6 @@
     },
     "dependencies": {
         "@jitl/quickjs-ng-wasmfile-release-sync": "^0.31.0",
-        "colors": "^1.4.0",
-        "diff": "^8.0.2",
-        "dotenv": "^17.2.3",
         "pofile": "^1.1.4",
         "quickjs-emscripten-core": "^0.31.0",
         "vscode-uri": "^3.1.0"
@@ -201,6 +198,9 @@
         "@typescript-eslint/parser": "^7.18.0",
         "@vscode/test-cli": "^0.0.12",
         "@vscode/test-electron": "^2.5.2",
+        "colors": "^1.4.0",
+        "diff": "^8.0.2",
+        "dotenv": "^17.2.3",
         "esbuild": "^0.25.11",
         "eslint": "^8.57.1",
         "husky": "^9.1.7",
