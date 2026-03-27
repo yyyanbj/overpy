@@ -273,7 +273,7 @@ export function showOverPyExtensionError(message: string): void {
     vscode.window.showErrorMessage(`Error: ${message}. Please ensure the code is copied directly from Overwatch. If it is, contact CactusPuppy about this.`);
 }
 
-async function applyCompilationDiagnostics(diagnostics: vscode.DiagnosticCollection, content: CompilationDiagnostic[]) {
+function applyCompilationDiagnostics(diagnostics: vscode.DiagnosticCollection, content: CompilationDiagnostic[]) {
     const apply = new Map<string, vscode.Diagnostic[]>;
 
     // Collect all diagnostics first.
@@ -310,7 +310,7 @@ async function applyCompilationDiagnostics(diagnostics: vscode.DiagnosticCollect
 
     // Apply all diagnostics at once.
     for (const [fileName, list] of apply.entries()) {
-        const uri = vscode.Uri.parse("file:///" + fileName);
+        const uri = vscode.Uri.file(fileName);
         diagnostics.set(uri, list);
     }
 }
