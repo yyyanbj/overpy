@@ -1,9 +1,13 @@
 const esbuild = require("esbuild");
+const fs = require("fs");
+const path = require("path");
 
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
 const buildAll = process.argv.includes("--all") || process.argv.includes("-all");
 const targets = ["extension", "cli", "standalone"];
+const quickJSWasmSourcePath = path.join(__dirname, "node_modules", "@jitl", "quickjs-ng-wasmfile-release-sync", "dist", "emscripten-module.wasm");
+const quickJSWasmOutputPath = path.join(__dirname, "out", "quickjs-ng.wasm");
 
 /**
  * @type {import('esbuild').Plugin}
@@ -104,6 +108,9 @@ async function main() {
 
     const targetsToBuild = buildAll ? targets : [target];
     const watchContexts = [];
+
+    fs.mkdirSync(path.dirname(quickJSWasmOutputPath), { recursive: true });
+    fs.copyFileSync(quickJSWasmSourcePath, quickJSWasmOutputPath);
 
     for (const currentTarget of targetsToBuild) {
         const ctx = await esbuild.context({

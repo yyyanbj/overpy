@@ -10,9 +10,11 @@ import { postInitialLoad, rootPath, overpyTemplate } from "./globalVars";
 import { allFuncList, constantValuesCompLists, defaultCompList, fillAutocompletionAstMacros, fillAutocompletionConstants, fillAutocompletionEnums, fillAutocompletionMacros, fillAutocompletionSubroutines, fillAutocompletionVariables, memberCompletionItems, metaRuleParamsCompList, preprocessingDirectivesList, refreshAutoComplete, setActivatedExtensions, setAvailableExtensionPoints, setSpentExtensionPoints, stringEntitiesCompList } from "./autocomplete";
 import { Argument, CompilationDiagnostic, OWLanguage, ow_languages } from "./types.d";
 import { OpyError as OverpyError } from "./utils/logging";
+import { initializeQuickJSRuntime } from "./runtime/quickjs";
 
 export function activate(context: vscode.ExtensionContext) {
     postInitialLoad();
+    void initializeQuickJSRuntime();
     const diagnostics = vscode.languages.createDiagnosticCollection('opy');
 
     vscode.commands.registerCommand("overpy.insertTemplate", () => {

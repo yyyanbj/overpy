@@ -20,11 +20,12 @@ import { DEBUG_MODE, activatedExtensions, builtInJsFunctions, builtInJsFunctions
 import { getArgs, getBracketPositions } from "../utils/decompilation";
 import { getFileContent, getFilePaths, getFilenameFromPath } from "file_utils";
 import { debug, error, warn } from "../utils/logging";
-import { getFileStackCopy, isVarChar, safeEval } from "../utils/other";
+import { getFileStackCopy, isVarChar } from "../utils/other";
 import { BaseNormalFileStackMember, FileStackMember, FunctionMacroData, MacroData, MacroFileStackMember, ScriptFileStackMember } from "../types";
 import { dispTokens } from "../utils/tokens";
 import { TranslationLanguage } from "./translations";
 import { unescapeString } from "../utils/strings";
+import { executeQuickJSScript } from "../runtime/quickjs";
 import { existsSync, writeFileSync } from "fs";
 export class Macro {
     isFunction: boolean;
@@ -200,7 +201,10 @@ export function tokenize(content: string): LogicalLine[] {
             let hookPath = getFilePaths(content.substring("#!postCompileHook ".length).trim(), rootPath)[0];
             const scriptText = getFileContent(hookPath);
             setPostCompileHook((content: string) => {
-                return safeEval(`var content = ${JSON.stringify(content)};\n${scriptText}`);
+                return executeQuickJSScript(`var content = ${JSON.stringify(content)};\n${scriptText}`, {
+                    filename: hookPath,
+                    kind: "postCompileHook",
+                });
             });
             return;
         }
@@ -589,6 +593,27 @@ export function tokenize(content: string): LogicalLine[] {
     return result;
 }
 
+function addScriptErrorFileStack(errorObject: Error, scriptPath: string, lineOffset: number) {
+    if (!errorObject.stack) {
+        return;
+    }
+
+    const scriptPathPattern = scriptPath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const matchRegex = new RegExp(`${scriptPathPattern}:(\\d+):(\\d+)`, "g");
+    const fileName = getFilenameFromPath(scriptPath);
+    let match: RegExpExecArray | null = null;
+    while ((match = matchRegex.exec(errorObject.stack)) !== null) {
+        fileStack.push({
+            name: fileName,
+            startLine: Math.max(1, parseInt(match[1]) - lineOffset),
+            startCol: parseInt(match[2]),
+            endLine: null,
+            endCol: null,
+            staticMember: true,
+        });
+    }
+}
+
 function resolveMacro(macro: MacroData, args: string[] = [], indentLevel: number): string {
     var result = "";
 
@@ -606,40 +631,19 @@ function resolveMacro(macro: MacroData, args: string[] = [], indentLevel: number
             }
             scriptContent = vars + "\n" + scriptContent;
             scriptContent = builtInJsFunctions + scriptContent;
-            //console.log(scriptContent);
-            //console.log("owo123");
             try {
-                result = safeEval(scriptContent);
+                result = executeQuickJSScript(scriptContent, {
+                    filename: macro.scriptPath,
+                    kind: "macro",
+                    lineOffset: builtInJsFunctionsNbLines,
+                });
                 if (!result) {
                     error("Script '" + getFilenameFromPath(macro.scriptPath) + "' yielded an invalid result.\nPlease note that your script should yield a primitive value (e.g. a number or a string) as the final result.");
                 }
                 result = result.toString();
             } catch (e: any) {
-                //console.log("aaa");
-                //console.log("b:"+e.toString());
-                //console.log("cccc");
-                let stackTrace = e.stack.split("\n").slice(1).reverse();
-                let encounteredEval = false;
-                for (let line of stackTrace) {
-                    line = line.trim();
-                    let name = line.substring("at ".length, line.indexOf("(")).trim();
-                    if (name === "eval") {
-                        name = getFilenameFromPath(macro.scriptPath);
-                        encounteredEval = true;
-                    }
-                    if (encounteredEval) {
-                        let colNb = parseInt(line.substring(line.lastIndexOf(":") + 1, line.lastIndexOf(")")));
-                        let lineNb = parseInt(line.substring(line.substring(0, line.lastIndexOf(":")).lastIndexOf(":") + 1, line.lastIndexOf(":")));
-                        lineNb -= builtInJsFunctionsNbLines;
-                        fileStack.push({
-                            name: name,
-                            startLine: lineNb,
-                            startCol: colNb,
-                            endLine: null,
-                            endCol: null,
-                            staticMember: true,
-                        });
-                    }
+                if (e instanceof Error) {
+                    addScriptErrorFileStack(e, macro.scriptPath, builtInJsFunctionsNbLines);
                 }
                 error(e);
             }

@@ -25,11 +25,13 @@ import { valueFuncKw } from "./data/values";
 import { astToOpy } from "./decompiler/astToOpy";
 import { decompileActions, decompileConditions } from "./decompiler/workshopToAst";
 import { typeToString } from "./utils/logging";
+import { initializeQuickJSRuntime } from "./runtime/quickjs";
 
 const readyPromise = new Promise<void>((resolve, reject) => {
     // Give all other files a chance to register their tasks
-    setTimeout(() => {
+    setTimeout(async () => {
         postInitialLoad();
+        await initializeQuickJSRuntime();
         resolve();
     }, 10);
 });

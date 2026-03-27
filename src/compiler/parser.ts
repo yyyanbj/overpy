@@ -24,7 +24,7 @@ import { Token, tokenize } from "./tokenizer";
 import { Ast, areAstsAlwaysEqual, astContainsFunctions, getAstFor0, getAstFor1, getAstForArgDefault, getAstForCustomString, getAstForE, getAstForFalse, getAstForFucktonOfSpaces, getAstForInfinity, getAstForNull, getAstForNullVector, getAstForNumber, getAstForTeamAll, getAstForTrue, replaceFunctionInAst } from "../utils/ast";
 import { getFileContent, getFilePaths } from "file_utils";
 import { debug, error, functionNameToString, getFileStackRange, getInternalFileStack, warn } from "../utils/logging";
-import { isNumber, safeEval } from "../utils/other";
+import { isNumber } from "../utils/other";
 import { escapeString, getUtf8Length, unescapeString } from "../utils/strings";
 import { dispTokens, getTokenBracketPos, splitTokens } from "../utils/tokens";
 import { parseType } from "../utils/types";
