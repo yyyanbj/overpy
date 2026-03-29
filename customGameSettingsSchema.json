@@ -96,6 +96,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "captureSpeed%": {
                             "type": "number",
                             "minimum": 10,
@@ -3179,6 +3182,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -3513,6 +3519,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -3989,6 +3998,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -4120,6 +4132,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -4511,6 +4526,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -4647,6 +4665,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -5133,6 +5154,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -5294,6 +5318,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -6899,6 +6926,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -8460,6 +8490,9 @@
                             "type": "number",
                             "minimum": 10,
                             "maximum": 500
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         }
                     }
                 },
@@ -8583,6 +8616,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -10211,6 +10247,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -11806,6 +11845,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -11977,6 +12019,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -12175,6 +12220,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -12438,6 +12486,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -12574,6 +12625,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -14204,6 +14258,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -14533,6 +14590,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -14664,6 +14724,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -14850,6 +14913,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -14971,6 +15037,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -15091,6 +15160,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -15427,6 +15499,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -15547,6 +15622,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -15803,6 +15881,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -15988,6 +16069,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -16108,6 +16192,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
@@ -16294,6 +16381,9 @@
                                 "disabled"
                             ]
                         },
+                        "teamOverlay": {
+                            "type": "boolean"
+                        },
                         "disabledMaps": {
                             "type": "array",
                             "items": {
@@ -16414,6 +16504,9 @@
                                 "alwaysEnabled",
                                 "disabled"
                             ]
+                        },
+                        "teamOverlay": {
+                            "type": "boolean"
                         },
                         "disabledMaps": {
                             "type": "array",
