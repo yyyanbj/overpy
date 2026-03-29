@@ -25,8 +25,7 @@ import { BaseNormalFileStackMember, FileStackMember, FunctionMacroData, MacroDat
 import { dispTokens } from "../utils/tokens";
 import { TranslationLanguage } from "./translations";
 import { unescapeString } from "../utils/strings";
-import { executeQuickJSScript } from "../runtime/quickjs";
-import { existsSync, writeFileSync } from "fs";
+import { executeQuickJSScript } from "../quickjs";
 export class Macro {
     isFunction: boolean;
     args: unknown[];
@@ -201,10 +200,17 @@ export function tokenize(content: string): LogicalLine[] {
             let hookPath = getFilePaths(content.substring("#!postCompileHook ".length).trim(), rootPath)[0];
             const scriptText = getFileContent(hookPath);
             setPostCompileHook((content: string) => {
-                return executeQuickJSScript(`var content = ${JSON.stringify(content)};\n${scriptText}`, {
-                    filename: hookPath,
-                    kind: "postCompileHook",
-                });
+                try {
+                    return executeQuickJSScript(`var content = ${JSON.stringify(content)};\n${scriptText}`, {
+                        filename: hookPath,
+                        kind: "postCompileHook",
+                    });
+                }  catch (e: any) {
+                    if (e instanceof Error) {
+                        addScriptErrorFileStack(e, hookPath, 1);
+                    }
+                    error(e);
+                };
             });
             return;
         }
@@ -637,10 +643,6 @@ function resolveMacro(macro: MacroData, args: string[] = [], indentLevel: number
                     kind: "macro",
                     lineOffset: builtInJsFunctionsNbLines,
                 });
-                if (!result) {
-                    error("Script '" + getFilenameFromPath(macro.scriptPath) + "' yielded an invalid result.\nPlease note that your script should yield a primitive value (e.g. a number or a string) as the final result.");
-                }
-                result = result.toString();
             } catch (e: any) {
                 if (e instanceof Error) {
                     addScriptErrorFileStack(e, macro.scriptPath, builtInJsFunctionsNbLines);

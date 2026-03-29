@@ -39,7 +39,7 @@ import PO from "pofile";
 import { importFromPoFiles, TranslatedString, exportToPoFiles } from "./translations";
 import { constantValues } from "../data/constants";
 import { escapeString } from "../utils/strings";
-import { initializeQuickJSRuntime } from "../runtime/quickjs";
+import { initializeQuickJSRuntime } from "../quickjs";
 
 /**
  * @returns An object containing the compiled result along with associated metadata

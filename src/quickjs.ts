@@ -155,6 +155,8 @@ export function executeQuickJSScript(script: string, options: ScriptExecutionOpt
         scriptCache[script] = scriptResult;
         return scriptResult;
     } catch (error) {
+        //console.debug("Script:", script);
+        //console.debug("Script error:", error);
         throw normalizeScriptError(error, options.filename, options.lineOffset ?? 0);
     } finally {
         context.dispose();
