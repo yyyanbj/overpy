@@ -73,6 +73,8 @@ import "./functions/__xComponentOf__.ts";
 import "./functions/__yComponentOf__.ts";
 import "./functions/__zComponentOf__.ts";
 import "./functions/.addToScore";
+import "./functions/__all__";
+import "./functions/__any__";
 import "./functions/.append";
 import "./functions/.charAt";
 import "./functions/.concat";

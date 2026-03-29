@@ -612,9 +612,9 @@ rule "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Crea
     char_string = "0123456789!?#$%"
     aim_offset = 0.5 * Vector.DOWN
     mutators_list[20] = null
-    mutators_list = [i_ for _, i_ in mutators_list]
+    mutators_list = mutators_list.map(lambda _, i_: i_)
     gmut_list[4] = null
-    gmut_list = [i_ for _, i_ in gmut_list]
+    gmut_list = gmut_list.map(lambda _, i_: i_)
     if is_hard_mode_enabled or is_apocalyptic:
         for i in range(-1, 3):
             wait(false)
@@ -642,16 +642,16 @@ rule "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Crea
         hudSubheader(getAllPlayers(), " " if objective_phase_number == 1 else " \n\n\n", HudPosition.TOP, -98, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     else:
         hudSubheader(getAllPlayers(), " " if objective_phase_number == 1 or objective_phase_number == 2 else " \n\n\n", HudPosition.TOP, -98, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    hudHeader([player for player in combatants if distance(player, ability_shop_pos) > 2], " \n{0}\n\n\u2001Press {1} to Start\u2001\n".format(["\u2001\u2001\u2001Invasion", "  High Value Target", "\u2001\u2001  Domination"][gamemode], inputBindingString(Button.INTERACT)), HudPosition.TOP, -92, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(combatants.filter(lambda x: distance(x, ability_shop_pos) > 2), " \n{0}\n\n\u2001Press {1} to Start\u2001\n".format(["\u2001\u2001\u2001Invasion", "  High Value Target", "\u2001\u2001  Domination"][gamemode], inputBindingString(Button.INTERACT)), HudPosition.TOP, -92, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     game_or_mutator_start_huds[0] = getLastCreatedText()
-    hudSubtext([player for player in combatants if distance(player, ability_shop_pos) > 2], "Change the Objective in the Workshop Settings", HudPosition.TOP, -91, Color.GREEN, HudReeval.VISIBILITY)
+    hudSubtext(combatants.filter(lambda x: distance(x, ability_shop_pos) > 2), "Change the Objective in the Workshop Settings", HudPosition.TOP, -91, Color.GREEN, HudReeval.VISIBILITY)
     game_or_mutator_start_huds[1] = getLastCreatedText()
-    hudHeader([player for player in combatants if not player.downed_start_t and (player.is_changing_heroes or objective_phase_number == 0 and not player.in_buy_menu_start_t)], " \n\n\n\u2001   You can change Heroes now\n\n\u2001Hold {0} to open the Hero menu\u2001\n".format(inputBindingString(Button.RELOAD)), HudPosition.TOP, -90, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in combatants if player.downed_start_t], "Waiting for revival. Press {0} to spectate the next player.".format(inputBindingString(Button.JUMP)), HudPosition.TOP, -70, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(combatants.filter(lambda x: not x.downed_start_t and (x.is_changing_heroes or objective_phase_number == 0 and not x.in_buy_menu_start_t)), " \n\n\n\u2001   You can change Heroes now\n\n\u2001Hold {0} to open the Hero menu\u2001\n".format(inputBindingString(Button.RELOAD)), HudPosition.TOP, -90, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(combatants.filter(lambda x: x.downed_start_t), "Waiting for revival. Press {0} to spectate the next player.".format(inputBindingString(Button.JUMP)), HudPosition.TOP, -70, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
     hudSubtext(localPlayer, " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" if localPlayer.Tut_Active else "Press [{0}] + [{1}] to toggle hud".format(inputBindingString(Button.CROUCH), inputBindingString(Button.RELOAD)), HudPosition.LEFT, 9, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
-    progressBarHud(localPlayer if (localPlayer.revive_timer if localPlayer.downed_start_t else any([localPlayer in player.revivers for player in combatants])) else [], localPlayer.revive_timer if localPlayer.downed_start_t else ((sorted([player for player in combatants if localPlayer in player.revivers], lambda i_: i_.revive_timer)).last()).revive_timer, "You are being revived" if localPlayer.downed_start_t else "Reviving {0}".format("{0} Teammates".format(len([player for player in combatants if localPlayer in player.revivers])) if len([player for player in combatants if localPlayer in player.revivers]) > 1 else ([player for player in combatants if localPlayer in player.revivers])[0]), HudPosition.TOP, -60, Color.ORANGE if (localPlayer.is_revive_slow if localPlayer.downed_start_t else all([not localPlayer in player.revivers or player.is_revive_slow for player in combatants])) else Color.SKY_BLUE)
+    progressBarHud(localPlayer if (localPlayer.revive_timer if localPlayer.downed_start_t else combatants.any(lambda x: localPlayer in x.revivers)) else [], localPlayer.revive_timer if localPlayer.downed_start_t else ((sorted(combatants.filter(lambda x: localPlayer in x.revivers), lambda x: x.revive_timer)).last()).revive_timer, "You are being revived" if localPlayer.downed_start_t else "Reviving {0}".format("{0} Teammates".format(len(combatants.filter(lambda x: localPlayer in x.revivers))) if len(combatants.filter(lambda x: localPlayer in x.revivers)) > 1 else (combatants.filter(lambda x: localPlayer in x.revivers))[0]), HudPosition.TOP, -60, Color.ORANGE if (localPlayer.is_revive_slow if localPlayer.downed_start_t else combatants.all(lambda x: not localPlayer in x.revivers or x.is_revive_slow)) else Color.SKY_BLUE)
     hudHeader(getAllPlayers() if is_infrasight_on else [], "{0} Enemies have improved aim!".format(abilityIconString(Hero.WIDOWMAKER, Button.ULTIMATE)), HudPosition.TOP, -50, Color.VIOLET, HudReeval.VISIBILITY)
-    hudHeader(localPlayer if any([player.ab_var_1 and player.target == localPlayer for player in getPlayersOnHero(Hero.SOLDIER, Color.TEAM_2)]) else [], "{0} Locked on!".format(abilityIconString(Hero.SOLDIER, Button.ULTIMATE)), HudPosition.TOP, -49, rgb(245 + 10 * (sin(4 * getTotalTimeElapsed())), 205 + 50 * (sin(4 * getTotalTimeElapsed())), 200 * (sin(4 * getTotalTimeElapsed()))), HudReeval.VISIBILITY_AND_COLOR)
+    hudHeader(localPlayer if getPlayersOnHero(Hero.SOLDIER, Color.TEAM_2).any(lambda player: player.ab_var_1 and player.target == localPlayer) else [], "{0} Locked on!".format(abilityIconString(Hero.SOLDIER, Button.ULTIMATE)), HudPosition.TOP, -49, rgb(245 + 10 * (sin(4 * getTotalTimeElapsed())), 205 + 50 * (sin(4 * getTotalTimeElapsed())), 200 * (sin(4 * getTotalTimeElapsed()))), HudReeval.VISIBILITY_AND_COLOR)
     hudSubtext(getAllPlayers(), " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", HudPosition.TOP, -1, Color.WHITE, HudReeval.VISIBILITY)
     hudHeader(getPlayers(Team.2), "Server Load: {0}, Average: {1}, Peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.LEFT, -110, Color.YELLOW if is_waiting_to_remove_bot else Color.WHITE, HudReeval.VISIBILITY_STRING_AND_COLOR)
     hudText([], null, "Mod by Lemonaid:\nChateau Guillard: KFVAY\nKanezaka: H4H7K\nDorado: NNNS6\nEichenwalde: MH9DN\nHollywood: K3235\nMalevento: 8GRV8\\Rout", "____\nCredits to:\n Shingen\n SgtMoody\nDevelopful\n", HudPosition.LEFT, -1000, Color.WHITE, Color.LIME_GREEN, Color.GREEN, HudReeval.VISIBILITY, SpecVisibility.ALWAYS)
@@ -660,40 +660,40 @@ rule "Global (Init): Set Workshop Vars, Game Vars, Disable Game Components, Crea
     money_amount = 1400
     set_random_perks()
     #Priority A: Players to Bots Damage Increase
-    startDamageModification([player for player in getPlayers(Team.2) if player.is_target_in_los and player.target.ab_priority == 1], combatants, 125, DamageReeval.RECEIVERS_AND_DAMAGERS)
+    startDamageModification(getPlayers(Team.2).filter(lambda player: player.is_target_in_los and player.target.ab_priority == 1), combatants, 125, DamageReeval.RECEIVERS_AND_DAMAGERS)
     #Priority A: Bots to Players Damage Decrease
-    startDamageModification(combatants, [player for player in getPlayers(Team.2) if player.is_target_in_los and player.target.ab_priority == 1], 75, DamageReeval.RECEIVERS_AND_DAMAGERS)
+    startDamageModification(combatants, getPlayers(Team.2).filter(lambda player: player.is_target_in_los and player.target.ab_priority == 1), 75, DamageReeval.RECEIVERS_AND_DAMAGERS)
     #Priority C: Players to Players Healing Increase
-    startHealingModification([player for player in combatants if player.getNormalizedHealth() <= 0.5 and player.last_damage_taken_t + 2.5 > getTotalTimeElapsed()], [player for player in combatants if player.ab_priority == 3], 140)
+    startHealingModification(combatants.filter(lambda x: x.getNormalizedHealth() <= 0.5 and x.last_damage_taken_t + 2.5 > getTotalTimeElapsed()), combatants.filter(lambda x: x.ab_priority == 3), 140)
     #Nemesis: Your Nemesis IWT
     createInWorldText(localPlayer if localPlayer.nemesis_killer else [], "Your Nemesis", localPlayer.nemesis_killer, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION, Color.TEAM_2)
     createEffect(getAllPlayers(), Effect.RING, Color.SKY_BLUE, ability_shop_pos, 2, EffectReeval.VISIBILITY)
     createInWorldText(getAllPlayers(), "Ability Shop", ability_shop_pos, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY, Color.SKY_BLUE)
     hudHeader([] if not localPlayer.is_combatant or localPlayer.downed_start_t or localPlayer.in_buy_menu_start_t or localPlayer.is_changing_heroes else localPlayer, ("Press {0} to buy Abilities".format(inputBindingString(Button.INTERACT)) if getMatchTime() else " \n\u2001Press {0} to buy Abilities\u2001\n".format(inputBindingString(Button.INTERACT))) if distance(localPlayer, ability_shop_pos) <= 2 else "Hold {0} to buy Abilities".format(inputBindingString(Button.INTERACT)) if localPlayer.can_use_drop_in_buy_menu or getMatchTime() else "", HudPosition.TOP, -80, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
     #Create Buy Menu IWTs, on scale 2.5 1 space is 8.5 pixels
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Refund", buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 3, Clip.NONE, WorldTextReeval.VISIBILITY, Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "[{0}] {1}".format(inputBindingString(Button.MELEE), "Show passive Abilities" if localPlayer.is_showing_active_abilities else "Show active Abilities"), buy_menu_base_pos + 45 * buy_menu_left_up_forward[1], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "[{0}] Leave".format(inputBindingString(Button.INTERACT)), buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Priority A\n\u2001 Swap" if localPlayer.ab_priority else "Priority A\n\u20011200$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Priority B\n\u2001 Swap" if localPlayer.ab_priority else "Priority B\n\u20011200$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Priority C\n\u2001 Swap" if localPlayer.ab_priority else "Priority C\n\u20011200$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Stim Infusion\n\u2001   Swap" if localPlayer.active_ab_number else "Stim Infusion\n\u2001  1200$") if localPlayer.is_showing_active_abilities else "Headhunter II\n\u2001\u2001800$" if localPlayer.ab_headhunter else "Headhunter I\n\u2001\u2001800$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_headhunter < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Smoke Bomb\n\u2001   Swap" if localPlayer.active_ab_number else "Smoke Bomb\n\u2001  1200$") if localPlayer.is_showing_active_abilities else "Antigens II\n\u2001  600$" if localPlayer.ab_antigens else "Antigens I\n\u2001  600$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_antigens < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "" if localPlayer.is_showing_active_abilities else "Quick Fix II\n\u2001 700$" if localPlayer.ab_quick_fix else "Quick Fix I\n\u2001 700$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_quick_fix < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Cloak\n Swap" if localPlayer.active_ab_number else "Cloak\n1200$") if localPlayer.is_showing_active_abilities else "Charged II\n\u2001 700$" if localPlayer.ab_charged else "Charged I\n\u2001 700$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_charged < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Resurgence\n\u2001  Swap" if localPlayer.active_ab_number else "Resurgence\n\u2001 1200$") if localPlayer.is_showing_active_abilities else "Haste II\n  800$" if localPlayer.ab_haste else "Haste I\n  800$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_haste < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "" if localPlayer.is_showing_active_abilities else "Heavy Impact II\n\u2001\u20011000$" if localPlayer.ab_heavy_impact else "Heavy Impact I\n\u2001\u20011000$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_heavy_impact < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], (" Feint\nSwap" if localPlayer.active_ab_number else " Feint\n1200$") if localPlayer.is_showing_active_abilities else "Second Wind II\n\u2001\u2001 1000$" if localPlayer.ab_second_wind else "Second Wind I\n\u2001\u2001 1000$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_second_wind < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Tear Gas\n\u2001Swap" if localPlayer.active_ab_number else "Tear Gas\n   1200$") if localPlayer.is_showing_active_abilities else "Triage II\n  700$" if localPlayer.ab_triage else "Triage I\n  700$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_triage < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "" if localPlayer.is_showing_active_abilities else "Resilience II\n\u2001  800$" if localPlayer.ab_resilience else "Resilience I\n\u2001  800$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_resilience < 2 else Color.GRAY)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Frenzy\n  Swap" if localPlayer.active_ab_number else "Frenzy\n 1200$") if localPlayer.is_showing_active_abilities else "+5% Health\n\u2001  500$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], ("Chain Hack\n\u2001  Swap" if localPlayer.active_ab_number else "Chain Hack\n\u2001 1200$") if localPlayer.is_showing_active_abilities else "+5% Damage\n\u2001\u2001500$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "" if localPlayer.is_showing_active_abilities else "+5% Healing\n\u2001\u2001500$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Limited offer!", buy_menu_base_pos + 22.5 * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃\n┃", buy_menu_base_pos - 21 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Refund", buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] + 90 * buy_menu_left_up_forward[0], 3, Clip.NONE, WorldTextReeval.VISIBILITY, Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "[{0}] {1}".format(inputBindingString(Button.MELEE), "Show passive Abilities" if localPlayer.is_showing_active_abilities else "Show active Abilities"), buy_menu_base_pos + 45 * buy_menu_left_up_forward[1], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "[{0}] Leave".format(inputBindingString(Button.INTERACT)), buy_menu_base_pos + 45 * buy_menu_left_up_forward[1] - 90 * buy_menu_left_up_forward[0], 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Priority A\n\u2001 Swap" if localPlayer.ab_priority else "Priority A\n\u20011200$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Priority B\n\u2001 Swap" if localPlayer.ab_priority else "Priority B\n\u20011200$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Priority C\n\u2001 Swap" if localPlayer.ab_priority else "Priority C\n\u20011200$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.YELLOW if localPlayer.ab_priority else rgb(0, 134, 171))
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Stim Infusion\n\u2001   Swap" if localPlayer.active_ab_number else "Stim Infusion\n\u2001  1200$") if localPlayer.is_showing_active_abilities else "Headhunter II\n\u2001\u2001800$" if localPlayer.ab_headhunter else "Headhunter I\n\u2001\u2001800$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_headhunter < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Smoke Bomb\n\u2001   Swap" if localPlayer.active_ab_number else "Smoke Bomb\n\u2001  1200$") if localPlayer.is_showing_active_abilities else "Antigens II\n\u2001  600$" if localPlayer.ab_antigens else "Antigens I\n\u2001  600$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_antigens < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "" if localPlayer.is_showing_active_abilities else "Quick Fix II\n\u2001 700$" if localPlayer.ab_quick_fix else "Quick Fix I\n\u2001 700$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_quick_fix < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Cloak\n Swap" if localPlayer.active_ab_number else "Cloak\n1200$") if localPlayer.is_showing_active_abilities else "Charged II\n\u2001 700$" if localPlayer.ab_charged else "Charged I\n\u2001 700$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_charged < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Resurgence\n\u2001  Swap" if localPlayer.active_ab_number else "Resurgence\n\u2001 1200$") if localPlayer.is_showing_active_abilities else "Haste II\n  800$" if localPlayer.ab_haste else "Haste I\n  800$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_haste < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "" if localPlayer.is_showing_active_abilities else "Heavy Impact II\n\u2001\u20011000$" if localPlayer.ab_heavy_impact else "Heavy Impact I\n\u2001\u20011000$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] + 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_heavy_impact < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), (" Feint\nSwap" if localPlayer.active_ab_number else " Feint\n1200$") if localPlayer.is_showing_active_abilities else "Second Wind II\n\u2001\u2001 1000$" if localPlayer.ab_second_wind else "Second Wind I\n\u2001\u2001 1000$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_second_wind < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Tear Gas\n\u2001Swap" if localPlayer.active_ab_number else "Tear Gas\n   1200$") if localPlayer.is_showing_active_abilities else "Triage II\n  700$" if localPlayer.ab_triage else "Triage I\n  700$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN if localPlayer.ab_triage < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "" if localPlayer.is_showing_active_abilities else "Resilience II\n\u2001  800$" if localPlayer.ab_resilience else "Resilience I\n\u2001  800$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 22.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GREEN if localPlayer.ab_resilience < 2 else Color.GRAY)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Frenzy\n  Swap" if localPlayer.active_ab_number else "Frenzy\n 1200$") if localPlayer.is_showing_active_abilities else "+5% Health\n\u2001  500$", buy_menu_base_pos + 20 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), ("Chain Hack\n\u2001  Swap" if localPlayer.active_ab_number else "Chain Hack\n\u2001 1200$") if localPlayer.is_showing_active_abilities else "+5% Damage\n\u2001\u2001500$", buy_menu_base_pos - 2.5 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, (Color.YELLOW if localPlayer.active_ab_number else Color.GREEN) if localPlayer.is_showing_active_abilities else Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "" if localPlayer.is_showing_active_abilities else "+5% Healing\n\u2001\u2001500$", buy_menu_base_pos - 25 * buy_menu_left_up_forward[1] - 67.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING, Color.GREEN)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Limited offer!", buy_menu_base_pos + 22.5 * buy_menu_left_up_forward[1] - 112.5 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
     createInWorldText(localPlayer if localPlayer.in_buy_menu_start_t and localPlayer.is_showing_active_abilities else [], "Hold or double tap {0} to use your active ability\n".format(inputBindingString(Button.MELEE)), buy_menu_base_pos - 25 * buy_menu_left_up_forward[1], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
-    createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Press {0} to buy\n".format(inputBindingString(Button.PRIMARY_FIRE)), buy_menu_base_pos - 74 * buy_menu_left_up_forward[1] - 55 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Press {0} to buy\n".format(inputBindingString(Button.PRIMARY_FIRE)), buy_menu_base_pos - 74 * buy_menu_left_up_forward[1] - 55 * buy_menu_left_up_forward[0], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
     #Create Ability Entities and Cursor
     createInWorldText(localPlayer if localPlayer.in_buy_menu_start_t else [], "{0}$\n".format(floor(money_mult * money_amount - localPlayer.money_spent_amount)), buy_menu_base_pos - 74 * buy_menu_left_up_forward[1], 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
     createInWorldText(localPlayer if localPlayer.in_buy_menu_start_t else [], "▲", updateEveryFrame(buy_menu_base_pos - ((4 + localPlayer.getVerticalFacingAngle()) * buy_menu_left_up_forward[1]) + localPlayer.getHorizontalFacingAngle() * buy_menu_left_up_forward[0]), 4, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_COLOR, rgb(245 + 10 * (sin(4 * getTotalTimeElapsed())), 205 + 50 * (sin(4 * getTotalTimeElapsed())), 200 * (sin(4 * getTotalTimeElapsed()))))
@@ -842,7 +842,7 @@ rule "Team 2 CG: Improve Air Movement near Jump Pad":
 def update_combatants():
     @Name "Subroutine: Update Combatants"
     
-    combatants = [player for player in getPlayers(Team.1) if player.is_combatant]
+    combatants = getPlayers(Team.1).filter(lambda player: player.is_combatant)
     combatants_count = len(combatants)
 
 
@@ -872,7 +872,7 @@ def Cancel_Momentum():
 
 rule "Global (First Wave): Create Mutator Start HUD, Scale Values, Set Level":
     @Condition wave_number == false
-    @Condition (any([player.isHoldingButton(Button.INTERACT) and distance(player, ability_shop_pos) > 2 for player in combatants])) == true
+    @Condition (combatants.any(lambda x: x.isHoldingButton(Button.INTERACT) and distance(x, ability_shop_pos) > 2)) == true
     
     destroyHudText(game_or_mutator_start_huds[0])
     destroyHudText(game_or_mutator_start_huds[1])
@@ -900,7 +900,7 @@ rule "Global (Next Wave): Revive Players, Scale Values, Set Level, Set Mutators"
     elif wave_number >= 22 and length == 1:
         async(declare_victory, AsyncBehavior.NOOP)
     objective_phase_number = false
-    ([player for player in combatants if player.downed_start_t and player.downed_start_t + 0.1 < getTotalTimeElapsed()]).downed_start_t = false
+    (combatants.filter(lambda x: x.downed_start_t and x.downed_start_t + 0.1 < getTotalTimeElapsed())).downed_start_t = false
     bigMessage(getAllPlayers(), "Wave cleared!")
     money_amount += (30 if wave_number >= 2 else 45) + 25 * wave_number
     set_random_perks()
@@ -945,7 +945,7 @@ rule "Global (Next Wave): Revive Players, Scale Values, Set Level, Set Mutators"
         getPlayersInSlot(4, Team.2).base_tier = 3
     if not mut_expendable:
         return
-    ([player for player in getPlayersOnHero(Hero.SOLDIER, Team.2) if player.base_tier <= 2]).is_expendable = true
+    (getPlayersOnHero(Hero.SOLDIER, Team.2).filter(lambda player: player.base_tier <= 2)).is_expendable = true
 
 
 rule "Global: Enable normal Spawns":
@@ -953,10 +953,10 @@ rule "Global: Enable normal Spawns":
     @Condition enable_normal_spawns == false
     @Condition getNumberOfLivingPlayers(Team.2) < getNumberOfPlayers(Team.2)
     
-    temp_1 = [player for player in getLivingPlayers(Team.2) if not player.is_living_boss]
-    temp_1 = ((2 * (len([player for player in temp_1 if player.real_tier <= 2]))) + (5 * (len([player for player in temp_1 if player.real_tier == 3])))) + (10 * (len([player for player in temp_1 if player.real_tier == 4])))
-    if temp_1 <= max(5, getTotalTimeElapsed() - last_spawn_phase_end_t - 25 - 20 * (len([player for player in combatants if player.downed_start_t]) / combatants_count)):
-        wait((11 if gamemode == 1 and objective_phase_number == 1 or gamemode == 2 and any([player.is_living_boss for player in getLivingPlayers(Team.2)]) else 6) - (3 if mut_reinforcements else 0), Wait.ABORT_WHEN_FALSE)
+    temp_1 = getLivingPlayers(Team.2).filter(lambda player: not player.is_living_boss)
+    temp_1 = ((2 * (len(temp_1.filter(lambda x: x.real_tier <= 2)))) + (5 * (len(temp_1.filter(lambda x: x.real_tier == 3))))) + (10 * (len(temp_1.filter(lambda x: x.real_tier == 4))))
+    if temp_1 <= max(5, getTotalTimeElapsed() - last_spawn_phase_end_t - 25 - 20 * (len(combatants.filter(lambda x: x.downed_start_t)) / combatants_count)):
+        wait((11 if gamemode == 1 and objective_phase_number == 1 or gamemode == 2 and getLivingPlayers(Team.2).any(lambda player: player.is_living_boss) else 6) - (3 if mut_reinforcements else 0), Wait.ABORT_WHEN_FALSE)
         if not ruleCondition:
             return
         enable_normal_spawns = true
@@ -978,7 +978,7 @@ rule "Global: Disable normal Spawns":
 
 rule "Global: Defeat":
     @Condition wave_number > 0
-    @Condition all([player.downed_start_t for player in combatants]) == true
+    @Condition combatants.all(lambda x: x.downed_start_t) == true
     
     wait(2, Wait.ABORT_WHEN_FALSE)
     if is_victory_declared:
@@ -1014,7 +1014,7 @@ def mut_add_mutator():
         if temp_1 == 0:
             gmut_storm_raging = true
             hudSubheader(getAllPlayers(), "Storm Raging: Some enemies are enraged, killing them spreads the rage", HudPosition.RIGHT, temp_2 - 0.5, Color.ORANGE, HudReeval.VISIBILITY)
-            startDamageModification(combatants, [player for player in getPlayers(Team.2) if player.gmut_var], 140, DamageReeval.RECEIVERS_AND_DAMAGERS)
+            startDamageModification(combatants, getPlayers(Team.2).filter(lambda player: player.gmut_var), 140, DamageReeval.RECEIVERS_AND_DAMAGERS)
         elif temp_1 == 1:
             gmut_sympathy_gains = true
             hudSubheader(getAllPlayers(), "Sympathy Gains: Killing enemies heals other nearby enemies", HudPosition.RIGHT, temp_2 - 0.5, Color.ORANGE, HudReeval.VISIBILITY)
@@ -1045,7 +1045,7 @@ def mut_add_mutator():
             hudSubheader(getAllPlayers(), "Advanced Medkit: Medics can revive tier 4 enemies and have less cooldown", HudPosition.RIGHT, temp_2, Color.GREEN, HudReeval.VISIBILITY)
         elif temp_1 == 4:
             hudSubheader(getAllPlayers(), "Berserk: Enemies below 50% health deal 25% more damage", HudPosition.RIGHT, temp_2, Color.GREEN, HudReeval.VISIBILITY)
-            startDamageModification(combatants, [player for player in getPlayers(Team.2) if player.getNormalizedHealth() <= 0.5], 125, DamageReeval.RECEIVERS_AND_DAMAGERS)
+            startDamageModification(combatants, getPlayers(Team.2).filter(lambda player: player.getNormalizedHealth() <= 0.5), 125, DamageReeval.RECEIVERS_AND_DAMAGERS)
         elif temp_1 == 5:
             hudSubheader(getAllPlayers(), "Regeneration: Enemies slowly regenerate health", HudPosition.RIGHT, temp_2, Color.GREEN, HudReeval.VISIBILITY)
             getPlayers(Team.2).startHealingOverTime(null, 9999, 10)
@@ -1059,7 +1059,7 @@ def mut_add_mutator():
         elif temp_1 == 8:
             mut_heartburn = true
             hudSubheader(getAllPlayers(), "Heartburn: Healing in combat is reduced by 30%", HudPosition.RIGHT, temp_2, Color.GREEN, HudReeval.VISIBILITY)
-            startHealingModification([player for player in combatants if ((player.last_damage_taken_t + ((0.5 if player.perk_die_hard else 1) * (5 if mut_deep_wounds else 2.5))) > getTotalTimeElapsed())], combatants, 70)
+            startHealingModification(combatants.filter(lambda x: (x.last_damage_taken_t + ((0.5 if x.perk_die_hard else 1) * (5 if mut_deep_wounds else 2.5))) > getTotalTimeElapsed()), combatants, 70)
         elif temp_1 == 9:
             mut_deep_wounds = true
             hudSubheader(getAllPlayers(), "Deep Wounds: Health regeneration delay is doubled", HudPosition.RIGHT, temp_2, Color.GREEN, HudReeval.VISIBILITY)
@@ -1111,38 +1111,38 @@ def set_random_perks():
         for temp_1 in range(2):
             temp_2 = (buy_menu_base_pos - ((25 if temp_1 else 2.5) * buy_menu_left_up_forward[1])) - 112.5 * buy_menu_left_up_forward[0]
             if current_perks[temp_1] == 12:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Hero Talent 1\n      $1600", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GRAY if localPlayer.Talent1 else Color.PURPLE)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Hero Talent 1\n      $1600", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GRAY if localPlayer.Talent1 else Color.PURPLE)
             elif current_perks[temp_1] == 13:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Hero Talent 2\n      $1600", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GRAY if localPlayer.Talent2 else Color.PURPLE)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Hero Talent 2\n      $1600", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_STRING_AND_COLOR, Color.GRAY if localPlayer.Talent2 else Color.PURPLE)
             current_perks_huds_list.append(getLastCreatedText())
     else:
         current_perks = random.shuffle([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].exclude(current_perks)).slice(0, 2)
         for temp_1 in range(2):
             temp_2 = (buy_menu_base_pos - ((25 if temp_1 else 2.5) * buy_menu_left_up_forward[1])) - 112.5 * buy_menu_left_up_forward[0]
             if current_perks[temp_1] == 0:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Mystery Swap\n\u2001    500$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_mystery_swap else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Mystery Swap\n\u2001    500$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_mystery_swap else Color.LIME_GREEN)
             elif current_perks[temp_1] == 1:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Bulletstorm\n\u2001  1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_bulletstorm else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Bulletstorm\n\u2001  1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_bulletstorm else Color.LIME_GREEN)
             elif current_perks[temp_1] == 2:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Die Hard\n\u2001700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_die_hard else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Die Hard\n\u2001700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_die_hard else Color.LIME_GREEN)
             elif current_perks[temp_1] == 3:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "  Brass Knuckles\n\u2001\u2001   700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_brass_knuckles else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "  Brass Knuckles\n\u2001\u2001   700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_brass_knuckles else Color.LIME_GREEN)
             elif current_perks[temp_1] == 4:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Vampiric\n   1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_vampiric else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Vampiric\n   1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_vampiric else Color.LIME_GREEN)
             elif current_perks[temp_1] == 5:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Crash N' Dash\n\u2001     700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_crash_n_dash else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Crash N' Dash\n\u2001     700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_crash_n_dash else Color.LIME_GREEN)
             elif current_perks[temp_1] == 6:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Golden Hour\n  \u2001 1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_golden_hour else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Golden Hour\n  \u2001 1000$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_golden_hour else Color.LIME_GREEN)
             elif current_perks[temp_1] == 7:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Supercharge\n        700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_super_charge else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Supercharge\n        700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_super_charge else Color.LIME_GREEN)
             elif current_perks[temp_1] == 8:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Nemesis\n   800$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_nemesis else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Nemesis\n   800$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_nemesis else Color.LIME_GREEN)
             elif current_perks[temp_1] == 9:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Spec Ops\n\u2001600$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_special_operator else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Spec Ops\n\u2001600$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_special_operator else Color.LIME_GREEN)
             elif current_perks[temp_1] == 10:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Sharpshooter\n\u2001\u2001 900$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_sharpshooter else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Sharpshooter\n\u2001\u2001 900$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_sharpshooter else Color.LIME_GREEN)
             elif current_perks[temp_1] == 11:
-                createInWorldText([player for player in combatants if player.in_buy_menu_start_t], "Shockproof\n        700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_shockproof else Color.LIME_GREEN)
+                createInWorldText(combatants.filter(lambda x: x.in_buy_menu_start_t), "Shockproof\n        700$", temp_2, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY_AND_COLOR, Color.GRAY if localPlayer.perk_shockproof else Color.LIME_GREEN)
             current_perks_huds_list.append(getLastCreatedText())
 
 
@@ -1487,7 +1487,7 @@ rule "Team 1: Buy Ability":
                         check_if_enough_money()
                         if temp_2:
                             eventPlayer.perk_sharpshooter = true
-                            startDamageModification([player for player in getPlayers(Team.2) if distance(eventPlayer, player) > 20], eventPlayer, 150)
+                            startDamageModification(getPlayers(Team.2).filter(lambda player: distance(eventPlayer, player) > 20), eventPlayer, 150)
                             eventPlayer.damage_mod[10] = getLastDamageModification()
                             update_ab_string_and_play_sound()
                 elif temp_2 == 11:
@@ -1665,7 +1665,7 @@ def nwp_teleport():
     @Name "Subroutine: Nearest Walkable Position Teleport"
     
     if temp_1 == []:
-        eventPlayer.teleport(sorted(nodes, lambda player: distance(eventPlayer, player))[0])
+        eventPlayer.teleport(sorted(nodes, lambda x: distance(eventPlayer, x))[0])
     else:
         eventPlayer.teleport(temp_1)
 
@@ -1680,7 +1680,7 @@ rule "Team 1 (Spawn): Player Init, Create Effects, Set Is Combatant":
         return
     smallMessage(eventPlayer, "*******\u200b \u200b***********\u200b PvE: Talents\u200b | 3.4.6 \u200b***\u200b LemonAid")
     #Triage: Players to Players Healing Increase
-    startHealingModification([player for player in combatants if player.getNormalizedHealth() <= 0.5], eventPlayer, 100 + 25 * eventPlayer.ab_triage)
+    startHealingModification(combatants.filter(lambda x: x.getNormalizedHealth() <= 0.5), eventPlayer, 100 + 25 * eventPlayer.ab_triage)
     eventPlayer.is_combatant = true
     eventPlayer.spectated_player = eventPlayer
     eventPlayer.ab_bought_abilities_string = ""
@@ -1704,7 +1704,7 @@ rule "Team 1 (Spawn): Player Init, Create Effects, Set Is Combatant":
     createEffect(eventPlayer if eventPlayer.Smoked_Screen and not eventPlayer.perk_special_operator else [], Effect.SPHERE, Color.WHITE, eventPlayer, 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     createEffect(getAllPlayers() if eventPlayer.hasStatus(Status.INVINCIBLE) else [], Effect.BAPTISTE_IMMORTALITY_FIELD_PROTECTED, Team.2, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     if wave_number:
-        [player for player in getPlayers(Team.2) if player.is_living_boss].startForcingOutlineFor(eventPlayer, true, Color.YELLOW, OutlineVisibility.ALWAYS)
+        getPlayers(Team.2).filter(lambda player: player.is_living_boss).startForcingOutlineFor(eventPlayer, true, Color.YELLOW, OutlineVisibility.ALWAYS)
         eventPlayer.can_use_drop_in_buy_menu = true
         waitUntil(not not eventPlayer.in_buy_menu_start_t, 15)
         eventPlayer.can_use_drop_in_buy_menu = false
@@ -1870,9 +1870,9 @@ rule "Team 1: Revive, Check Player in Radius, Unset Is Downed":
     @Condition eventPlayer.downed_start_t == true
     @Condition eventPlayer.downed_start_t + 1 < getTotalTimeElapsed()
     
-    eventPlayer.revivers = [player for player in combatants if not player.downed_start_t and not player.is_invisible % 3 and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 3 and (player.getHero() == Hero.MEI and player.isUsingAbility1() or isInLoS(eventPlayer, player))]
+    eventPlayer.revivers = combatants.filter(lambda x: not x.downed_start_t and not x.is_invisible % 3 and distance(eventPlayer, vect(x.getPosition().x, eventPlayer.getPosition().y, x.getPosition().z)) <= 3 and abs(eventPlayer.getPosition().y - x.getPosition().y) <= 3 and (x.getHero() == Hero.MEI and x.isUsingAbility1() or isInLoS(eventPlayer, x)))
     if len(eventPlayer.revivers):
-        eventPlayer.is_revive_slow = all([player.active_ab_is_cloaked or player.hasStatus(Status.INVINCIBLE) or player.hasStatus(Status.PHASED_OUT) for player in eventPlayer.revivers])
+        eventPlayer.is_revive_slow = eventPlayer.revivers.all(lambda x: x.active_ab_is_cloaked or x.hasStatus(Status.INVINCIBLE) or x.hasStatus(Status.PHASED_OUT))
         eventPlayer.revive_timer += ((0.667 if is_hard_mode_enabled or is_apocalyptic else 1) * (2 if eventPlayer.perk_golden_hour else 1)) * (2.5 if eventPlayer.is_revive_slow else 5)
         if eventPlayer.revive_timer >= 100:
             smallMessage(getAllPlayers(), "{0} has been revived!".format(eventPlayer))
@@ -2029,7 +2029,7 @@ rule "Team 1 Button: Hold or double tap Melee, Use active Ability":
     elif eventPlayer.active_ab_number == 5:
         eventPlayer.active_ab_var = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + 2 * Vector.DOWN, null, null, false).getHitPosition() + 2 * Vector.UP
         for eventPlayer.active_ab_cooldown in range(-10, 0, 0.5):
-            ([player for player in combatants if distance(player.getEyePosition(), vect(eventPlayer.active_ab_var.x, player.getEyePosition().y, eventPlayer.active_ab_var.z)) <= 10 and abs(player.getEyePosition().y - eventPlayer.active_ab_var.y) <= 5]).active_ab_is_smoked = true
+            (combatants.filter(lambda x: distance(x.getEyePosition(), vect(eventPlayer.active_ab_var.x, x.getEyePosition().y, eventPlayer.active_ab_var.z)) <= 10 and abs(x.getEyePosition().y - eventPlayer.active_ab_var.y) <= 5)).active_ab_is_smoked = true
             wait(0.5)
         eventPlayer.active_ab_cooldown = 20
     elif eventPlayer.active_ab_number == 6:
@@ -2037,7 +2037,7 @@ rule "Team 1 Button: Hold or double tap Melee, Use active Ability":
             if eventPlayer.getNormalizedHealth() != 1:
                 heal(eventPlayer, null, 75)
             if eventPlayer.getNormalizedHealth() == 1:
-                heal((sorted([player for player in getPlayersInRadius(eventPlayer, 15, Team.1) if player.is_combatant and not player.downed_start_t and player.getNormalizedHealth() != 1], lambda i_: i_.getNormalizedHealth()))[0], null, 75)
+                heal((sorted(getPlayersInRadius(eventPlayer, 15, Team.1).filter(lambda player: player.is_combatant and not player.downed_start_t and player.getNormalizedHealth() != 1), lambda x: x.getNormalizedHealth()))[0], null, 75)
             wait(0.25)
         eventPlayer.active_ab_cooldown = 25
     elif eventPlayer.active_ab_number == 7:
@@ -2045,7 +2045,7 @@ rule "Team 1 Button: Hold or double tap Melee, Use active Ability":
         playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.WHITE, eventPlayer.active_ab_var, 8)
         playEffect(getAllPlayers(), DynamicEffect.EXPLOSION_SOUND, Color.WHITE, eventPlayer.active_ab_var, 200)
         for eventPlayer.active_ab_cooldown in range(-6, 0):
-            temp_1 = [player for player in getLivingPlayers(Team.2) if not player.hasStatus(Status.PHASED_OUT) and not player.hasStatus(Status.STUNNED) and distance(eventPlayer.active_ab_var, player.getEyePosition()) <= 8]
+            temp_1 = getLivingPlayers(Team.2).filter(lambda player: not player.hasStatus(Status.PHASED_OUT) and not player.hasStatus(Status.STUNNED) and distance(eventPlayer.active_ab_var, player.getEyePosition()) <= 8)
             temp_1.startDamageOverTime(eventPlayer, 2, 40)
             for temp_2 in range(len(temp_1)):
                 temp_1[temp_2].gmut_fortified_bypass_end_t = max(getTotalTimeElapsed(), temp_1[temp_2].gmut_fortified_bypass_end_t)
@@ -2053,12 +2053,12 @@ rule "Team 1 Button: Hold or double tap Melee, Use active Ability":
             wait(2)
         eventPlayer.active_ab_cooldown = 35
     elif eventPlayer.active_ab_number == 8:
-        temp_1 = (sorted([player for player in getLivingPlayers(Team.2) if not player.hasStatus(Status.PHASED_OUT) and not player.iv_is_portal and eventPlayer.isInViewAngle(player, 45) and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition())], lambda i_: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i_)))).last()
+        temp_1 = (sorted(getLivingPlayers(Team.2).filter(lambda player: not player.hasStatus(Status.PHASED_OUT) and not player.iv_is_portal and eventPlayer.isInViewAngle(player, 45) and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition())), lambda x: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), x)))).last()
         if temp_1:
             temp_1.setStatusEffect(eventPlayer, Status.HACKED, 5)
             eventPlayer.active_ab_var.append(temp_1)
             for temp_2 in range(4, 1, -1):
-                temp_1 = (sorted([i_ for i_ in getLivingPlayers(Team.2).exclude(eventPlayer.active_ab_var) if not i_.hasStatus(Status.PHASED_OUT) and not i_.iv_is_portal and isInLoS(temp_1, i_)], lambda i_: distance(temp_1, i_)))[0]
+                temp_1 = (sorted(getLivingPlayers(Team.2).exclude(eventPlayer.active_ab_var).filter(lambda x: not x.hasStatus(Status.PHASED_OUT) and not x.iv_is_portal and isInLoS(temp_1, x)), lambda x: distance(temp_1, x)))[0]
                 if temp_1:
                     temp_1.setStatusEffect(eventPlayer, Status.HACKED, temp_2)
                     eventPlayer.active_ab_var.append(temp_1)
@@ -2544,7 +2544,7 @@ rule "Team 1 Mercy: Revive Ability (Player)":
     @Condition eventPlayer.hasStatus(Status.HACKED) == false
     @Condition eventPlayer.hasStatus(Status.STUNNED) == false
     
-    eventPlayer.ab_player = (sorted([player for player in getPlayersInRadius(eventPlayer, 10, Team.1) if player.is_combatant and player.downed_start_t and player.downed_start_t + 0.1 < getTotalTimeElapsed() and eventPlayer.isInViewAngle(player, 45)], lambda i_: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i_)))).last()
+    eventPlayer.ab_player = (sorted(getPlayersInRadius(eventPlayer, 10, Team.1).filter(lambda player: player.is_combatant and player.downed_start_t and player.downed_start_t + 0.1 < getTotalTimeElapsed() and eventPlayer.isInViewAngle(player, 45)), lambda x: dotProduct(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), x)))).last()
     if eventPlayer.ab_player:
         smallMessage(getAllPlayers(), "{0} has been resurrected by {1}!".format(eventPlayer.ab_player, eventPlayer))
         eventPlayer.ab_player.downed_start_t = false
@@ -2668,11 +2668,11 @@ def teleport_to_free_spawn():
         eventPlayer.is_nav_reachable_node = true
         eventPlayer.teleport(eventPlayer.nav_pos + (0.1 * (directionFromAngles(horizontalAngleOfDirection(directionTowards(iv_dom_objective_pos[0 if eventPlayer.getSlot() == 2 else 1], eventPlayer.nav_pos)), false))))
     else:
-        temp_2 = [false for player in spawn_pos_list]
+        temp_2 = spawn_pos_list.map(lambda _: false)
         for temp_1 in range(len(spawn_pos_list)):
-            if any([isInLoS(spawn_pos_list[temp_1] + Vector.UP, player.getEyePosition()) for player in combatants]):
+            if combatants.any(lambda x: isInLoS(spawn_pos_list[temp_1] + Vector.UP, x.getEyePosition())):
                 temp_2[temp_1] = 2
-            elif any([distance(spawn_pos_list[temp_1], player) <= 10 for player in combatants]):
+            elif combatants.any(lambda x: distance(spawn_pos_list[temp_1], x) <= 10):
                 temp_2[temp_1] = 1
         temp_1 = (sorted(spawn_pos_list, lambda _, i_: temp_2[i_] + random.uniform(0, 0.5)))[0]
         eventPlayer.nav_idx = spawn_nearest_node_idx_list[spawn_pos_list.index(temp_1)]
@@ -2755,7 +2755,7 @@ def find_chase_target():
     
     if eventPlayer.is_ignoring_other_targets:
         return
-    eventPlayer.target = (sorted([player for player in combatants if not player.downed_start_t and not player.active_ab_is_cloaked and (not (player.is_invisible and distance(eventPlayer, player) > 2.4))], lambda i_: distance(eventPlayer, i_)))[0]
+    eventPlayer.target = (sorted(combatants.filter(lambda x: not x.downed_start_t and not x.active_ab_is_cloaked and (not (x.is_invisible and distance(eventPlayer, x) > 2.4))), lambda x: distance(eventPlayer, x)))[0]
 
 
 def update_target_nav():
@@ -2763,9 +2763,9 @@ def update_target_nav():
     
     eventPlayer.target.last_nav_update_t = getTotalTimeElapsed()
     temp_1 = eventPlayer.target.getEyePosition() + eventPlayer.target.eye_offset
-    eventPlayer.target.best_nav_idx = nodes.index((sorted([i_ for i_ in nodes.exclude(elevator_nodes) if isInLoS(i_ + vect(0, 1.5, 0), temp_1)], lambda i_: distance(eventPlayer.target, i_) + (abs(eventPlayer.target.getPosition().y - i_.y))))[0])
+    eventPlayer.target.best_nav_idx = nodes.index((sorted(nodes.exclude(elevator_nodes).filter(lambda x: isInLoS(x + vect(0, 1.5, 0), temp_1)), lambda x: distance(eventPlayer.target, x) + (abs(eventPlayer.target.getPosition().y - x.y))))[0])
     if eventPlayer.target.best_nav_idx == -1:
-        eventPlayer.target.best_nav_idx = nodes.index(sorted(nodes.exclude(elevator_nodes), lambda i_: distance(eventPlayer.target, i_))[0])
+        eventPlayer.target.best_nav_idx = nodes.index(sorted(nodes.exclude(elevator_nodes), lambda x: distance(eventPlayer.target, x))[0])
 
 
 rule "Team 2: Bot Init":
@@ -2809,7 +2809,7 @@ rule "Team 2 (Death): Field Resurrection":
         eventPlayer.setStatusEffect(null, Status.PHASED_OUT, 9999)
         return
     if not eventWasEnvironment and eventPlayer.getHero() != Hero.BAPTISTE and not eventPlayer.is_living_boss and not eventPlayer.is_mutated and (mut_advanced_medkit or eventPlayer.real_tier < 4):
-        temp_1 = random.choice([player for player in getPlayersOnHero(Hero.BAPTISTE, Team.2) if ((((player.isAlive() and (not (player.hasStatus(Status.HACKED) or player.hasStatus(Status.STUNNED) or player.fear_end_t >= getTotalTimeElapsed()))) and ((player.ab_var_2 + (1 if mut_advanced_medkit else 3)) < getTotalTimeElapsed())) and distance(eventPlayer, player) <= 10) and isInLoS(eventPlayer, player))])
+        temp_1 = random.choice(getPlayersOnHero(Hero.BAPTISTE, Team.2).filter(lambda player: (((player.isAlive() and (not (player.hasStatus(Status.HACKED) or player.hasStatus(Status.STUNNED) or player.fear_end_t >= getTotalTimeElapsed()))) and ((player.ab_var_2 + (1 if mut_advanced_medkit else 3)) < getTotalTimeElapsed())) and distance(eventPlayer, player) <= 10) and isInLoS(eventPlayer, player)))
         if temp_1:
             temp_1.communicate(Comms.YOURE_WELCOME)
             temp_1.ab_var_2 = getTotalTimeElapsed()
@@ -2825,7 +2825,7 @@ rule "Team 2 (Death): Field Resurrection":
             eventPlayer.setStatusEffect(null, Status.KNOCKED_DOWN, 1.75)
             return
     if gmut_storm_raging and eventPlayer.gmut_var:
-        temp_1 = (sorted([player for player in getPlayersInRadius(eventPlayer.getEyePosition(), 8, Team.2, LosCheck.SURFACES) if player.is_alive and not player.gmut_var and not player.iv_is_portal], lambda i_: distance(eventPlayer, i_))).slice(0, 2)
+        temp_1 = (sorted(getPlayersInRadius(eventPlayer.getEyePosition(), 8, Team.2, LosCheck.SURFACES).filter(lambda player: player.is_alive and not player.gmut_var and not player.iv_is_portal), lambda x: distance(eventPlayer, x))).slice(0, 2)
         temp_1.gmut_var = true
         for temp_2 in range(len(temp_1)):
             playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, temp_1[temp_2], 1)
@@ -2897,7 +2897,7 @@ rule "Team 2 (Respawn): Reset Dummy, Change Hero":
             elif temp_1 == 2:
                 eventPlayer.real_tier = 2
             else:
-                eventPlayer.real_tier = 3 if any([not player.is_living_boss and player.real_tier == 4 for player in getLivingPlayers(Team.2)]) or random.randint(1, 100) <= 80 else 4
+                eventPlayer.real_tier = 3 if getLivingPlayers(Team.2).any(lambda player: not player.is_living_boss and player.real_tier == 4) or random.randint(1, 100) <= 80 else 4
         eventPlayer.resurrect()
         if eventPlayer.real_tier == 1:
             eventPlayer.startForcingName("Trooper")
@@ -2978,18 +2978,18 @@ rule "Team 2 (Respawn): Reset Dummy, Change Hero":
         elif special_spawns_count > 0:
             special_spawns_count--
             if tier_4_spawns_block_end_t >= getTotalTimeElapsed() or wave_number < 5:
-                eventPlayer.startForcingHero((sorted([i_ for i_ in ([Hero.ROADHOG, Hero.HANZO if mut_yakuza else false, Hero.GENJI if mut_yakuza else false, Hero.KIRIKO if mut_yakuza else false, Hero.SIGMA if wave_number >= 2 else false, Hero.ORISA if wave_number >= 2 else false, Hero.DVA if wave_number >= 3 else false, Hero.TRACER if wave_number >= 3 else false, Hero.ANA if wave_number >= 4 else false, Hero.MEI if wave_number >= 4 else false, Hero.WRECKING_BALL if wave_number >= 6 else false]) if i_], lambda i_: random.uniform(0, 0.5) + isHeroBeingPlayed(i_, Team.2)))[0])
+                eventPlayer.startForcingHero((sorted([Hero.ROADHOG, Hero.HANZO if mut_yakuza else false, Hero.GENJI if mut_yakuza else false, Hero.KIRIKO if mut_yakuza else false, Hero.SIGMA if wave_number >= 2 else false, Hero.ORISA if wave_number >= 2 else false, Hero.DVA if wave_number >= 3 else false, Hero.TRACER if wave_number >= 3 else false, Hero.ANA if wave_number >= 4 else false, Hero.MEI if wave_number >= 4 else false, Hero.WRECKING_BALL if wave_number >= 6 else false].filter(lambda x: x), lambda x: random.uniform(0, 0.5) + isHeroBeingPlayed(x, Team.2)))[0])
             else:
                 tier_4_spawns_block_end_t = getTotalTimeElapsed() + 10
-                eventPlayer.startForcingHero((sorted([i_ for i_ in ([Hero.HANZO, Hero.GENJI, Hero.KIRIKO, Hero.REINHARDT if wave_number >= 10 else false]) if i_], lambda i_: random.uniform(0, 0.5) + getNumberOfHeroes(i_, Team.2)))[0])
+                eventPlayer.startForcingHero((sorted([Hero.HANZO, Hero.GENJI, Hero.KIRIKO, Hero.REINHARDT if wave_number >= 10 else false].filter(lambda x: x), lambda x: random.uniform(0, 0.5) + getNumberOfHeroes(x, Team.2)))[0])
         else:
             temp_1 = eventPlayer.base_tier + (mut_promotion and random.randint(1, 100) <= 20)
             if temp_1 == 1:
-                eventPlayer.startForcingHero((sorted([i_ for i_ in ([Hero.CASSIDY, Hero.BRIGITTE if wave_number >= 3 else false]) if i_], lambda i_: random.uniform(0, 0.5) + isHeroBeingPlayed(i_, Team.2)))[0])
+                eventPlayer.startForcingHero((sorted([Hero.CASSIDY, Hero.BRIGITTE if wave_number >= 3 else false].filter(lambda x: x), lambda x: random.uniform(0, 0.5) + isHeroBeingPlayed(x, Team.2)))[0])
             elif temp_1 == 2:
-                eventPlayer.startForcingHero((sorted([i_ for i_ in ([Hero.WIDOWMAKER, Hero.BAPTISTE, Hero.ZARYA, Hero.PHARAH, Hero.ECHO if wave_number >= 5 else false, Hero.SOMBRA if wave_number >= 7 else false, Hero.REAPER if wave_number >= 11 else false, Hero.LUCIO if wave_number >= 8 else false]) if i_], lambda i_: random.uniform(0, 0.5) + isHeroBeingPlayed(i_, Team.2)))[0])
+                eventPlayer.startForcingHero((sorted([Hero.WIDOWMAKER, Hero.BAPTISTE, Hero.ZARYA, Hero.PHARAH, Hero.ECHO if wave_number >= 5 else false, Hero.SOMBRA if wave_number >= 7 else false, Hero.REAPER if wave_number >= 11 else false, Hero.LUCIO if wave_number >= 8 else false].filter(lambda x: x), lambda x: random.uniform(0, 0.5) + isHeroBeingPlayed(x, Team.2)))[0])
             else:
-                eventPlayer.startForcingHero((sorted([i_ for i_ in ([Hero.ROADHOG, Hero.WRECKING_BALL, Hero.MEI, Hero.ORISA if wave_number >= 6 else false, Hero.SIGMA if wave_number >= 4 else false, Hero.TRACER if wave_number >= 8 else false, Hero.ANA if wave_number >= 9 else false, Hero.DVA if wave_number >= 9 else false]) if i_], lambda i_: random.uniform(0, 0.5) + isHeroBeingPlayed(i_, Team.2)))[0])
+                eventPlayer.startForcingHero((sorted([Hero.ROADHOG, Hero.WRECKING_BALL, Hero.MEI, Hero.ORISA if wave_number >= 6 else false, Hero.SIGMA if wave_number >= 4 else false, Hero.TRACER if wave_number >= 8 else false, Hero.ANA if wave_number >= 9 else false, Hero.DVA if wave_number >= 9 else false].filter(lambda x: x), lambda x: random.uniform(0, 0.5) + isHeroBeingPlayed(x, Team.2)))[0])
         #Selected Hero is the same as current Hero
         if eventPlayer.isDead():
             eventPlayer.resurrect()
@@ -3118,7 +3118,7 @@ rule "Team 2 (Respawn): Reset Dummy, Change Hero":
     eventPlayer.fear_end_t = 100000 if eventPlayer.iv_is_portal else getTotalTimeElapsed() + 3 if gamemode == 2 and eventPlayer.is_living_boss else 0
     eventPlayer.is_aggressive = not eventPlayer.is_using_boss_aggression
     if gmut_storm_raging:
-        eventPlayer.gmut_var = not eventPlayer.is_living_boss and eventPlayer.real_tier < 3 and random.randint(1, 3) > len([player for player in getLivingPlayers(Team.2) if player.gmut_var])
+        eventPlayer.gmut_var = not eventPlayer.is_living_boss and eventPlayer.real_tier < 3 and random.randint(1, 3) > len(getLivingPlayers(Team.2).filter(lambda player: player.gmut_var))
     elif gmut_adaptive_shield:
         eventPlayer.gmut_var = false
     if not eventPlayer.iv_is_portal:
@@ -3151,7 +3151,7 @@ rule "Team 2: Enable Combat Pathfinding":
         update_target_nav()
         if not ruleCondition:
             return
-    if any([distance(eventPlayer, vect(player.x, eventPlayer.getPosition().y, player.z)) < 1.5 for player in elevator_nodes]):
+    if elevator_nodes.any(lambda x: distance(eventPlayer, vect(x.x, eventPlayer.getPosition().y, x.z)) < 1.5):
         wait(1)
         if not ruleCondition:
             return
@@ -3182,9 +3182,9 @@ rule "Team 2: Set Nav (Not in Combat), Get Back to Node, Set Nav is Node":
     if not (is_load_limit_reached or eventPlayer.is_pathfinding_disabled):
         if eventPlayer.combat_pathfinding_type == 0:
             eventPlayer.setMoveSpeed(115 if mut_amped else 100)
-        eventPlayer.nav_pos = sorted([player for player in nodes if isInLoS(eventPlayer, player)], lambda i_: distance(eventPlayer, i_))[0]
+        eventPlayer.nav_pos = sorted(nodes.filter(lambda x: isInLoS(eventPlayer, x)), lambda x: distance(eventPlayer, x))[0]
         if eventPlayer.nav_pos == false:
-            eventPlayer.nav_pos = sorted(nodes, lambda player: distance(eventPlayer, player))[0]
+            eventPlayer.nav_pos = sorted(nodes, lambda x: distance(eventPlayer, x))[0]
         eventPlayer.nav_idx = nodes.index(eventPlayer.nav_pos)
         eventPlayer.is_nav_reachable_node = true
     wait(0.5)
@@ -3208,7 +3208,7 @@ rule "Team 2: Set Nav (Not in Combat), Select Next Node, Set Last Time at Node":
                 if ruleCondition:
                     loop()
             else:
-                eventPlayer.nav_idx = (sorted(edges[eventPlayer.nav_idx], lambda i_: random.uniform(0, 0.5) + (char_string.strIndex((distance_matrix[floor((i_ * nodes_count + eventPlayer.dom_nav_guard_idx) / 128)]).charAt((i_ * nodes_count + eventPlayer.dom_nav_guard_idx) % 128)))))[0]
+                eventPlayer.nav_idx = (sorted(edges[eventPlayer.nav_idx], lambda x: random.uniform(0, 0.5) + (char_string.strIndex((distance_matrix[floor((x * nodes_count + eventPlayer.dom_nav_guard_idx) / 128)]).charAt((x * nodes_count + eventPlayer.dom_nav_guard_idx) % 128)))))[0]
                 eventPlayer.nav_pos = nodes[eventPlayer.nav_idx]
         elif eventPlayer.target.is_combatant:
             if eventPlayer.target.last_nav_update_t + combatants_count * 0.4 < getTotalTimeElapsed():
@@ -3219,7 +3219,7 @@ rule "Team 2: Set Nav (Not in Combat), Select Next Node, Set Last Time at Node":
                 eventPlayer.target_last_seen_pos = eventPlayer.target.getPosition()
                 eventPlayer.is_nav_reachable_node = false
             else:
-                eventPlayer.nav_idx = (sorted(edges[eventPlayer.nav_idx], lambda i_: (1 if eventPlayer.is_aggressive and eventPlayer.fear_end_t < getTotalTimeElapsed() else -1) * (random.uniform(0, 0.5) + (char_string.strIndex((distance_matrix[floor((i_ * nodes_count + eventPlayer.target.best_nav_idx) / 128)]).charAt((i_ * nodes_count + eventPlayer.target.best_nav_idx) % 128))))))[0]
+                eventPlayer.nav_idx = (sorted(edges[eventPlayer.nav_idx], lambda x: (1 if eventPlayer.is_aggressive and eventPlayer.fear_end_t < getTotalTimeElapsed() else -1) * (random.uniform(0, 0.5) + (char_string.strIndex((distance_matrix[floor((x * nodes_count + eventPlayer.target.best_nav_idx) / 128)]).charAt((x * nodes_count + eventPlayer.target.best_nav_idx) % 128))))))[0]
                 eventPlayer.nav_pos = nodes[eventPlayer.nav_idx]
         else:
             eventPlayer.nav_idx = random.choice(edges[eventPlayer.nav_idx])
@@ -3296,9 +3296,9 @@ rule "Team 2: Set Nav (in Combat)":
                         eventPlayer.nav_pos = eventPlayer.getPosition() + (3.5 * (directionFromAngles(horizontalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.target)) + random.choice([-45, 0, 45]), 0)))
                     find_wp_near_nav()
                 elif eventPlayer.combat_pathfinding_type == 8:
-                    temp_1 = [player for player in getPlayersInRadius(eventPlayer, 3, Team.2) if player.is_alive].exclude(eventPlayer)
+                    temp_1 = getPlayersInRadius(eventPlayer, 3, Team.2).filter(lambda player: player.is_alive).exclude(eventPlayer)
                     if len(temp_1):
-                        eventPlayer.nav_pos = eventPlayer.getPosition() + 3.5 * directionTowards(sorted(temp_1, lambda player: distance(eventPlayer, player))[0], eventPlayer)
+                        eventPlayer.nav_pos = eventPlayer.getPosition() + 3.5 * directionTowards(sorted(temp_1, lambda x: distance(eventPlayer, x))[0], eventPlayer)
                         find_wp_near_nav()
                     else:
                         eventPlayer.nav_pos = eventPlayer.getPosition()
@@ -3346,7 +3346,7 @@ rule "Team 2: Find Target":
         if eventPlayer.is_ignoring_other_targets:
             temp_1 = eventPlayer.target if eventPlayer.target.is_combatant and not eventPlayer.target.downed_start_t and not eventPlayer.target.active_ab_is_cloaked and (not (eventPlayer.target.is_invisible and distance(eventPlayer, eventPlayer.target) > 2.4)) and isInLoS(eventPlayer.getEyePosition(), eventPlayer.target.getEyePosition() + eventPlayer.target.eye_offset) else null
         else:
-            temp_1 = (sorted([player for player in combatants if not player.downed_start_t and not player.active_ab_is_cloaked and (not (player.is_invisible and distance(eventPlayer, player) > 2.4)) and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition() + player.eye_offset)], lambda i_: ((((([1, 0.25, 2, 4][i_.ab_priority] * (0.25 if i_ == eventPlayer.target else 1)) * distance(eventPlayer, i_)) + (500 if not eventPlayer.is_ranged and i_.is_flying else 0)) + (1000 if i_.hasStatus(Status.ASLEEP) else 0)) + (2000 if i_.hasStatus(Status.INVINCIBLE) or i_.hasStatus(Status.PHASED_OUT) else 0)) + (-5000 if i_.active_ab_is_frenzied else 0)))[0]
+            temp_1 = (sorted(combatants.filter(lambda x: not x.downed_start_t and not x.active_ab_is_cloaked and (not (x.is_invisible and distance(eventPlayer, x) > 2.4)) and isInLoS(eventPlayer.getEyePosition(), x.getEyePosition() + x.eye_offset)), lambda x: ((((([1, 0.25, 2, 4][x.ab_priority] * (0.25 if x == eventPlayer.target else 1)) * distance(eventPlayer, x)) + (500 if not eventPlayer.is_ranged and x.is_flying else 0)) + (1000 if x.hasStatus(Status.ASLEEP) else 0)) + (2000 if x.hasStatus(Status.INVINCIBLE) or x.hasStatus(Status.PHASED_OUT) else 0)) + (-5000 if x.active_ab_is_frenzied else 0)))[0]
         if temp_1:
             eventPlayer.is_target_in_los = 5
             eventPlayer.target = temp_1
@@ -3410,7 +3410,7 @@ rule "Team 2: Bot is stuck":
     wait(0.5, Wait.ABORT_WHEN_FALSE)
     if eventPlayer.getHero() == Hero.REINHARDT and eventPlayer.isUsingUltimate():
         loop()
-    if any([distance(eventPlayer, vect(player.x, eventPlayer.getPosition().y, player.z)) < 1.5 for player in elevator_nodes]):
+    if elevator_nodes.any(lambda x: distance(eventPlayer, vect(x.x, eventPlayer.getPosition().y, x.z)) < 1.5):
         wait(1.5, Wait.ABORT_WHEN_FALSE)
     if not ruleCondition:
         return
@@ -3573,7 +3573,7 @@ rule "MUT Team 2 (Gamechanging Mutator): Adaptive Shield":
         wait(0.016, Wait.ABORT_WHEN_FALSE)
         if not ruleCondition:
             return
-    temp_1 = len([player for player in combatants if distance(eventPlayer, player) <= 8 and isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS)])
+    temp_1 = len(combatants.filter(lambda x: distance(eventPlayer, x) <= 8 and isInLoS(eventPlayer, x, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS)))
     if temp_1:
         playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.BLUE, eventPlayer, 1)
         eventPlayer.addHealthPool(Health.SHIELDS, 0.75 * (temp_1 / combatants_count) * eventPlayer.getMaxHealth(), false, false)
@@ -3789,7 +3789,7 @@ rule "Team 2 Lucio: Swap to heal and shoot":
     if not ruleCondition:
         return
     eventPlayer.forceButtonPress(Button.ABILITY_1)
-    if distance(eventPlayer, sorted([player for player in getLivingPlayers(Team.1) if eventPlayer.isInViewAngle(player, 45)])[0]) <= 4:
+    if distance(eventPlayer, sorted(getLivingPlayers(Team.1).filter(lambda player: eventPlayer.isInViewAngle(player, 45)))[0]) <= 4:
         eventPlayer.forceButtonPress(Button.SECONDARY_FIRE)
         wait(0.7)
     else:
@@ -4038,7 +4038,7 @@ rule "Team 1: Smoke Screen":
     waitUntil(eventPlayer.isDead(), 4)
     getAllPlayers().stopForcingOutlineFor(eventPlayer)
     eventPlayer.Smoked_Screen = false
-    [player for player in getPlayers(Team.2) if player.is_living_boss].startForcingOutlineFor(eventPlayer, true, Color.YELLOW, OutlineVisibility.ALWAYS)
+    getPlayers(Team.2).filter(lambda player: player.is_living_boss).startForcingOutlineFor(eventPlayer, true, Color.YELLOW, OutlineVisibility.ALWAYS)
 
 
 rule "Team 2 Soldier (Cloaker): Tactical Visor":
@@ -4051,7 +4051,7 @@ rule "Team 2 Soldier (Cloaker): Tactical Visor":
     @Condition distance(eventPlayer, eventPlayer.target) <= 40
     
     wait(0.5)
-    if (len([player for player in combatants if player.downed_start_t]) <= (1 if combatants_count >= 4 else 0)) and random.randint(1, 100) > 50:
+    if (len(combatants.filter(lambda x: x.downed_start_t)) <= (1 if combatants_count >= 4 else 0)) and random.randint(1, 100) > 50:
         eventPlayer.setUltCharge(100)
         eventPlayer.forceButtonPress(Button.ULTIMATE)
         if eventPlayer.isUsingUltimate():
@@ -4233,9 +4233,9 @@ rule "Team 2 Echo: Flight":
             eventPlayer.forceButtonPress(Button.JUMP)
             eventPlayer.forceButtonPress(Button.ABILITY_1)
             waitUntil(not eventPlayer.isUsingAbility1(), 99999)
-        eventPlayer.nav_pos = (sorted([player for player in nodes if isInLoS(eventPlayer, player)], lambda i_: 2 * distance(eventPlayer, i_) - verticalAngleTowards(eventPlayer, i_)))[0]
+        eventPlayer.nav_pos = (sorted(nodes.filter(lambda x: isInLoS(eventPlayer, x)), lambda x: 2 * distance(eventPlayer, x) - verticalAngleTowards(eventPlayer, x)))[0]
         if eventPlayer.nav_pos == false:
-            eventPlayer.nav_pos = sorted(nodes, lambda player: distance(eventPlayer, player))[0]
+            eventPlayer.nav_pos = sorted(nodes, lambda x: distance(eventPlayer, x))[0]
         eventPlayer.is_flying = false
         eventPlayer.ab_var_1 = true
         eventPlayer.is_pathfinding_disabled = true
@@ -4467,7 +4467,7 @@ rule "Team 2 Sombra: Tase times out / Lost Health / Target is downed / Target le
     
     if eventPlayer.ab_player.perk_shockproof:
         damage(eventPlayer, eventPlayer.ab_player, 50)
-        ([player for player in getPlayersInRadius(eventPlayer.getEyePosition(), 10, Team.2, LosCheck.SURFACES) if not player.hasStatus(Status.PHASED_OUT)]).setStatusEffect(null, Status.HACKED, 2)
+        (getPlayersInRadius(eventPlayer.getEyePosition(), 10, Team.2, LosCheck.SURFACES).filter(lambda player: not player.hasStatus(Status.PHASED_OUT))).setStatusEffect(null, Status.HACKED, 2)
         playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.PURPLE, eventPlayer, 10)
         playEffect(getAllPlayers(), DynamicEffect.EXPLOSION_SOUND, Color.WHITE, eventPlayer, 200)
     eventPlayer.ab_player.tased_end_t = false
@@ -4595,7 +4595,7 @@ rule "Team 2 Widowmaker: Infra-Sight if Sombra is stealthed":
     @Hero widowmaker
     @Condition eventPlayer.target == 0
     @Condition is_infrasight_on == false
-    @Condition any([player.is_invisible == 1 for player in combatants]) == true
+    @Condition combatants.any(lambda x: x.is_invisible == 1) == true
     
     wait(2)
     if not ruleCondition:
@@ -4607,7 +4607,7 @@ rule "Team 2 Widowmaker: Infra-Sight if Sombra is stealthed":
 
 
 rule "Global: Set / Unset Is Infrasight on (Bots)":
-    @Condition is_infrasight_on != any([player.isUsingUltimate() for player in getPlayersOnHero(Hero.WIDOWMAKER, Team.2)])
+    @Condition is_infrasight_on != getPlayersOnHero(Hero.WIDOWMAKER, Team.2).any(lambda player: player.isUsingUltimate())
     
     is_infrasight_on = not is_infrasight_on
     aim_offset = (0 if is_infrasight_on else 0.5) * Vector.DOWN
@@ -5679,7 +5679,7 @@ def iv_defend_portal():
         call_reinforcements()
         async(play_incoming_sound_twice, AsyncBehavior.NOOP)
         eventPlayer.ab_var_2 = getTotalTimeElapsed() + 10
-    temp_2 = [player for player in getPlayersInRadius(iv_dom_objective_pos, 15, Team.1, LosCheck.SURFACES) if player.is_combatant and not player.hasStatus(Status.PHASED_OUT) and isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS)]
+    temp_2 = getPlayersInRadius(iv_dom_objective_pos, 15, Team.1, LosCheck.SURFACES).filter(lambda player: player.is_combatant and not player.hasStatus(Status.PHASED_OUT) and isInLoS(eventPlayer, player, BarrierLos.BLOCKED_BY_ENEMY_BARRIERS))
     for temp_1 in range(len(temp_2)):
         temp_2[temp_1].applyImpulse(directionFromAngles(horizontalAngleOfDirection(vectorTowards(iv_dom_objective_pos, temp_2[temp_1])), -20), 25, Relativity.TO_WORLD)
     temp_1 = random.randint(0, 5)
@@ -5791,7 +5791,7 @@ rule "HVT Team 2 Slot 1: Subdued, check Player in Radius":
     @Slot 1
     @Condition objective_phase_number == 2
     
-    eventPlayer.revivers = [player for player in combatants if not player.downed_start_t and not player.is_invisible % 3 and distance(eventPlayer, vect(player.getPosition().x, eventPlayer.getPosition().y, player.getPosition().z)) <= 10 and abs(eventPlayer.getPosition().y - player.getPosition().y) <= 5 and isInLoS(eventPlayer, player)]
+    eventPlayer.revivers = combatants.filter(lambda x: not x.downed_start_t and not x.is_invisible % 3 and distance(eventPlayer, vect(x.getPosition().x, eventPlayer.getPosition().y, x.getPosition().z)) <= 10 and abs(eventPlayer.getPosition().y - x.getPosition().y) <= 5 and isInLoS(eventPlayer, x))
     if len(eventPlayer.revivers):
         eventPlayer.downed_start_t = 2
         objective_progress += 1.5
@@ -5872,7 +5872,7 @@ rule "DOM Team 2 Slot 2: Create Guard and Control Point Entities":
     @Team 2
     @Slot 2
     
-    progressBarHud(getAllPlayers() if objective_phase_number == 1 else [], objective_progress[0] if localPlayer in dom_point_A_contesters else objective_progress[1] if localPlayer in dom_point_B_contesters else 0.25 * (((100 * ((1 - getPlayersInSlot(2, Team.2).getNormalizedHealth() if getPlayersInSlot(2, Color.TEAM_2).is_living_boss else 1) + (1 - getPlayersInSlot(3, Team.2).getNormalizedHealth() if getPlayersInSlot(3, Team.2).is_living_boss else 1))) + objective_progress[0]) + objective_progress[1]), ("Kill the Guard to unlock this point" if getPlayersInSlot(2, Color.TEAM_2).is_living_boss else "Capturing...") if localPlayer in dom_point_A_contesters else ("Kill the Guard to unlock the point" if getPlayersInSlot(3, Team.2).is_living_boss else "Capturing...") if localPlayer in dom_point_B_contesters else "Kill the guards and capture the points" if any([player.is_living_boss for player in getPlayers(Team.2)]) else "Capture the points", HudPosition.TOP, -97, Color.GREEN if localPlayer in dom_point_A_contesters or localPlayer in dom_point_B_contesters else Color.BLUE, Color.YELLOW if localPlayer in dom_point_A_contesters and getPlayersInSlot(2, Team.2).is_living_boss or localPlayer in dom_point_B_contesters and getPlayersInSlot(3, Team.2).is_living_boss else Color.BLUE)
+    progressBarHud(getAllPlayers() if objective_phase_number == 1 else [], objective_progress[0] if localPlayer in dom_point_A_contesters else objective_progress[1] if localPlayer in dom_point_B_contesters else 0.25 * (((100 * ((1 - getPlayersInSlot(2, Team.2).getNormalizedHealth() if getPlayersInSlot(2, Color.TEAM_2).is_living_boss else 1) + (1 - getPlayersInSlot(3, Team.2).getNormalizedHealth() if getPlayersInSlot(3, Team.2).is_living_boss else 1))) + objective_progress[0]) + objective_progress[1]), ("Kill the Guard to unlock this point" if getPlayersInSlot(2, Color.TEAM_2).is_living_boss else "Capturing...") if localPlayer in dom_point_A_contesters else ("Kill the Guard to unlock the point" if getPlayersInSlot(3, Team.2).is_living_boss else "Capturing...") if localPlayer in dom_point_B_contesters else "Kill the guards and capture the points" if getPlayers(Team.2).any(lambda player: player.is_living_boss) else "Capture the points", HudPosition.TOP, -97, Color.GREEN if localPlayer in dom_point_A_contesters or localPlayer in dom_point_B_contesters else Color.BLUE, Color.YELLOW if localPlayer in dom_point_A_contesters and getPlayersInSlot(2, Team.2).is_living_boss or localPlayer in dom_point_B_contesters and getPlayersInSlot(3, Team.2).is_living_boss else Color.BLUE)
     createEffect(getAllPlayers() if objective_phase_number == 1 and objective_progress[0] < 100 else [], Effect.RING, Color.RED if getPlayersInSlot(2, Team.2).is_living_boss else Color.GREEN if len(dom_point_A_contesters) else Color.WHITE, iv_dom_objective_pos[0], 3)
     createEffect(getAllPlayers() if objective_phase_number == 1 and objective_progress[1] < 100 else [], Effect.RING, Color.RED if getPlayersInSlot(3, Team.2).is_living_boss else Color.GREEN if len(dom_point_B_contesters) else Color.WHITE, iv_dom_objective_pos[1], 3)
     createIcon(getAllPlayers() if objective_phase_number == 1 and objective_progress[0] < 100 else [], iv_dom_objective_pos[0] + 2 * Vector.UP, Icon.EXCLAMATION_MARK, IconReeval.VISIBILITY_POSITION_AND_COLOR, Color.ORANGE if getPlayersInSlot(2, Color.TEAM_2).is_living_boss else Color.YELLOW)
@@ -5888,7 +5888,7 @@ rule "DOM Team 2 Slot 2: Contest Control Point A":
     @Condition objective_phase_number == 1
     @Condition objective_progress[0] < 100
     
-    dom_point_A_contesters = [player for player in combatants if not player.downed_start_t and not player.is_invisible % 3 and distance(iv_dom_objective_pos[0], vect(player.getPosition().x, iv_dom_objective_pos[0].y, player.getPosition().z)) <= 3 and abs(iv_dom_objective_pos[0].getPosition().y - player.getPosition().y) <= 3 and isInLoS(iv_dom_objective_pos[0] + Vector.UP, player)]
+    dom_point_A_contesters = combatants.filter(lambda x: not x.downed_start_t and not x.is_invisible % 3 and distance(iv_dom_objective_pos[0], vect(x.getPosition().x, iv_dom_objective_pos[0].y, x.getPosition().z)) <= 3 and abs(iv_dom_objective_pos[0].getPosition().y - x.getPosition().y) <= 3 and isInLoS(iv_dom_objective_pos[0] + Vector.UP, x))
     if not getPlayersInSlot(2, Team.2).is_living_boss and len(dom_point_A_contesters):
         objective_progress[0] += 2
         wait(0.25)
@@ -5919,7 +5919,7 @@ rule "DOM Team 2 Slot 2: Contest Control Point B":
     @Condition objective_phase_number == 1
     @Condition objective_progress[1] < 100
     
-    dom_point_B_contesters = [player for player in combatants if not player.downed_start_t and not player.is_invisible % 3 and distance(iv_dom_objective_pos[1], vect(player.getPosition().x, iv_dom_objective_pos[1].y, player.getPosition().z)) <= 3 and abs(iv_dom_objective_pos[1].getPosition().y - player.getPosition().y) <= 3 and isInLoS(iv_dom_objective_pos[1] + Vector.UP, player)]
+    dom_point_B_contesters = combatants.filter(lambda x: not x.downed_start_t and not x.is_invisible % 3 and distance(iv_dom_objective_pos[1], vect(x.getPosition().x, iv_dom_objective_pos[1].y, x.getPosition().z)) <= 3 and abs(iv_dom_objective_pos[1].getPosition().y - x.getPosition().y) <= 3 and isInLoS(iv_dom_objective_pos[1] + Vector.UP, x))
     if not getPlayersInSlot(3, Team.2).is_living_boss and len(dom_point_B_contesters):
         objective_progress[1] += 2
         wait(0.25)
@@ -6818,7 +6818,7 @@ rule "Mercy: Wings of Grand":
     @Condition eventPlayer.isUsingAbility1() == true
     
     if eventPlayer.getSpeed() > 10:
-        damage([player for player in getPlayersInRadius(eventPlayer, 4, Team.2, LosCheck.SURFACES) if not player.hasStatus(Status.KNOCKED_DOWN)], eventPlayer, 35)
+        damage(getPlayersInRadius(eventPlayer, 4, Team.2, LosCheck.SURFACES).filter(lambda player: not player.hasStatus(Status.KNOCKED_DOWN)), eventPlayer, 35)
         getPlayersInRadius(eventPlayer, 4, Team.2, LosCheck.SURFACES).setStatusEffect(eventPlayer, Status.KNOCKED_DOWN, 0.8)
         getPlayersInRadius(eventPlayer, 4, Team.2, LosCheck.SURFACES).applyImpulse(normalize(eventPlayer.getVelocity()) + directionTowards(eventPlayer, eventPlayer.getThrottle()) + Vector.UP * 1.1, 7.5, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
         playEffect(getAllPlayers(), DynamicEffect.BAD_EXPLOSION, Color.YELLOW, eventPlayer.getPosition(), 0.15)
@@ -6893,7 +6893,7 @@ rule "Tracer: Vortex 2":
 rule "Tracer: Chain Reaction":
     @Event eachPlayer
     @Team 2
-    @Condition any([distance(eventPlayer, i_) <= 7 for i_ in [player for player in getLivingPlayers(Team.2) if player.Chain_Reaction_On]]) == true
+    @Condition getLivingPlayers(Team.2).filter(lambda player: player.Chain_Reaction_On).any(lambda x: distance(eventPlayer, x) <= 7) == true
     @Condition eventPlayer.Chain_Reaction_Immune == false
     @Condition eventPlayer.Chain_Reaction_On == false
     @Condition eventPlayer.isAlive() == true
@@ -7024,8 +7024,8 @@ rule "Echo: Bomber Jacket":
     @Condition eventPlayer.Talent1 == true
     @Condition eventPlayer.isUsingAbility1() == true
     
-    createHomingProjectile(Projectile.ECHO_STICKY_BOMB, eventPlayer, eventPlayer.getEyePosition() + worldVector(vect(-0.5, false, false), eventPlayer, Transform.ROTATION), Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 1.5, DynamicEffect.RING_EXPLOSION, DynamicEffect.EXPLOSION_SOUND, 0, 20, 5, 0, (sorted([player for player in getPlayers(Team.2) if isInLoS(eventPlayer, player) and player.is_alive], lambda i_: distance(eventPlayer, i_)))[0])
-    createHomingProjectile(Projectile.ECHO_STICKY_BOMB, eventPlayer, eventPlayer.getEyePosition() + worldVector(vect(0.5, false, false), eventPlayer, Transform.ROTATION), Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 1.5, DynamicEffect.RING_EXPLOSION, DynamicEffect.EXPLOSION_SOUND, 0, 20, 5, 0, (sorted([player for player in getPlayers(Team.2) if isInLoS(eventPlayer, player) and player.is_alive], lambda i_: distance(eventPlayer, i_)))[0])
+    createHomingProjectile(Projectile.ECHO_STICKY_BOMB, eventPlayer, eventPlayer.getEyePosition() + worldVector(vect(-0.5, false, false), eventPlayer, Transform.ROTATION), Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 1.5, DynamicEffect.RING_EXPLOSION, DynamicEffect.EXPLOSION_SOUND, 0, 20, 5, 0, (sorted(getPlayers(Team.2).filter(lambda player: isInLoS(eventPlayer, player) and player.is_alive), lambda x: distance(eventPlayer, x)))[0])
+    createHomingProjectile(Projectile.ECHO_STICKY_BOMB, eventPlayer, eventPlayer.getEyePosition() + worldVector(vect(0.5, false, false), eventPlayer, Transform.ROTATION), Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.2, 30, 1, 1.5, DynamicEffect.RING_EXPLOSION, DynamicEffect.EXPLOSION_SOUND, 0, 20, 5, 0, (sorted(getPlayers(Team.2).filter(lambda player: isInLoS(eventPlayer, player) and player.is_alive), lambda x: distance(eventPlayer, x)))[0])
     wait(0.25)
     if ruleCondition:
         loop()
@@ -7143,7 +7143,7 @@ rule "Zarya- Combusta-bubble - Detect Barrier Target":
     @Condition eventPlayer.isUsingAbility2() == true
     
     wait(0.025)
-    eventPlayer.Ability_End = ([player for player in getPlayersInRadius(eventPlayer, 30, Team.1, LosCheck.SURFACES) if player.hasStatus(Status.INVINCIBLE) and player.isAlive() and eventPlayer.isInViewAngle(player, 103)])[0]
+    eventPlayer.Ability_End = (getPlayersInRadius(eventPlayer, 30, Team.1, LosCheck.SURFACES).filter(lambda player: player.hasStatus(Status.INVINCIBLE) and player.isAlive() and eventPlayer.isInViewAngle(player, 103)))[0]
     waitUntil(not eventPlayer.isUsingAbility2(), 2)
     playEffect(getAllPlayers(), DynamicEffect.EXPLOSION_SOUND, Color.ORANGE, eventPlayer.Ability_End, 120)
     playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.ORANGE, eventPlayer.Ability_End.getEyePosition(), 6)
@@ -7446,8 +7446,8 @@ rule "Reaper: Loom":
     @Condition eventPlayer.isUsingAbility1() == true
     @Condition eventPlayer.Talent2 == true
     
-    [player for player in eventPlayer.getPlayersInViewAngle(Team.2, 45) if isInLoS(eventPlayer, player)].setStatusEffect(eventPlayer, Status.HACKED, 2)
-    damage([player for player in eventPlayer.getPlayersInViewAngle(Team.2, 45) if isInLoS(player, eventPlayer)], eventPlayer, 35)
+    eventPlayer.getPlayersInViewAngle(Team.2, 45).filter(lambda player: isInLoS(eventPlayer, player)).setStatusEffect(eventPlayer, Status.HACKED, 2)
+    damage(eventPlayer.getPlayersInViewAngle(Team.2, 45).filter(lambda player: isInLoS(player, eventPlayer)), eventPlayer, 35)
 
 
 rule "[Sojourn] Thunderout Kicks":
@@ -7721,7 +7721,7 @@ rule "Cassidy: Standoff - Set root":
     for eventPlayer.i in range(5):
         wait(1, Wait.ABORT_WHEN_FALSE)
         playEffect(eventPlayer, DynamicEffect.EXPLOSION_SOUND, Color.WHITE, eventPlayer, 15)
-        ([player for player in eventPlayer.getPlayersInViewAngle(Team.2, 103) if player.getHealth() <= eventPlayer.Ability_Countdown and isInLoS(eventPlayer, player)]).setStatusEffect(eventPlayer, Status.ROOTED, 2)
+        (eventPlayer.getPlayersInViewAngle(Team.2, 103).filter(lambda player: player.getHealth() <= eventPlayer.Ability_Countdown and isInLoS(eventPlayer, player))).setStatusEffect(eventPlayer, Status.ROOTED, 2)
     stopChasingVariable(eventPlayer.Ability_Countdown)
 
 
@@ -7906,7 +7906,7 @@ rule "Lifeweaver: Pressure Therapy":
     @Condition eventPlayer.isAlive() == true
     
     wait(0.5, Wait.ABORT_WHEN_FALSE)
-    startDamageModification([player for player in getPlayers(Team.2) if eventPlayer.getPosition().y - player.getPosition().y >= 3 or dotProduct(player.getFacingDirection(), vectorTowards(player, eventPlayer)) < 0], eventPlayer, 150)
+    startDamageModification(getPlayers(Team.2).filter(lambda player: eventPlayer.getPosition().y - player.getPosition().y >= 3 or dotProduct(player.getFacingDirection(), vectorTowards(player, eventPlayer)) < 0), eventPlayer, 150)
     eventPlayer.damage_mod[1] = getLastDamageModification()
     waitUntil(not eventPlayer.Talent2 or eventPlayer.isDead(), 99999)
     stopDamageModification(eventPlayer.damage_mod[1])

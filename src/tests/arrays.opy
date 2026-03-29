@@ -85,6 +85,29 @@ rule "other array functions":
     A = [X,Y,Z].reverse() #Z,Y,X
     A = B.reverse()
 
+rule "member array functions":
+    A = getAllPlayers().all(lambda player: player.A == 2)
+    A = getAllPlayers().all()
+    A = getAllPlayers().all(lambda x: true) #true
+    A = getAllPlayers().all(lambda x: false) #len(getAllPlayers()) == 0    =>    not len(getAllPlayers())
+    A = [].all(lambda x: false) #true
+    A = [].all(lambda x: x > 2) #true
+
+    A = getAllPlayers().any(lambda player: player.A == 2)
+    A = getAllPlayers().any()
+    A = getAllPlayers().any(lambda x: false) #false
+    A = getAllPlayers().any(lambda x: true) #len(getAllPlayers()) > 0
+    A = [].any(lambda x: true) #false
+    A = [].any(lambda x: x > 2) #false
+
+    A = getAllPlayers().filter(lambda player: player.A == 2)
+    A = getAllPlayers().map(lambda player: player.getHealth())
+    A = A.filter(lambda x, i: x != i)
+    A = A.map(lambda x, i: x + i)
+    A = getAllPlayers().all(lambda player: player.A > 0)
+    A = getAllPlayers().any(lambda player, idx: player.A == idx)
+    A = getAllPlayers().filter(lambda player: player.A == 2).map(lambda player: player.getHealth())
+
 rule "array to string":
     A = [10,20,30]
     B = [100]

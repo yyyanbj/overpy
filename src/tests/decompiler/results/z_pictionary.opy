@@ -767,7 +767,7 @@ def Keyboard():
 def Scoreboard():
     @Name "ScoreboardSub"
     
-    ScoreboardArray = sorted(PlayerArray, lambda player: player.Points)
+    ScoreboardArray = sorted(PlayerArray, lambda x: x.Points)
     hudSubtext(getAllPlayers(), "{0}: Points {1}".format(ScoreboardArray[0], ScoreboardArray[0].Points), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     hudSubtext(getAllPlayers(), "{0}: Points {1}".format(ScoreboardArray[1], ScoreboardArray[1].Points), HudPosition.LEFT, 1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     hudSubtext(getAllPlayers(), "{0}: Points {1}".format(ScoreboardArray[2], ScoreboardArray[2].Points), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)

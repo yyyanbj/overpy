@@ -265,7 +265,7 @@ rule "LOOT BOUNTY COLLECT LOOP":
     for bountyArrayIterator in range(len(bountyArrayLocations)):
         if bountyArrayEffects[bountyArrayIterator] != null:
             tmpBountyLocation = bountyArrayLocations[bountyArrayIterator]
-            tmpBountyClosestPlayer = (sorted([player for player in getAllPlayers() if player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)], lambda i: distance(i.getPosition(), tmpBountyLocation)))[0]
+            tmpBountyClosestPlayer = (sorted(getAllPlayers().filter(lambda player: player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)), lambda x: distance(x.getPosition(), tmpBountyLocation)))[0]
             if entityExists(tmpBountyClosestPlayer) and distance(tmpBountyClosestPlayer.getPosition(), tmpBountyLocation) <= 2.5:
                 tmpBountyClosestPlayer.statsMoney += bountyArrayMoney[bountyArrayIterator]
                 tmpBountyClosestPlayer.scoreArray[2] += bountyArrayMoney[bountyArrayIterator]
@@ -305,7 +305,7 @@ rule "LOOT FIND SPAWNPOINTS":
                 goto lbl_1
         if tmpLootSpawnpoint == 0 or lootBlockerVolumePos != 0 and distance(tmpLootSpawnpoint, lootBlockerVolumePos) <= lootBlockerVolumeRadius:
             goto lbl_2
-        tmpLootSpawnpointProximity = sorted(lootSpawnPoints.exclude(null), lambda i: distance(tmpLootSpawnpoint, i))
+        tmpLootSpawnpointProximity = sorted(lootSpawnPoints.exclude(null), lambda x: distance(tmpLootSpawnpoint, x))
         if distance(tmpLootSpawnpoint, tmpLootSpawnpointProximity[0]) < lootSpread and len(tmpLootSpawnpointProximity) != 0:
             goto lbl_3
         goto lbl_4
@@ -427,7 +427,7 @@ rule "LOOT COLLECT LOOP":
     
     for lootCollectIterator in range(len(lootArrayLocations)):
         if lootArraySpawned[lootCollectIterator]:
-            tmpLootCollectClosestPlayer = (sorted([player for player in getAllPlayers() if player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)], lambda i: distance(i.getPosition(), lootArrayLocations[lootCollectIterator])))[0]
+            tmpLootCollectClosestPlayer = (sorted(getAllPlayers().filter(lambda player: player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)), lambda x: distance(x.getPosition(), lootArrayLocations[lootCollectIterator])))[0]
             if entityExists(tmpLootCollectClosestPlayer) and distance(tmpLootCollectClosestPlayer, lootArrayLocations[lootCollectIterator]) <= 2.5:
                 lootArrayLocationsStored[lootCollectIterator] = lootArrayLocations[lootCollectIterator]
                 lootSpawnerNumLoot--
@@ -463,7 +463,7 @@ rule "LOOT POWERUP COLLECT LOOP":
     @Condition sparkboltPickupPos != null
     @Condition enableSparkbolts != false
     
-    tmpSparkboltClosestPlayer = (sorted([player for player in getAllPlayers() if player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)], lambda i: distance(i.getPosition(), sparkboltPickupPos)))[0]
+    tmpSparkboltClosestPlayer = (sorted(getAllPlayers().filter(lambda player: player.isAlive() and player.hasSpawned() and not player.isInBase and (enableInvisibleLootPickup or not player.isCloaked)), lambda x: distance(x.getPosition(), sparkboltPickupPos)))[0]
     if entityExists(tmpSparkboltClosestPlayer) and distance(tmpSparkboltClosestPlayer.getPosition(), sparkboltPickupPos) <= 2.5:
         tmpSparkboltClosestPlayer.nbSparkbolts++
         smallMessage(tmpSparkboltClosestPlayer, "+1 {0}{1}".format(iconString(Icon.BOLT), [" SPARKBOLT", " faísca"][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))]))
@@ -525,7 +525,7 @@ rule "GAME WIN CONDITION":
         wait()
     gameScoreTopPlayers = []
     for scoreboardIterator in range(10):
-        gameScoreTopPlayers.append(sorted(tmpAllPlayers, lambda player: player.scoreArray[scoreboardIterator]).last())
+        gameScoreTopPlayers.append(sorted(tmpAllPlayers, lambda x: x.scoreArray[scoreboardIterator]).last())
         wait()
     gameScoreTopPlayersValues = []
     for scoreboardIterator in range(10):
@@ -648,8 +648,8 @@ rule "init":
     disableScoring()
     destroyAllDummies()
     destroyHudText(waitingStartGameHud)
-    hudHeader([player for player in getAllPlayers() if not player.hasBase], ["{0} NO BASE BUILT {0}\n \u202fPRESS [{1}] TO BUILD".format(iconString(Icon.WARNING), inputBindingString(Button.INTERACT)), "   {0} Base não construída {0}\nPressione [{1}] para construir".format(iconString(Icon.WARNING), inputBindingString(Button.INTERACT))][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], HudPosition.TOP, -4, Color.RED, HudReeval.VISIBILITY_AND_STRING)
-    hudText([player.stealingFrom for player in getAllPlayers()], ["{0} ENEMY IN YOUR BASE! {0}".format(iconString(Icon.WARNING)), "{0} Inimigo na sua base! {0}".format(iconString(Icon.WARNING))][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], null, "              ", HudPosition.TOP, -2, Color.RED, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudHeader(getAllPlayers().filter(lambda player: not player.hasBase), ["{0} NO BASE BUILT {0}\n \u202fPRESS [{1}] TO BUILD".format(iconString(Icon.WARNING), inputBindingString(Button.INTERACT)), "   {0} Base não construída {0}\nPressione [{1}] para construir".format(iconString(Icon.WARNING), inputBindingString(Button.INTERACT))][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], HudPosition.TOP, -4, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().map(lambda player: player.stealingFrom), ["{0} ENEMY IN YOUR BASE! {0}".format(iconString(Icon.WARNING)), "{0} Inimigo na sua base! {0}".format(iconString(Icon.WARNING))][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], null, "              ", HudPosition.TOP, -2, Color.RED, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     #disconnectedPlayers = []
     bountyArrayLocations[11] = null
     bountyArrayEffects[11] = null
@@ -675,7 +675,7 @@ rule "init":
         totalGoldToWin += tmpTotalGoldCalc
         tmpTotalGoldCalc = ceil(tmpTotalGoldCalc * 1.5 / 10) * 10
     totalGoldToWin += gameGoldVictory
-    gameHealingHeroes = (([i for i in getAllHeroes() if not i in getSupportHeroes()]).exclude(Hero.ROADHOG)).exclude(Hero.SOLDIER)
+    gameHealingHeroes = ((getAllHeroes().filter(lambda x: not x in getSupportHeroes())).exclude(Hero.ROADHOG)).exclude(Hero.SOLDIER)
     hasGameStarted = true
     wait(1)
     pauseMatchTime()
@@ -1049,7 +1049,7 @@ rule "init player hud":
     #upgrade description
     createInWorldText(eventPlayer if eventPlayer.showUpgradeText else [], ([(["    [LVL {0}]\n\n  Upgrades your gold generation\n    to {1} per second. Can't generate\nwhen there are players in your base\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsMoneySec + 1), "    [NV {0}]\n\n       MELHORA A GERAÇÃO DE OURO\nPARA {1} POR SEGUNDO. NÃO FUNCIONA\n    QUANDO HÁ JOGADORES NA BASE.\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsMoneySec + 1)])[max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], (["     [LVL {0}]\n\n    Increases bounty from {1} to {2}\nAwarded by dealing finishing blow\n  Doesn't affect dropped loot orbs\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsMoneyKill, eventPlayer.statsMoneyKill + 15), "       [NV {0}]\n\nAUMENTA A RECOMPENSA DE {1} PARA {2}\n         \u202fOBTIDO AO EFETUAR UM ABATE\n           NÃO AFETA ORBES DEIXADOS\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsMoneyKill, eventPlayer.statsMoneyKill + 15)])[max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], (["[LVL {0}]\n\nIncreases the maximum amount \n  of gold your base can store.\n  Upgraded storage: {1} gold\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], ceil(eventPlayer.statsMoneyStorage * 1.5)), "[NV {0}]\n\n\u3000\u3000\u3000\u3000 Aumenta o máximo de ouro\n\u3000\u3000\u3000 que a sua base pode armazenar.\u3000\u3000\u3000 \n\u3000\u3000\u3000\u3000 Após melhoria: {1} de ouro\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], ceil(eventPlayer.statsMoneyStorage * 1.5))])[max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], ["   [NO LVL]\n \n           Packs up your base. \nYou keep your gold & upgrades. \nPrice depends on gold storage.\n ", "\u3000\u3000\u3000\u3000[SEM NV]\n\n\u3000\u3000\u3000\u3000\u202fEmpacota a sua base.\n\u3000 Ouro e melhorias são mantidos.\nO preço depende do armazenamento.\n "][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], [" [NO LVL]\n \n     Takes you to hero selection.\n  Bug: If only one hero shows up\nWait 5 seconds until they appear.\n ", "\u3000\u3000   [sem nv]\n\n\u3000\u3000\u3000   Leva à seleção de heróis.\n\u202f\u202f\u202f\u202f\u202f\u202f\u202f\u202fBug: se apenas um herói aparecer\naguarde 5 segundos até o resto surgir.\n "][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], (["     [LVL {0}]\n \n    Steal +2 gold/sec from bases.\nSame upgrade price as gold miner.\n  Total {1} + enemy gold miner/sec.\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], (eventPlayer.statsStealingSpeed + 1) * 2), "[NV {0}]\n\n\u3000\u3000\u3000  Roube +2 ouro/seg de bases.\n  \u3000 Mesmo preço do gerador de ouro.\u3000   \n\u3000\u3000   Total {1} + gerador inimigo/seg.\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], (eventPlayer.statsStealingSpeed + 1) * 2)])[max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], ["  [LVL {0}]\n \n      Reduces the time it takes\nto enter your base by 0.5 sec.\n    The current delay is {1} sec.\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsBaseDelay), "[NV {0}]\n\n\u3000\u3000\u3000\u3000 \u202f \u202f\u202fReduz o tempo necessário\n  \u3000\u3000\u3000para entrar na base por 0,5 seg.\u3000\u3000\u3000  \n\u3000\u3000\u3000\u3000\u3000   O tempo atual é {1} seg.\n ".format(eventPlayer.statsUpgradeLevels[eventPlayer.upgradeCurrentSelection], eventPlayer.statsBaseDelay)][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))]])[eventPlayer.upgradeCurrentSelection], eventPlayer.playerBaseLocation, 1.1, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     #base sphere
-    createEffect([player for player in getAllPlayers() if not (player == eventPlayer and player.isInBase)], Effect.SPHERE, powerLevelColors[eventPlayer.statsUpgradeLevels[2]], eventPlayer.playerBaseLocation, 3.5)
+    createEffect(getAllPlayers().filter(lambda player: not (player == eventPlayer and player.isInBase)), Effect.SPHERE, powerLevelColors[eventPlayer.statsUpgradeLevels[2]], eventPlayer.playerBaseLocation, 3.5)
     #base ring
     createEffect(eventPlayer if eventPlayer.isInBase else [], Effect.RING, powerLevelColors[eventPlayer.statsUpgradeLevels[2]], eventPlayer.playerBaseLocation, 3.5)
     #upgrade sphere
@@ -1057,9 +1057,9 @@ rule "init player hud":
     createIcon(eventPlayer if eventPlayer.showUpgradeText else [], updateEveryFrame(normalize(vect(eventPlayer.getFacingDirection().z * -1, 0, eventPlayer.getFacingDirection().x)) * eventPlayer.upgradeOffsetRight + (eventPlayer.playerBaseLocation - vect(0, 0.3, 0))), Icon.ARROW_LEFT, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE, false)
     createIcon(eventPlayer if eventPlayer.showUpgradeText else [], updateEveryFrame(normalize(vect(eventPlayer.getFacingDirection().z * -1, 0, eventPlayer.getFacingDirection().x)) * eventPlayer.upgradeOffsetLeft + (eventPlayer.playerBaseLocation - vect(0, 0.3, 0))), Icon.ARROW_RIGHT, IconReeval.VISIBILITY_AND_POSITION, Color.WHITE, false)
     #stealing sphere
-    createEffect([player for player in getAllPlayers() if player.stealingFrom == eventPlayer], Effect.SPHERE, Color.RED, eventPlayer.playerBaseLocation, 0.4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.stealingFrom == eventPlayer), Effect.SPHERE, Color.RED, eventPlayer.playerBaseLocation, 0.4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     #stealing hud
-    createInWorldText([player for player in getAllPlayers() if player.stealingFrom == eventPlayer], ["HOLD {0} TO STEAL {1} GOLD: {2}".format(inputBindingString(Button.INTERACT), iconString(Icon.SKULL), eventPlayer.statsMoneyBase), "Segure {0} para roubar {1} ouro: {2}".format(inputBindingString(Button.INTERACT), iconString(Icon.SKULL), eventPlayer.statsMoneyBase)][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], eventPlayer.playerBaseLocation, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED, SpecVisibility.NEVER)
+    createInWorldText(getAllPlayers().filter(lambda player: player.stealingFrom == eventPlayer), ["HOLD {0} TO STEAL {1} GOLD: {2}".format(inputBindingString(Button.INTERACT), iconString(Icon.SKULL), eventPlayer.statsMoneyBase), "Segure {0} para roubar {1} ouro: {2}".format(inputBindingString(Button.INTERACT), iconString(Icon.SKULL), eventPlayer.statsMoneyBase)][max(false, practiceRangeTranslations.index("{0}".format(Map.PRACTICE_RANGE)))], eventPlayer.playerBaseLocation, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.RED, SpecVisibility.NEVER)
 
 
 rule "update outlines":
@@ -1084,7 +1084,7 @@ rule "update scoreboard":
     @Condition hasGameStarted != false
     
     while true:
-        leaderboard = sorted([player for player in getAllPlayers() if player.statsMoneyBase + player.statsMoneyStorage > 0], lambda i: -1 * (i.statsMoneyBase + i.statsMoneyStorage * 10))
+        leaderboard = sorted(getAllPlayers().filter(lambda player: player.statsMoneyBase + player.statsMoneyStorage > 0), lambda x: -1 * (x.statsMoneyBase + x.statsMoneyStorage * 10))
         wait(1)
 
 
@@ -1297,7 +1297,7 @@ rule "check if player is in someone else's base":
     #TODO: optimize this **** by not constantly looping if stealingFrom != null
     while true:
         if eventPlayer.isAlive() and eventPlayer.hasSpawned() and not eventPlayer.isCloaked:
-            tmpBaseOwners = [player for player in getAllPlayers() if player != eventPlayer and player.hasBase and player.statsMoneyBase != 0 and (not (player.isInBase and not enableOccupiedStealing))]
+            tmpBaseOwners = getAllPlayers().filter(lambda player: player != eventPlayer and player.hasBase and player.statsMoneyBase != 0 and (not (player.isInBase and not enableOccupiedStealing)))
             for stealingBaseOwnerIterator in range(len(tmpBaseOwners)):
                 if distance(eventPlayer.getPosition(), tmpBaseOwners[stealingBaseOwnerIterator].playerBaseLocation) <= 3.5:
                     eventPlayer.stealingFrom = tmpBaseOwners[stealingBaseOwnerIterator]
@@ -1403,7 +1403,7 @@ rule "gold miner loop":
     @Condition eventPlayer.statsMoneySec != 0
     
     while true:
-        if eventPlayer.hasBase and eventPlayer.isAlive() and not eventPlayer in [player.stealingFrom for player in getAllPlayers()] and not eventPlayer.isMovingBase and not eventPlayer.isInBase:
+        if eventPlayer.hasBase and eventPlayer.isAlive() and not eventPlayer in getAllPlayers().map(lambda player: player.stealingFrom) and not eventPlayer.isMovingBase and not eventPlayer.isInBase:
             if eventPlayer.statsMoneyBase < eventPlayer.statsMoneyStorage:
                 eventPlayer.scoreArray[2] += eventPlayer.tmpMoneyDifference
                 eventPlayer.statsMoneyBase += eventPlayer.statsMoneySec

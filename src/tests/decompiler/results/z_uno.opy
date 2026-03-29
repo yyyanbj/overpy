@@ -241,7 +241,7 @@ rule "[Setup] init constants & starting variables":
     #Start chasing the turn time remaining variable to 0 when the match starts
     chaseAtRate(TurnTimeRemaining, 0, isGameInProgress())
     #Setup constants
-    COLORS = [i for i in [l"Red", "Orange", l"Yellow", "Lime Green", l"Green", "Turquoise", "Aqua", "Sky Blue", l"Blue", l"Purple"] if i in SETTING_COLOR_ORDER.slice(0, SETTING_AMOUNT_OF_COLORS)]
+    COLORS = [l"Red", "Orange", l"Yellow", "Lime Green", l"Green", "Turquoise", "Aqua", "Sky Blue", l"Blue", l"Purple"].filter(lambda x: x in SETTING_COLOR_ORDER.slice(0, SETTING_AMOUNT_OF_COLORS))
     WILD_CARD_SYMBOLS = ["+4", "Wild"]
     PENALTY_CARD_SYMBOLS = ["+2", "+4"]
     WHITE_CARD_SYMBOLS = ["+4", "×2", "Copycat", "Shuffle", "Swap-All", "Wild"]
@@ -516,7 +516,7 @@ rule "[Setup] init players when match starts":
     #At least one player is playing
     @Condition len(getAllPlayers()) > 0
     #All players have initialized their hands
-    @Condition [player for player in getAllPlayers() if len(player.HandSymbols) == SETTING_AMOUNT_OF_STARTING_CARDS] == getAllPlayers()
+    @Condition getAllPlayers().filter(lambda player: len(player.HandSymbols) == SETTING_AMOUNT_OF_STARTING_CARDS) == getAllPlayers()
     
     #Initialize the array of players
     Players = random.shuffle(getAllPlayers())
@@ -613,10 +613,10 @@ rule "[Setup][Effects] create special card effects":
     createEffect(getAllPlayers() if SwapCardEffectPlayers or ShouldShowSpecialCardEffects else [], Effect.DECAL_SOUND, Color.WHITE, MapPosition, SpecialCardSoundEffectVolume, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     createEffect(getAllPlayers() if SwapCardEffectPlayers or ShouldShowSpecialCardEffects else [], Effect.DECAL_SOUND, Color.WHITE, MapPosition, SpecialCardSoundEffectVolume, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     #Create some sparkles
-    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else [player for player in Players if player.HandSymbols[player.SelectedCardIndex] == "Swap-All" or player.HandSymbols[player.SelectedCardIndex] == "Shuffle"], Effect.SPARKLES, Color.PURPLE, 0.5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else [player for player in Players if player.HandSymbols[player.SelectedCardIndex] == "Swap-All" or player.HandSymbols[player.SelectedCardIndex] == "Shuffle"], Effect.SPARKLES, Color.PURPLE, 2 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else [player for player in Players if player.HandSymbols[player.SelectedCardIndex] == "Swap-All" or player.HandSymbols[player.SelectedCardIndex] == "Shuffle"], Effect.SPARKLES, Color.PURPLE, 3.5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else [player for player in Players if player.HandSymbols[player.SelectedCardIndex] == "Swap-All" or player.HandSymbols[player.SelectedCardIndex] == "Shuffle"], Effect.SPARKLES, Color.PURPLE, 5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else Players.filter(lambda x: x.HandSymbols[x.SelectedCardIndex] == "Swap-All" or x.HandSymbols[x.SelectedCardIndex] == "Shuffle"), Effect.SPARKLES, Color.PURPLE, 0.5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else Players.filter(lambda x: x.HandSymbols[x.SelectedCardIndex] == "Swap-All" or x.HandSymbols[x.SelectedCardIndex] == "Shuffle"), Effect.SPARKLES, Color.PURPLE, 2 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else Players.filter(lambda x: x.HandSymbols[x.SelectedCardIndex] == "Swap-All" or x.HandSymbols[x.SelectedCardIndex] == "Shuffle"), Effect.SPARKLES, Color.PURPLE, 3.5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers() if ShouldShowSpecialCardEffects else Players.filter(lambda x: x.HandSymbols[x.SelectedCardIndex] == "Swap-All" or x.HandSymbols[x.SelectedCardIndex] == "Shuffle"), Effect.SPARKLES, Color.PURPLE, 5 * Vector.UP + MapPosition, 15, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
 
 
 rule "[Setup][Effects] information HUD text element":
@@ -1371,7 +1371,7 @@ rule "[Effects] update player score":
     #Check for uno
     if len(eventPlayer.HandSymbols) == 1:
         #Show a message
-        smallMessage(getAllPlayers(), "Everyone has UNO!" if all([len(player.HandSymbols) == 1 for player in Players]) else "{0} has UNO!".format(eventPlayer))
+        smallMessage(getAllPlayers(), "Everyone has UNO!" if Players.all(lambda x: len(x.HandSymbols) == 1) else "{0} has UNO!".format(eventPlayer))
         #Set the player to be burning
         eventPlayer.setStatusEffect(null, Status.BURNING, 9999)
     else:
@@ -1709,9 +1709,9 @@ def SortHandCards():
     #Reset the selected card index
     eventPlayer.SelectedCardIndex = 0
     #Find all wild symbols
-    eventPlayer.TempSymbols = [player for player in eventPlayer.HandSymbols if player in "Copycat".concat(WILD_CARD_SYMBOLS)]
+    eventPlayer.TempSymbols = eventPlayer.HandSymbols.filter(lambda x: x in "Copycat".concat(WILD_CARD_SYMBOLS))
     #Sort the wild symbols, and add them to the temporary sorted symbol array
-    eventPlayer.TempSortedHandSymbols = sorted(eventPlayer.TempSymbols, lambda player: "Copycat".concat(WILD_CARD_SYMBOLS).index(player))
+    eventPlayer.TempSortedHandSymbols = sorted(eventPlayer.TempSymbols, lambda x: "Copycat".concat(WILD_CARD_SYMBOLS).index(x))
     #Reset the sorted hand colors temporary array
     eventPlayer.TempSortedHandColors = []
     #Loop until all newly added cards have been assigned a color
@@ -1731,7 +1731,7 @@ def SortHandCards():
                 #Append the color for this card to the sorted hand colors array
                 eventPlayer.TempSortedHandColors.append(COLORS[TempColorIndex])
         #Sort the symbols for this color, and add them to the temporary sorted symbol array
-        eventPlayer.TempSortedHandSymbols.append(sorted(eventPlayer.TempSymbols, lambda player: COLORED_CARD_SYMBOLS.index(player)))
+        eventPlayer.TempSortedHandSymbols.append(sorted(eventPlayer.TempSymbols, lambda x: COLORED_CARD_SYMBOLS.index(x)))
         #Loop until all newly added cards have been assigned a color
         while len(eventPlayer.TempSortedHandSymbols) > len(eventPlayer.TempSortedHandColors):
             #All cards in the symbol array are assigned the current color being looped over
@@ -2388,7 +2388,7 @@ def ChangeActivePlayer_Reverse():
     @Name "[Subroutine] Change active player (reverse)"
     
     #Reverse the queue
-    Players = sorted(Players, lambda player: 0 - Players.index(player))
+    Players = sorted(Players, lambda x: 0 - Players.index(x))
     DirectionOfPlayTimer = -5 * DirectionOfPlay
     DirectionOfPlay *= -1
 

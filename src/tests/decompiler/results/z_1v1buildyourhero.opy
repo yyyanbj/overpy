@@ -1164,11 +1164,11 @@ rule "▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒�
 
 rule "Create basic HUD elements":
     #Creates a HUD at the top of the screen, beneath the objective/game mode information, telling them which button opens the menu.
-    #hudHeader([player for player in getAllPlayers() if not player.IsInMenuMode], "Press {0} to open menu".format(inputBindingString(Button.INTERACT)), HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    #hudHeader(getAllPlayers().filter(lambda player: not player.IsInMenuMode), "Press {0} to open menu".format(inputBindingString(Button.INTERACT)), HudPosition.TOP, 1, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
     #Displays server load on the top right of the screen, above the kill feed.
     #hudText(getAllPlayers(), getAverageServerLoad(), null, l"Server Load Average", HudPosition.RIGHT, 0, Color.GREEN, Color.GREEN, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     #Credits (please do not delete!)
-    hudSubtext([player for player in getAllPlayers() if player.IsInMenuMode], "Cursor Menu created by Josbird   {0}   Code: GETVX".format(abilityIconString(Hero.MERCY, Button.ULTIMATE)), HudPosition.RIGHT, -100, Color.AQUA, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.IsInMenuMode), "Cursor Menu created by Josbird   {0}   Code: GETVX".format(abilityIconString(Hero.MERCY, Button.ULTIMATE)), HudPosition.RIGHT, -100, Color.AQUA, HudReeval.VISIBILITY_AND_STRING)
 
 
 rule "Toggle menu mode":
@@ -1278,10 +1278,10 @@ def CreateMenuFrame():
     #This creates a button to close the menu using a simplified version of the default button schema detailed on workshop.codes: [button text, action ID, x position, y position, click radius].
     eventPlayer.ButtonExitMenu = ["confirm", "exit menu", 1.75, 0, 0.4]
     #Creates the inactive text of the exit button. Becomes invisible when the cursor hovers over the button.
-    createInWorldText([i for i in eventPlayer if eventPlayer.IsInMenuMode and distance(eventPlayer.CursorPos, eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3]) > 100 * eventPlayer.ButtonExitMenu[4]], eventPlayer.ButtonExitMenu[0], eventPlayer.MenuEyePos + eventPlayer.MenuYAxis * -0.2 + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3], 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.IsInMenuMode and distance(eventPlayer.CursorPos, eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3]) > 100 * eventPlayer.ButtonExitMenu[4]), eventPlayer.ButtonExitMenu[0], eventPlayer.MenuEyePos + eventPlayer.MenuYAxis * -0.2 + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3], 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.GREEN)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     #Creates the hover text of the exit button. Becomes visible when the cursor hovers over the button.
-    createInWorldText([i for i in eventPlayer if eventPlayer.IsInMenuMode and distance(eventPlayer.CursorPos, eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3]) <= 100 * eventPlayer.ButtonExitMenu[4]], eventPlayer.ButtonExitMenu[0], eventPlayer.MenuEyePos + eventPlayer.MenuYAxis * -0.2 + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3], 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.IsInMenuMode and distance(eventPlayer.CursorPos, eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3]) <= 100 * eventPlayer.ButtonExitMenu[4]), eventPlayer.ButtonExitMenu[0], eventPlayer.MenuEyePos + eventPlayer.MenuYAxis * -0.2 + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonExitMenu[2] + eventPlayer.MenuYAxis * eventPlayer.ButtonExitMenu[3], 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
     eventPlayer.MenuVFX.append(getLastCreatedText())
 
 
@@ -1298,112 +1298,112 @@ def CreateMenuButtons():
     #ButtonProperties[0]
     if len(eventPlayer.ButtonProperties) <= 0:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[0][7] and true], eventPlayer.ButtonProperties[0][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[0][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[0][3] - 0.2)), eventPlayer.ButtonProperties[0][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[0][7] and true), eventPlayer.ButtonProperties[0][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[0][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[0][3] - 0.2)), eventPlayer.ButtonProperties[0][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[1]
     if len(eventPlayer.ButtonProperties) <= 1:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[1][7] and true], eventPlayer.ButtonProperties[1][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[1][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[1][3] - 0.2)), eventPlayer.ButtonProperties[1][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[1][7] and true), eventPlayer.ButtonProperties[1][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[1][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[1][3] - 0.2)), eventPlayer.ButtonProperties[1][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[2]
     if len(eventPlayer.ButtonProperties) <= 2:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[2][7] and true], eventPlayer.ButtonProperties[2][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[2][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[2][3] - 0.2)), eventPlayer.ButtonProperties[2][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[2][7] and true), eventPlayer.ButtonProperties[2][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[2][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[2][3] - 0.2)), eventPlayer.ButtonProperties[2][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[3]
     if len(eventPlayer.ButtonProperties) <= 3:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[3][7] and true], eventPlayer.ButtonProperties[3][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[3][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[3][3] - 0.2)), eventPlayer.ButtonProperties[3][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[3][7] and true), eventPlayer.ButtonProperties[3][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[3][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[3][3] - 0.2)), eventPlayer.ButtonProperties[3][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[4]
     if len(eventPlayer.ButtonProperties) <= 4:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[4][7] and true], eventPlayer.ButtonProperties[4][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[4][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[4][3] - 0.2)), eventPlayer.ButtonProperties[4][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[4][7] and true), eventPlayer.ButtonProperties[4][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[4][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[4][3] - 0.2)), eventPlayer.ButtonProperties[4][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[5]
     if len(eventPlayer.ButtonProperties) <= 5:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[5][7] and true], eventPlayer.ButtonProperties[5][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[5][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[5][3] - 0.2)), eventPlayer.ButtonProperties[5][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[5][7] and true), eventPlayer.ButtonProperties[5][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[5][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[5][3] - 0.2)), eventPlayer.ButtonProperties[5][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[6]
     if len(eventPlayer.ButtonProperties) <= 6:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[6][7] and true], eventPlayer.ButtonProperties[6][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[6][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[6][3] - 0.2)), eventPlayer.ButtonProperties[6][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[6][7] and true), eventPlayer.ButtonProperties[6][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[6][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[6][3] - 0.2)), eventPlayer.ButtonProperties[6][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[7]
     if len(eventPlayer.ButtonProperties) <= 7:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[7][7] and true], eventPlayer.ButtonProperties[7][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[7][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[7][3] - 0.2)), eventPlayer.ButtonProperties[7][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[7][7] and true), eventPlayer.ButtonProperties[7][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[7][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[7][3] - 0.2)), eventPlayer.ButtonProperties[7][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[8]
     if len(eventPlayer.ButtonProperties) <= 8:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[8][7] and true], eventPlayer.ButtonProperties[8][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[8][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[8][3] - 0.2)), eventPlayer.ButtonProperties[8][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[8][7] and true), eventPlayer.ButtonProperties[8][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[8][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[8][3] - 0.2)), eventPlayer.ButtonProperties[8][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[9]
     if len(eventPlayer.ButtonProperties) <= 9:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[9][7] and true], eventPlayer.ButtonProperties[9][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[9][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[9][3] - 0.2)), eventPlayer.ButtonProperties[9][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[9][7] and true), eventPlayer.ButtonProperties[9][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[9][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[9][3] - 0.2)), eventPlayer.ButtonProperties[9][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[10]
     if len(eventPlayer.ButtonProperties) <= 10:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[10][7] and true], eventPlayer.ButtonProperties[10][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[10][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[10][3] - 0.2)), eventPlayer.ButtonProperties[10][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[10][7] and true), eventPlayer.ButtonProperties[10][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[10][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[10][3] - 0.2)), eventPlayer.ButtonProperties[10][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[11]
     if len(eventPlayer.ButtonProperties) <= 11:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[11][7] and true], eventPlayer.ButtonProperties[11][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[11][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[11][3] - 0.2)), eventPlayer.ButtonProperties[11][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[11][7] and true), eventPlayer.ButtonProperties[11][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[11][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[11][3] - 0.2)), eventPlayer.ButtonProperties[11][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[12]
     if len(eventPlayer.ButtonProperties) <= 12:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[12][7] and true], eventPlayer.ButtonProperties[12][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[12][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[12][3] - 0.2)), eventPlayer.ButtonProperties[12][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[12][7] and true), eventPlayer.ButtonProperties[12][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[12][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[12][3] - 0.2)), eventPlayer.ButtonProperties[12][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[13]
     if len(eventPlayer.ButtonProperties) <= 13:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[13][7] and true], eventPlayer.ButtonProperties[13][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[13][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[13][3] - 0.2)), eventPlayer.ButtonProperties[13][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[13][7] and true), eventPlayer.ButtonProperties[13][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[13][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[13][3] - 0.2)), eventPlayer.ButtonProperties[13][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[14]
     if len(eventPlayer.ButtonProperties) <= 14:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[14][7] and true], eventPlayer.ButtonProperties[14][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[14][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[14][3] - 0.2)), eventPlayer.ButtonProperties[14][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[14][7] and true), eventPlayer.ButtonProperties[14][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[14][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[14][3] - 0.2)), eventPlayer.ButtonProperties[14][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[15]
     if len(eventPlayer.ButtonProperties) <= 15:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[15][7] and true], eventPlayer.ButtonProperties[15][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[15][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[15][3] - 0.2)), eventPlayer.ButtonProperties[15][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[15][7] and true), eventPlayer.ButtonProperties[15][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[15][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[15][3] - 0.2)), eventPlayer.ButtonProperties[15][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
 
 
@@ -1416,133 +1416,133 @@ def CreateMenuButtonsMore():
     #ButtonProperties[16]
     if len(eventPlayer.ButtonProperties) <= 16:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[16][7] and true], eventPlayer.ButtonProperties[16][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[16][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[16][3] - 0.2)), eventPlayer.ButtonProperties[16][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[16][7] and true), eventPlayer.ButtonProperties[16][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[16][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[16][3] - 0.2)), eventPlayer.ButtonProperties[16][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[17]
     if len(eventPlayer.ButtonProperties) <= 17:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[17][7] and true], eventPlayer.ButtonProperties[17][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[17][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[17][3] - 0.2)), eventPlayer.ButtonProperties[17][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[17][7] and true), eventPlayer.ButtonProperties[17][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[17][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[17][3] - 0.2)), eventPlayer.ButtonProperties[17][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[18]
     if len(eventPlayer.ButtonProperties) <= 18:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[18][7] and true], eventPlayer.ButtonProperties[18][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[18][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[18][3] - 0.2)), eventPlayer.ButtonProperties[18][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[18][7] and true), eventPlayer.ButtonProperties[18][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[18][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[18][3] - 0.2)), eventPlayer.ButtonProperties[18][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[19]
     if len(eventPlayer.ButtonProperties) <= 19:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[19][7] and true], eventPlayer.ButtonProperties[19][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[19][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[19][3] - 0.2)), eventPlayer.ButtonProperties[19][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[19][7] and true), eventPlayer.ButtonProperties[19][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[19][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[19][3] - 0.2)), eventPlayer.ButtonProperties[19][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[20]
     if len(eventPlayer.ButtonProperties) <= 20:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[20][7] and true], eventPlayer.ButtonProperties[20][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[20][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[20][3] - 0.2)), eventPlayer.ButtonProperties[20][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[20][7] and true), eventPlayer.ButtonProperties[20][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[20][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[20][3] - 0.2)), eventPlayer.ButtonProperties[20][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[21]
     if len(eventPlayer.ButtonProperties) <= 21:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[21][7] and true], eventPlayer.ButtonProperties[21][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[21][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[21][3] - 0.2)), eventPlayer.ButtonProperties[21][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[21][7] and true), eventPlayer.ButtonProperties[21][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[21][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[21][3] - 0.2)), eventPlayer.ButtonProperties[21][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[22]
     if len(eventPlayer.ButtonProperties) <= 22:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[22][7] and true], eventPlayer.ButtonProperties[22][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[22][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[22][3] - 0.2)), eventPlayer.ButtonProperties[22][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[22][7] and true), eventPlayer.ButtonProperties[22][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[22][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[22][3] - 0.2)), eventPlayer.ButtonProperties[22][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[23]
     if len(eventPlayer.ButtonProperties) <= 23:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[23][7] and true], eventPlayer.ButtonProperties[23][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[23][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[23][3] - 0.2)), eventPlayer.ButtonProperties[23][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[23][7] and true), eventPlayer.ButtonProperties[23][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[23][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[23][3] - 0.2)), eventPlayer.ButtonProperties[23][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[24]
     if len(eventPlayer.ButtonProperties) <= 24:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[24][7] and true], eventPlayer.ButtonProperties[24][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[24][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[24][3] - 0.2)), eventPlayer.ButtonProperties[24][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[24][7] and true), eventPlayer.ButtonProperties[24][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[24][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[24][3] - 0.2)), eventPlayer.ButtonProperties[24][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[25]
     if len(eventPlayer.ButtonProperties) <= 25:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[25][7] and true], eventPlayer.ButtonProperties[25][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[25][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[25][3] - 0.2)), eventPlayer.ButtonProperties[25][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[25][7] and true), eventPlayer.ButtonProperties[25][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[25][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[25][3] - 0.2)), eventPlayer.ButtonProperties[25][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[26]
     if len(eventPlayer.ButtonProperties) <= 26:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[26][7] and true], eventPlayer.ButtonProperties[26][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[26][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[26][3] - 0.2)), eventPlayer.ButtonProperties[26][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[26][7] and true), eventPlayer.ButtonProperties[26][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[26][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[26][3] - 0.2)), eventPlayer.ButtonProperties[26][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[27]
     if len(eventPlayer.ButtonProperties) <= 27:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[27][7] and true], eventPlayer.ButtonProperties[27][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[27][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[27][3] - 0.2)), eventPlayer.ButtonProperties[27][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[27][7] and true), eventPlayer.ButtonProperties[27][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[27][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[27][3] - 0.2)), eventPlayer.ButtonProperties[27][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[28]
     if len(eventPlayer.ButtonProperties) <= 28:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[28][7] and true], eventPlayer.ButtonProperties[28][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[28][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[28][3] - 0.2)), eventPlayer.ButtonProperties[28][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[28][7] and true), eventPlayer.ButtonProperties[28][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[28][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[28][3] - 0.2)), eventPlayer.ButtonProperties[28][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[29]
     if len(eventPlayer.ButtonProperties) <= 29:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[29][7] and true], eventPlayer.ButtonProperties[29][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[29][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[29][3] - 0.2)), eventPlayer.ButtonProperties[29][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[29][7] and true), eventPlayer.ButtonProperties[29][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[29][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[29][3] - 0.2)), eventPlayer.ButtonProperties[29][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[30]
     if len(eventPlayer.ButtonProperties) <= 30:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[30][7] and true], eventPlayer.ButtonProperties[30][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[30][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[30][3] - 0.2)), eventPlayer.ButtonProperties[30][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[30][7] and true), eventPlayer.ButtonProperties[30][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[30][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[30][3] - 0.2)), eventPlayer.ButtonProperties[30][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[31]
     if len(eventPlayer.ButtonProperties) <= 31:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[31][7] and true], eventPlayer.ButtonProperties[31][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[31][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[31][3] - 0.2)), eventPlayer.ButtonProperties[31][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[31][7] and true), eventPlayer.ButtonProperties[31][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[31][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[31][3] - 0.2)), eventPlayer.ButtonProperties[31][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[32]
     if len(eventPlayer.ButtonProperties) <= 32:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[32][7] and true], eventPlayer.ButtonProperties[32][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[32][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[32][3] - 0.2)), eventPlayer.ButtonProperties[32][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[32][7] and true), eventPlayer.ButtonProperties[32][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[32][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[32][3] - 0.2)), eventPlayer.ButtonProperties[32][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[33]
     if len(eventPlayer.ButtonProperties) <= 33:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[33][7] and true], eventPlayer.ButtonProperties[33][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[33][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[33][3] - 0.2)), eventPlayer.ButtonProperties[33][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[33][7] and true), eventPlayer.ButtonProperties[33][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[33][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[33][3] - 0.2)), eventPlayer.ButtonProperties[33][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
     # 
     #ButtonProperties[33]
     if len(eventPlayer.ButtonProperties) <= 34:
         return
-    createInWorldText([i for i in eventPlayer if eventPlayer.ButtonProperties[34][7] and true], eventPlayer.ButtonProperties[34][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[34][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[34][3] - 0.2)), eventPlayer.ButtonProperties[34][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.ButtonProperties[34][7] and true), eventPlayer.ButtonProperties[34][0], eventPlayer.MenuEyePos + eventPlayer.MenuZAxis * 3 + eventPlayer.MenuXAxis * eventPlayer.ButtonProperties[34][2] + (eventPlayer.MenuYAxis * (eventPlayer.ButtonProperties[34][3] - 0.2)), eventPlayer.ButtonProperties[34][8], Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait(WaitTest)
 
@@ -1551,10 +1551,10 @@ def CreateMenuCursor():
     @Name "Menu activated > Create cursor"
     
     #The next four rules create the actual cursor that the player can move around. For the cursor to render over all other text, it must be the last in-world text to become visible. Thus, we create two identical cursors that alternate visibility every frame.
-    createInWorldText([i for i in eventPlayer if getTotalTimeElapsed() % 0.032 > 0.016], "▲", worldVector(localVector(eventPlayer.CursorPos + eventPlayer.MenuYAxis * -0.2, eventPlayer, Transform.ROTATION_AND_TRANSLATION), eventPlayer, Transform.ROTATION_AND_TRANSLATION), 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
+    createInWorldText(eventPlayer.filter(lambda _: getTotalTimeElapsed() % 0.032 > 0.016), "▲", worldVector(localVector(eventPlayer.CursorPos + eventPlayer.MenuYAxis * -0.2, eventPlayer, Transform.ROTATION_AND_TRANSLATION), eventPlayer, Transform.ROTATION_AND_TRANSLATION), 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
     eventPlayer.MenuVFX.append(getLastCreatedText())
     wait()
-    createInWorldText([i for i in eventPlayer if getTotalTimeElapsed() % 0.032 < 0.016], "▲", worldVector(localVector(eventPlayer.CursorPos + eventPlayer.MenuYAxis * -0.2, eventPlayer, Transform.ROTATION_AND_TRANSLATION), eventPlayer, Transform.ROTATION_AND_TRANSLATION), 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
+    createInWorldText(eventPlayer.filter(lambda _: getTotalTimeElapsed() % 0.032 < 0.016), "▲", worldVector(localVector(eventPlayer.CursorPos + eventPlayer.MenuYAxis * -0.2, eventPlayer, Transform.ROTATION_AND_TRANSLATION), eventPlayer, Transform.ROTATION_AND_TRANSLATION), 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
     eventPlayer.MenuVFX.append(getLastCreatedText())
 
 

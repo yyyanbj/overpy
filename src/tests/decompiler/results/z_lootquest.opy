@@ -405,8 +405,8 @@ rule "lIIlllllIlIlllIllIIIlIIlll":
     if not IIlIllIIllIIlIllIIIIIIIIlI:
         IIlIllIIllIIlIllIIIIIIIIlI = directionTowards(lIIllIllIllIlIIIlllIlllIIl[4], lIIllIllIllIlIIIlllIlllIIl[3])
     llIlIIIlllIlIllllllllllIII = IllIlIIIlIlIIIlIlllIIIllII[2]
-    createInWorldText([player for player in getPlayers(Team.2) if player.IlllIllIlIlllIlIlIIlIllIlI == 1 and not player.IlIIlllllIIlIIllIIlllIIIll], "     1   2   3   <\r\n     4   5   6   >\r\n     7   8   9   0", llIlIIIlllIlIllllllllllIII + directionFromAngles(IlIllllIIIIIIIIlllIIllIIII, 0) * 1000, 4, Clip.NONE, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.NEVER)
-    createInWorldText([player for player in getPlayers(Team.2) if player.IlllIllIlIlllIlIlIIlIllIlI == 1 and player.IlIIlllllIIlIIllIIlllIIIll], "     1   2   3   <\r\n     4   5   6   >\r\n     7   8   9   0", llIlIIIlllIlIllllllllllIII + directionFromAngles(IlIllllIIIIIIIIlllIIllIIII, 0) * 1000, 4, Clip.NONE, WorldTextReeval.VISIBILITY, Color.AQUA, SpecVisibility.NEVER)
+    createInWorldText(getPlayers(Team.2).filter(lambda player: player.IlllIllIlIlllIlIlIIlIllIlI == 1 and not player.IlIIlllllIIlIIllIIlllIIIll), "     1   2   3   <\r\n     4   5   6   >\r\n     7   8   9   0", llIlIIIlllIlIllllllllllIII + directionFromAngles(IlIllllIIIIIIIIlllIIllIIII, 0) * 1000, 4, Clip.NONE, WorldTextReeval.VISIBILITY, Color.WHITE, SpecVisibility.NEVER)
+    createInWorldText(getPlayers(Team.2).filter(lambda player: player.IlllIllIlIlllIlIlIIlIllIlI == 1 and player.IlIIlllllIIlIIllIIlllIIIll), "     1   2   3   <\r\n     4   5   6   >\r\n     7   8   9   0", llIlIIIlllIlIllllllllllIII + directionFromAngles(IlIllllIIIIIIIIlllIIllIIII, 0) * 1000, 4, Clip.NONE, WorldTextReeval.VISIBILITY, Color.AQUA, SpecVisibility.NEVER)
     lIlIIlIIlIlIIlIlllllIlIIII = null
     IIllIllIllllIIlIlIlIIIIlIl = []
     lllllIIIlIlIlllllIlllIlllI = []
@@ -468,9 +468,9 @@ rule "lIIlllllIlIlllIllIIIlIIlll":
     for lIIlllIllllIlIIIIlIllIIIlI in range(2, 10):
         createInWorldText(getPlayers(Team.2), ["Load Save State\r\n(Reload + Crouch: Load Item)", "Soul Stones\r\n(Summon Boss)", "Gamble\r\n(Buy Random Item)", "Imbue\r\n(Upgrade Equipped Item)", "Create Save Code\r\n(Reload + Crouch: Item Quick Save)", "Reroll Equipped Item\r\n(Reload + Crouch: Roll Back)", "Buy Back", "Start / Turn In Quest\r\n(Reload + Crouch: Abandon)"][lIIlllIllllIlIIIIlIllIIIlI - 2], raycast(IllIlIIIlIlIIIlIlllIIIllII[lIIlllIllllIlIIIIlIllIIIlI] + 2 * lllIllIlIlllIIIIlIIlIIllII, IllIlIIIlIlIIIlIlllIIIllII[lIIlllIllllIlIIIIlIllIIIlI], null, null, false).getHitPosition() + lllIllIlIlllIIIIlIIlIIllII, 1.5, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     createEffect(getPlayers(Team.2), Effect.RING, Color.AQUA, IlIlIIIlIIllllIllIlllllIll, 1.75, EffectReeval.VISIBILITY)
-    createInWorldText([player for player in getPlayers(Team.2) if player.IIIlIlIllIlllIllllIlIllIll <= 3], "Crouch here\r\nfor Instructions", IlIlIIIlIIllllIllIlllllIll + lllIllIlIlllIIIIlIIlIIllII, 3, Clip.NONE, WorldTextReeval.VISIBILITY, Color.AQUA)
-    hudSubtext([player for player in getPlayers(Team.2) if player.IlllIllIlIlllIlIlIIlIllIlI == 1 and not player.IIlIIIIIIllIIlIlIIIlllllIl], "{0}{1}{2}".format(" \r\nControl Scheme: Gamepad\r\n(Change with Reload + Jump)\r\n\r\nPick number: Primary Fire\r\n\r\n", "Increase current digit: Crouch\r\nLower current digit: Secondary Fire\r\n(Hold Jump to increase/lower by 2)\r\n\r\n", "{0}{1}{2}".format("Go to next digit: Ability 2\r\nGo to previous digit: Ability 1\r\n(Hold Jump to jump 4 digits)\r\n\r\n", "Confirm Code: Melee\r\nCancel: Ultimate\r\nReset Code: Reload + Ultimate\r\n\r\n", "Adjust for Field of View:\r\nAim at the center of the '0'\r\nand press Interact")), HudPosition.RIGHT, -2, Color.AQUA, HudReeval.VISIBILITY)
-    hudSubtext([player for player in getPlayers(Team.2) if player.IlllIllIlIlllIlIlIIlIllIlI == 1 and player.IIlIIIIIIllIIlIlIIIlllllIl], "{0}{1}{2}".format(" \r\nControl Scheme: Legacy\r\n(Change with Reload + Jump)\r\n\r\nPick number: Primary Fire\r\n\r\n", "Increase current digit: Interact\r\nLower current digit: Melee\r\n(Hold Jump to increase/lower by 2)\r\n\r\n", "{0}{1}{2}".format("Go to next digit: Crouch / Ability 2\r\nGo to previous digit: Ability 1\r\n(Hold Jump to jump 4 digits)\r\n\r\n", "Confirm Code: Ultimate\r\nCancel: Secondary Fire\r\nReset Code: Reload + Secondary Fire\r\n\r\n", "Adjust for Field of View:\r\nAim at the center of the '0'\r\nand press Reload + Ultimate")), HudPosition.RIGHT, -2, Color.AQUA, HudReeval.VISIBILITY)
+    createInWorldText(getPlayers(Team.2).filter(lambda player: player.IIIlIlIllIlllIllllIlIllIll <= 3), "Crouch here\r\nfor Instructions", IlIlIIIlIIllllIllIlllllIll + lllIllIlIlllIIIIlIIlIIllII, 3, Clip.NONE, WorldTextReeval.VISIBILITY, Color.AQUA)
+    hudSubtext(getPlayers(Team.2).filter(lambda player: player.IlllIllIlIlllIlIlIIlIllIlI == 1 and not player.IIlIIIIIIllIIlIlIIIlllllIl), "{0}{1}{2}".format(" \r\nControl Scheme: Gamepad\r\n(Change with Reload + Jump)\r\n\r\nPick number: Primary Fire\r\n\r\n", "Increase current digit: Crouch\r\nLower current digit: Secondary Fire\r\n(Hold Jump to increase/lower by 2)\r\n\r\n", "{0}{1}{2}".format("Go to next digit: Ability 2\r\nGo to previous digit: Ability 1\r\n(Hold Jump to jump 4 digits)\r\n\r\n", "Confirm Code: Melee\r\nCancel: Ultimate\r\nReset Code: Reload + Ultimate\r\n\r\n", "Adjust for Field of View:\r\nAim at the center of the '0'\r\nand press Interact")), HudPosition.RIGHT, -2, Color.AQUA, HudReeval.VISIBILITY)
+    hudSubtext(getPlayers(Team.2).filter(lambda player: player.IlllIllIlIlllIlIlIIlIllIlI == 1 and player.IIlIIIIIIllIIlIlIIIlllllIl), "{0}{1}{2}".format(" \r\nControl Scheme: Legacy\r\n(Change with Reload + Jump)\r\n\r\nPick number: Primary Fire\r\n\r\n", "Increase current digit: Interact\r\nLower current digit: Melee\r\n(Hold Jump to increase/lower by 2)\r\n\r\n", "{0}{1}{2}".format("Go to next digit: Crouch / Ability 2\r\nGo to previous digit: Ability 1\r\n(Hold Jump to jump 4 digits)\r\n\r\n", "Confirm Code: Ultimate\r\nCancel: Secondary Fire\r\nReset Code: Reload + Secondary Fire\r\n\r\n", "Adjust for Field of View:\r\nAim at the center of the '0'\r\nand press Reload + Ultimate")), HudPosition.RIGHT, -2, Color.AQUA, HudReeval.VISIBILITY)
     waitUntil(IllIIlIllllIIIllIlllIIlIIl == true, 16000)
     IIlIllllllllIlIIIlllIlllIl = "{0}".format(hostPlayer)
     hudSubheader(getPlayers(Team.2), "Initial Host: {0} / Enemy Health/EXP: {1}% / Regular Maps v7.5.1.8".format(IIlIllllllllIlIIIlllIlllIl, lllllIIlIlllIIllIIlIIlllII[7]), HudPosition.RIGHT, -6, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
@@ -525,14 +525,14 @@ rule "IlIIIIIIlIIlIIIlIlIIIlIIlI":
         eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII[11] = true
     wait(1)
     if IlllIlllllIIllIlIlIIlIllll[8]:
-        createEffect([i for i in eventPlayer if eventPlayer.lIlIlIIlIIIllIIIlIIlIllIIl > getTotalTimeElapsed()], Effect.GOOD_AURA, Color.WHITE, eventPlayer.getEyePosition() + (directionTowards(eventPlayer.getEyePosition(), eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1][eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI - 1])), 0.034, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(eventPlayer.filter(lambda _: eventPlayer.lIlIlIIlIIIllIIIlIIlIllIIl > getTotalTimeElapsed()), Effect.GOOD_AURA, Color.WHITE, eventPlayer.getEyePosition() + (directionTowards(eventPlayer.getEyePosition(), eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1][eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI - 1])), 0.034, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     wait(1)
     hudSubtext(eventPlayer, "Experience Bonus: {0}% / Magic Find: {1}‰ {2}".format(eventPlayer.IIIlIlIIlIIlIIIlllllIIIlIl, ceil(eventPlayer.lIIllIIIlIlIlIllIIIlIllIII), "{0}\r\nEquipped {1}".format(eventPlayer.llIllIlIllIIlIlIIlIIlIIIll, eventPlayer.IIIIIIlllllllIlIIIIIlllIlI[1])), HudPosition.LEFT, -1, Color.WHITE, HudReeval.STRING, SpecVisibility.NEVER)
     hudSubtext(eventPlayer, "Horadric Favor: {0} / Soul Stones: {2} / Gold: {1}".format(floor(eventPlayer.IlllIlIIIIIlIlllIIIIlIllll), eventPlayer.IlIIllllIlllIllIIIllIlIlll, eventPlayer.IIlIllllllIIlIIIllllIIllII), HudPosition.RIGHT, -5, Color.WHITE, HudReeval.STRING, SpecVisibility.NEVER)
     hudSubtext(eventPlayer, "Inventory: {0}/{1}".format(eventPlayer.IlIlIIIlIIllIIIIllIlIIllll, eventPlayer.lIlIIlIlIlIIIlIlllllIlIIII), HudPosition.RIGHT, -4, Color.WHITE, HudReeval.STRING, SpecVisibility.NEVER)
     wait(1)
     if IlllIlllllIIllIlIlIIlIllll[2]:
-        createEffect([i for i in getPlayers(Team.2).exclude(eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[2]) if eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[0] > 0], Effect.GOOD_AURA, eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[1], eventPlayer, eventPlayer.lIIlIlllIIlllIIlIlIlIIllll)
+        createEffect(getPlayers(Team.2).exclude(eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[2]).filter(lambda _: eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[0] > 0), Effect.GOOD_AURA, eventPlayer.llIIIIIIIlIIIIlIlIIIIlIllI[1], eventPlayer, eventPlayer.lIIlIlllIIlllIIlIlIlIIllll)
     eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII[0] = ""
     eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII[1] = []
     eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII[13] = []
@@ -651,7 +651,7 @@ rule "lIIlllIlIIlIlIIIlIIIlIIIlI":
     if not victim.IlllIllIlIlllIlIlIIlIllIlI and not victim.hasStatus(Status.INVINCIBLE) and victim.llllllIllIIlllllIlIIlIIllI[0] == 1 and random.randint(0, 39) < 2 * victim.IIIIIIIIlIIlIIIIIIIllIIIII[1]:
         victim.setStatusEffect(null, Status.INVINCIBLE, 2)
         if IlllIlllllIIllIlIlIIlIllll[1]:
-            playEffect([player for player in getPlayers(Team.2) if player.lIlIIIIlIIlIIlIIlIIIllllII[11]], DynamicEffect.BAD_EXPLOSION, Color.WHITE, victim.getEyePosition() + victim.getFacingDirection(), 2)
+            playEffect(getPlayers(Team.2).filter(lambda player: player.lIlIIIIlIIlIIlIIlIIIllllII[11]), DynamicEffect.BAD_EXPLOSION, Color.WHITE, victim.getEyePosition() + victim.getFacingDirection(), 2)
     if victim.lllIlllIllIIIlIIIIlllllIIl:
         return
     if victim.getHero() in getTankHeroes():
@@ -755,11 +755,11 @@ rule "IIIlIlIlIIlIllIIIllIIllllI":
     eventPlayer.llllllIllIIlllllIlIIlIIllI = false
     IlllllIIlIIllIlIlIIIlIlIlI = eventPlayer.IIllIIlllllllIlIIllIIIIIll.y <= IIIlIlllIlIllIIllllllIIIIl if IIIlIlllIlIllIIllllllIIIIl == true else eventPlayer.IIllIIlllllllIlIIllIIIIIll.y <= eventPlayer.IIllIIlllllllIlIIllIIIIIll.x * 0.05 + eventPlayer.IIllIIlllllllIlIIllIIIIIll.z * -0.06 - 4
     if IIIIlIIllIlllIllIIIlIlIlll <= 12 or not IlllllIIlIIllIlIlIIIlIlIlI:
-        IlIIlIlIIIlIIlIIlllllIlllI = [player for player in getPlayers(Team.2) if player.lllIlIIllIIllIIIIlllIIllII[eventPlayer.getSlot()] and (abs(player.IIIlIlIllIlllIllllIlIllIll - eventPlayer.lllIIIIIIIlllIIlIIIlllIIIl * 3) <= 15 or eventPlayer.lllIIIIIIIlllIIlIIIlllIIIl >= 20 and player.IIIlIlIllIlllIllllIlIllIll >= 45)]
+        IlIIlIlIIIlIIlIIlllllIlllI = getPlayers(Team.2).filter(lambda player: player.lllIlIIllIIllIIIIlllIIllII[eventPlayer.getSlot()] and (abs(player.IIIlIlIllIlllIllllIlIllIll - eventPlayer.lllIIIIIIIlllIIlIIIlllIIIl * 3) <= 15 or eventPlayer.lllIIIIIIIlllIIlIIIlllIIIl >= 20 and player.IIIlIlIllIlllIllllIlIllIll >= 45))
         if len(IlIIlIlIIIlIIlIIlllllIlllI):
-            IlIIlIlIIIlIIlIIlllllIlllI = [player for player in getPlayers(Team.2) if player in IlIIlIlIIIlIIlIIlllllIlllI or player.getHealth() and player.getHero() in getSupportHeroes() and player.IIIlIlIllIlllIllllIlIllIll >= lllllIIlIlllIIllIIlIIlllII[0] and player.IIIlIlIllIlllIllllIlIllIll <= lllllIIlIlllIIllIIlIIlllII[1] and distance(player, eventPlayer.IIllIIlllllllIlIIllIIIIIll) <= 40 and distance(player, IlIlIIIlIIllllIllIlllllIll) > IIIlIIlIIIIIlIlIIIlIllIlII]
-        IllIIlIllIlIIIllIIlIIlllIl = [player for player in IlIIlIlIIIlIIlIIlllllIlllI if player.IIIIlIIIIllllIlllIIIlllIIl == 4]
-        IllIIlIllIlIIIllIIlIIlllIl = 0 if IllIIlIllIlIIIllIIlIIlllIl == [] else 0.5 + 0.1 * sorted([player.IIlIIllIIIllIllllIIIIlIIll for player in IllIIlIllIlIIIllIIlIIlllIl]).last()
+            IlIIlIlIIIlIIlIIlllllIlllI = getPlayers(Team.2).filter(lambda player: player in IlIIlIlIIIlIIlIIlllllIlllI or player.getHealth() and player.getHero() in getSupportHeroes() and player.IIIlIlIllIlllIllllIlIllIll >= lllllIIlIlllIIllIIlIIlllII[0] and player.IIIlIlIllIlllIllllIlIllIll <= lllllIIlIlllIIllIIlIIlllII[1] and distance(player, eventPlayer.IIllIIlllllllIlIIllIIIIIll) <= 40 and distance(player, IlIlIIIlIIllllIllIlllllIll) > IIIlIIlIIIIIlIlIIIlIllIlII)
+        IllIIlIllIlIIIllIIlIIlllIl = IlIIlIlIIIlIIlIIlllllIlllI.filter(lambda x: x.IIIIlIIIIllllIlllIIIlllIIl == 4)
+        IllIIlIllIlIIIllIIlIIlllIl = 0 if IllIIlIllIlIIIllIIlIIlllIl == [] else 0.5 + 0.1 * sorted(IllIIlIllIlIIIllIIlIIlllIl.map(lambda x: x.IIlIIllIIIllIllllIIIIlIIll)).last()
     else:
         IlIIlIlIIIlIIlIIlllllIlllI = []
         IllIIlIllIlIIIllIIlIIlllIl = 0
@@ -841,11 +841,11 @@ rule "IIllIIlIlIlllIllIIIIlIIlII":
     IIIlllllIIIllllllIIllIlIIl = getTotalTimeElapsed() + 2
     if IllIIlIllllIIIllIlllIIlIIl != 2:
         return
-    llIlIIlIlIlIllIllllIllIllI = [player for player in getLivingPlayers(Team.2) if player.hasSpawned() and not player.lllIlllIllIIIlIIIIlllllIIl]
+    llIlIIlIlIlIllIllllIllIllI = getLivingPlayers(Team.2).filter(lambda player: player.hasSpawned() and not player.lllIlllIllIIIlIIIIlllllIIl)
     if not len(llIlIIlIlIlIllIllllIllIllI) or IIIIlIIIIIlIIIIlIIIIllIlII > len(llIlIIlIlIlIllIllllIllIllI):
         return
     if not IIIllIIIlIIllIIIIlIllllllI and not IlllIIIIlIIIlIllIIlIlIlllI:
-        IIIIlllIIIIlIIIlIIIIllllIl = sorted(llIlIIlIlIlIllIllllIllIllI, lambda player: player.IIIlIlIllIlllIllllIlIllIll)
+        IIIIlllIIIIlIIIlIIIIllllIl = sorted(llIlIIlIlIlIllIllllIllIllI, lambda x: x.IIIlIlIllIlllIllllIlIllIll)
         while len(IIIIlllIIIIlIIIlIIIIllllIl) > 2:
             del IIIIlllIIIIlIIIlIIIIllllIl[len(IIIIlllIIIIlIIIlIIIIllllIl)]
             if len(IIIIlllIIIIlIIIlIIIIllllIl) <= 2:
@@ -861,8 +861,8 @@ rule "IIllIIlIlIlllIllIIIIlIIlII":
     elif IlllIIIIlIIIlIllIIlIlIlllI in getPlayers(Team.2):
         llIIlllllIIlllllllllIIlIII = IlllIIIIlIIIlIllIIlIlIlllI
     llIlIllIIIlllIlllIIlIIIIII = llIIlllllIIlllllllllIIlIII.getPosition()
-    lllIlIIIIIIlIlIIllIlIllllI = len([player for player in getPlayers(Team.2) if player.IIIlIlIllIlllIllllIlIllIll >= lllllIIlIlllIIllIIlIIlllII[0] and player.IIIlIlIllIlllIllllIlIllIll <= lllllIIlIlllIIllIIlIIlllII[1]])
-    llIIIllIlIlIIIIllIlllllIIl[0] = sorted(lIIllIllIllIlIIIlllIlllIIl, lambda player: distance(player, llIlIllIIIlllIlllIIlIIIIII))[0]
+    lllIlIIIIIIlIlIIllIlIllllI = len(getPlayers(Team.2).filter(lambda player: player.IIIlIlIllIlllIllllIlIllIll >= lllllIIlIlllIIllIIlIIlllII[0] and player.IIIlIlIllIlllIllllIlIllIll <= lllllIIlIlllIIllIIlIIlllII[1]))
+    llIIIllIlIlIIIIllIlllllIIl[0] = sorted(lIIllIllIllIlIIIlllIlllIIl, lambda x: distance(x, llIlIllIIIlllIlllIIlIIIIII))[0]
     llIIIllIlIlIIIIllIlllllIIl[1] = lIIllIllIllIlIIIlllIlllIIl.index(llIIIllIlIlIIIIllIlllllIIl[0]) + llllIIllIIlIIIlIlIlIlIlIlI
     llIIIllIlIlIIIIllIlllllIIl[2] = llIIIllIlIlIIIIllIlllllIIl[1] - llllIIllIIlIIIlIlIlIlIlIlI + ((llllIIllIIlIIIlIlIlIlIlIlI > 16) * (llllIIllIIlIIIlIlIlIlIlIlI - 16))
     llIIIllIlIlIIIIllIlllllIIl[1] = min(llIIIllIlIlIIIIllIlllllIIl[1], 20)
@@ -1420,7 +1420,7 @@ rule "lIlllIIIIIlllIlIlIIIIIlIII":
             smallMessage(getPlayers(Team.2), "{0} {1} spawned".format(eventPlayer, eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII))
         createInWorldText(getPlayers(Team.2), "{0} ({1})".format(eventPlayer.lIlIIIIlIIlIIlIIlIIIllllII, eventPlayer.lIlIIlIlIlIIIlIlllllIlIIII), eventPlayer, 1.5 + 0.25 * eventPlayer.lllIlIIllIIllIIIIlllIIllII, Clip.SURFACES, WorldTextReeval.VISIBILITY, IIlIlllIlIIIIllIIlIlIlIlll[2][eventPlayer.lllIlIIllIIllIIIIlllIIllII])
         eventPlayer.IIllIIlIIllIIlIIlIlllIIllI = getLastCreatedText()
-    startDamageModification(eventPlayer, [player for player in getPlayers(Team.2) if player.lIIIllIIllIIIllIlIIllIlIll], 1686.5 * llIIIllIllIlllIlllIIIlllll[eventPlayer.lllIlIIllIIllIIIIlllIIllII] * eventPlayer.IIIIIIIIlIIlIIIIIIIllIIIII / IIIlIIIlIIllIIlllIlIIllIll, DamageReeval.RECEIVERS_AND_DAMAGERS)
+    startDamageModification(eventPlayer, getPlayers(Team.2).filter(lambda player: player.lIIIllIIllIIIllIlIIllIlIll), 1686.5 * llIIIllIllIlllIlllIIIlllll[eventPlayer.lllIlIIllIIllIIIIlllIIllII] * eventPlayer.IIIIIIIIlIIlIIIIIIIllIIIII / IIIlIIIlIIllIIlllIlIIllIll, DamageReeval.RECEIVERS_AND_DAMAGERS)
     goto loc+2 * IlllIlllllIIllIlIlIIlIllll[7]
     return
     return
@@ -1487,7 +1487,7 @@ rule "IIIllIIllllIlllllIllllIlll":
     if not eventPlayer.getHealth():
         return
     if eventPlayer.getHero() == Hero.MERCY:
-        if (not len([i for i in getLivingPlayers(Team.1).exclude(eventPlayer) if isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)])) != eventPlayer.IIlllllIIIIlllIIIlllIllIlI:
+        if (not len(getLivingPlayers(Team.1).exclude(eventPlayer).filter(lambda x: isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)))) != eventPlayer.IIlllllIIIIlllIIIlllIllIlI:
             eventPlayer.IIlllllIIIIlllIIIlllIllIlI = not eventPlayer.IIlllllIIIIlllIIIlllIllIlI
             eventPlayer.setWeapon(eventPlayer.IIlllllIIIIlllIIIlllIllIlI + 1)
             eventPlayer.IllIlIllIIIIlIIllIllIllIlI[0] = 1.025 + (2 * (not eventPlayer.IIlllllIIIIlllIIIlllIllIlI))
@@ -1571,17 +1571,17 @@ rule "lIIlIllIIIIIllIlIIIllIIIII":
     if eventPlayer.lIIIIIllIlIIlIlIIIlIlIIlII >= 7:
         goto lbl_0
     goto loc+(eventPlayer.lIIIIIllIlIIlIlIIIlIlIIlII - 1) * 2
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([player for player in getLivingPlayers(Team.2) if not player.llllllIlIIlIIllIIlllIlIIII and isInLoS(eventPlayer.getEyePosition(), player + Vector.UP)], lambda i: distance(i, eventPlayer)))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getLivingPlayers(Team.2).filter(lambda player: not player.llllllIlIIlIIllIIlllIlIIII and isInLoS(eventPlayer.getEyePosition(), player + Vector.UP)), lambda x: distance(x, eventPlayer)))[0]
     goto lbl_1
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([i for i in getLivingPlayers(Team.1).exclude(eventPlayer) if isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)], lambda i: distance(i, eventPlayer)))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getLivingPlayers(Team.1).exclude(eventPlayer).filter(lambda x: isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)), lambda x: distance(x, eventPlayer)))[0]
     goto lbl_2
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([i for i in getLivingPlayers(Team.1).exclude(eventPlayer) if i.getHealth() < i.getMaxHealth() * 0.99 and isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)], lambda i: i.getHealth()))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getLivingPlayers(Team.1).exclude(eventPlayer).filter(lambda x: x.getHealth() < x.getMaxHealth() * 0.99 and isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)), lambda x: x.getHealth()))[0]
     goto lbl_3
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([player for player in getLivingPlayers(Team.2) if not player.llllllIlIIlIIllIIlllIlIIII], lambda i: distance(i, eventPlayer.lIlIlIIlIIIllIIIlIIlIllIIl) - (100 * (isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)))))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getLivingPlayers(Team.2).filter(lambda player: not player.llllllIlIIlIIllIIlllIlIIII), lambda x: distance(x, eventPlayer.lIlIlIIlIIIllIIIlIIlIllIIl) - (100 * (isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)))))[0]
     goto lbl_4
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([i for i in getLivingPlayers(Team.ALL).exclude(eventPlayer) if (i.getTeam() == Team.2 and not i.llllllIlIIlIIllIIlllIlIIII or i.getTeam() == Team.1 and i.getHealth() < i.getMaxHealth() * 0.99) and isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)], lambda i: distance(i, eventPlayer) * 0.04 + i.getHealth() / i.getMaxHealth()))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getLivingPlayers(Team.ALL).exclude(eventPlayer).filter(lambda x: (x.getTeam() == Team.2 and not x.llllllIlIIlIIllIIlllIlIIII or x.getTeam() == Team.1 and x.getHealth() < x.getMaxHealth() * 0.99) and isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)), lambda x: distance(x, eventPlayer) * 0.04 + x.getHealth() / x.getMaxHealth()))[0]
     goto lbl_5
-    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted([i for i in getPlayers(Team.1).exclude(eventPlayer) if isInLoS(eventPlayer.getEyePosition(), i + Vector.UP)], lambda i: i.getHealth()))[0]
+    eventPlayer.lllIIlllIIlIIlllIIIIlllIlI = (sorted(getPlayers(Team.1).exclude(eventPlayer).filter(lambda x: isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)), lambda x: x.getHealth()))[0]
     lbl_1:
     lbl_2:
     lbl_3:
@@ -1906,7 +1906,7 @@ def llIllIllIllIIIlIlIlIIlIlII():
         IlIIlIIIlllIIlIllIIIIIllIl = ceil((((eventPlayer.lIllIlIIlllIllIlIlllllIIII + 2.5) * (llIlIIlIlIlIllIllllIllIllI + 1)) * random.uniform(0.125, 0.375)) * (1 + IllIIlIllIlIIIllIIlIIlllIl))
     IIIIlllIIIIlIIIlIIIIllllIl = IlIIIIIlllIlIlIIlllIIlllll + lllIllIlIlllIIIIlIIlIIllII
     if eventPlayer.lIIIlIIIlllllIIllIllIIIIll >= 3:
-        IIIlIlllIllllIlllllllIIlII = (sorted(llIlIlIllIIllIlIlllIIlllIl.slice(0, 3), lambda i: eventPlayer.llIlIlIllIIllIlllIlIIlIllI[i] + eventPlayer.llIIIlllIIIlllllIIllIIIIIl[i] * 90))[0]
+        IIIlIlllIllllIlllllllIIlII = (sorted(llIlIlIllIIllIlIlllIIlllIl.slice(0, 3), lambda x: eventPlayer.llIlIlIllIIllIlllIlIIlIllI[x] + eventPlayer.llIIIlllIIIlllllIIllIIIIIl[x] * 90))[0]
         destroyEffect(eventPlayer.IIIlIlIIlllIIlIIlllIIIIlII[IIIlIlllIllllIlllllllIIlII])
     else:
         eventPlayer.lIIIlIIIlllllIIllIllIIIIll++
@@ -2034,8 +2034,8 @@ def IllIlIlIIIlIIIlIlIlIlIlIll():
         return
     llIlIIlIlIlIllIllllIllIllI[7] = floor(eventPlayer.lIllIIIIlIIlllIllIllIIIlII * (9 if IlllllIIlIIllIlIlIIIlIlIlI >= 6 else (IlllllIIlIIllIlIlIIIlIlIlI - 2) * 3))
     lIIlllIllllIlIIIIlIllIIIlI = eventPlayer.lllllIIlllIlllllIIlIIlllII
-    IIIIlllIIIIlIIIlIIIIllllIl = any([i < min(50, eventPlayer.IIIlIlIllIlllIllllIlIllIll) for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(lIIlllIllllIlIIIIlIllIIIlI + 6, 5)])
-    lIIIIIllllIlIIIIlIIIlIIIll = any([i < floor(eventPlayer.lIllIIIIlIIlllIllIllIIIlII * 9) for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(lIIlllIllllIlIIIIlIllIIIlI + 14, 2 + (1 * (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + 13] == true)))])
+    IIIIlllIIIIlIIIlIIIIllllIl = eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(lIIlllIllllIlIIIIlIllIIIlI + 6, 5).any(lambda x: x < min(50, eventPlayer.IIIlIlIllIlllIllllIlIllIll))
+    lIIIIIllllIlIIIIlIIIlIIIll = eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(lIIlllIllllIlIIIIlIllIIIlI + 14, 2 + (1 * (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + 13] == true))).any(lambda x: x < floor(eventPlayer.lIllIIIIlIIlllIllIllIIIlII * 9))
     if eventPlayer.IIlIIIIllllIllIIlIIIIlIlll >= 4 and not IIIIlllIIIIlIIIlIIIIllllIl and not lIIIIIllllIlIIIIlIIIlIIIll:
         if eventPlayer.IIIlIlIllIlllIllllIlIllIll >= 60:
             smallMessage(eventPlayer, "Item cannot be imbued anymore")
@@ -2073,13 +2073,13 @@ def IllIlIlIIIlIIIlIlIlIlIlIll():
         IlllllIIlIIllIlIlIIIlIlIlI.append(0)
     IlllllIIlIIllIlIlIIIlIlIlI = random.choice(IlllllIIlIIllIlIlIIIlIlIlI)
     if IlllllIIlIIllIlIlIIIlIlIlI:
-        IlllllIIlIIllIlIlIIIlIlIlI = random.choice([i for i in [6, 7, 8, 9, 10] if eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + i] < 50 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + i] < eventPlayer.IIIlIlIllIlllIllllIlIllIll])
+        IlllllIIlIIllIlIlIIIlIlIlI = random.choice([6, 7, 8, 9, 10].filter(lambda x: eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + x] < 50 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + x] < eventPlayer.IIIlIlIllIlllIllllIlIllIll))
         eventPlayer.lIlIlIIIIllIlllIIIIIlIlIll = IIlIlllIlIIIIllIIlIlIlIlll[5][IlllllIIlIIllIlIlIIIlIlIlI - 6]
         smallMessage(eventPlayer, "Gained +1 {0}".format(eventPlayer.lIlIlIIIIllIlllIIIIIlIlIll))
         if eventPlayer.IIlIIIIllllIllIIlIIIIlIlll < 7:
             eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + 18] += 10 + (10 * (eventPlayer.IIlIIIIllllIllIIlIIIIlIlll >= 5))
     else:
-        IlllllIIlIIllIlIlIIIlIlIlI = random.choice([i for i in [14, 15, 16] if eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + i] < floor(eventPlayer.lIllIIIIlIIlllIllIllIIIlII * 9) and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + i - 3] > 0])
+        IlllllIIlIIllIlIlIIIlIlIlI = random.choice([14, 15, 16].filter(lambda x: eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + x] < floor(eventPlayer.lIllIIIIlIIlllIllIllIIIlII * 9) and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + x - 3] > 0))
         eventPlayer.lIlIlIIIIllIlllIIIIIlIlIll = IIlIlllIlIIIIllIIlIlIlIlll[6][eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[lIIlllIllllIlIIIIlIllIIIlI + IlllllIIlIIllIlIlIIIlIlIlI - 3] - 1]
         smallMessage(eventPlayer, "Gained +1 rank in {0}".format(eventPlayer.lIlIlIIIIllIlllIIIIIlIlIll))
         if eventPlayer.IIlIIIIllllIllIIlIIIIlIlll < 7:
@@ -2802,7 +2802,7 @@ def IIIIlIIlIIlIlllIIlIlIlIIIl():
     IIlIlllIlIIIIllIIlIlIlIlll[10] = vect(-7.748, 4.664, 108.356)
     return
     return
-    hudHeader([player for player in getPlayers(Team.2) if IllIlIIllIIIIllllIllIIIIlI], "Raid starts in {0} seconds".format(max(0, floor(IllIlIIllIIIIllllIllIIIIlI - getTotalTimeElapsed()))), HudPosition.TOP, 2, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudHeader(getPlayers(Team.2).filter(lambda _: IllIlIIllIIIIllllIllIIIIlI), "Raid starts in {0} seconds".format(max(0, floor(IllIlIIllIIIIllllIllIIIIlI - getTotalTimeElapsed()))), HudPosition.TOP, 2, Color.AQUA, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     IlllllIlllIIIllIIllllIlllI = getLastCreatedText()
 
 
@@ -2950,7 +2950,7 @@ def lllIIllIIIlIIllIIllIlllIlI():
             lllIllIlIIllllIlIlIlllllll()
             lllllIIIllIlIIIlIlIllllllI()
         return
-    if ((all([i == eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[6 + IIIlIlllIllllIlllllllIIlII] for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(IIIlIlllIllllIlllllllIIlII + 7, 4)]) and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[IIIlIlllIllllIlllllllIIlII + 6] == 50 or not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[IIIlIlllIllllIlllllllIIlII + 6])) and (eventPlayer.llllIIlIlllllllIIllIlIllII or eventPlayer.IIlIIIIllllIllIIlIIIIlIlll >= 4 or not eventPlayer.IIlIIIIllllIllIIlIIIIlIlll)) and (all([not i or i >= 7 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(11 + IIIlIlllIllllIlllllllIIlII, 3)])):
+    if ((eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(IIIlIlllIllllIlllllllIIlII + 7, 4).all(lambda x: x == eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[6 + IIIlIlllIllllIlllllllIIlII]) and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[IIIlIlllIllllIlllllllIIlII + 6] == 50 or not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[IIIlIlllIllllIlllllllIIlII + 6])) and (eventPlayer.llllIIlIlllllllIIllIlIllII or eventPlayer.IIlIIIIllllIllIIlIIIIlIlll >= 4 or not eventPlayer.IIlIIIIllllIllIIlIIIIlIlll)) and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(11 + IIIlIlllIllllIlllllllIIlII, 3).all(lambda x: not x or x >= 7)):
         smallMessage(eventPlayer, "No stats to reroll")
         return
     IIIlIlllIlIIIlIlllIllIIllI()
@@ -2978,7 +2978,7 @@ def lllIIllIIIlIIllIIllIlllIlI():
     else:
         llIlIIlIlIlIllIllllIllIllI = [0, 0, 0, 0, 0]
         for IlllllIIlIIllIlIlIIIlIlIlI in range(67):
-            lIIIIIllllIlIIIIlIIIlIIIll = random.choice([i for i in llIlIlIllIIllIlIlllIIlllIl.slice(0, 5) if llIlIIlIlIlIllIllllIllIllI[i] < 50])
+            lIIIIIllllIlIIIIlIIIlIIIll = random.choice(llIlIlIllIIllIlIlllIIlllIl.slice(0, 5).filter(lambda x: llIlIIlIlIlIllIllllIllIllI[x] < 50))
             lIlIlIIlIIIIlIllIIllllllll = ceil(IIIIlllIIIIlIIIlIIIIllllIl * 0.05)
             llIlIIlIlIlIllIllllIllIllI[lIIIIIllllIlIIIIlIIIlIIIll] += lIlIlIIlIIIIlIllIIllllllll
             IIIIlllIIIIlIIIlIIIIllllIl -= lIlIlIIlIIIIlIllIIllllllll
@@ -3517,7 +3517,7 @@ def IIlIIIlllIIIllIlllIllllIII():
 def IlllIIlIllIlllllIlIIllIlIl():
     @Name "IlllIlIIIlIiIlIllIIliIIlll"
     
-    llllIIIIllIIlIlIIllIIllIll = any([i > 50 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(6, 5)]) or not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[0] or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] > 7 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[17] >= 63 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] != 7 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[17] > 29 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] >= 6 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] != 7 or (not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] == 9 and (any([i and i < 7 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(11, 2)])) or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] == 8 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[12] and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[12] < 7)) or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] == 6 and eventPlayer.IIIlIlIllIlllIllllIlIllIll <= 99 or (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[5] >= 3 and (eventPlayer.IIIlIlIllIlllIllllIlIllIll >= 121 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[2] >= 6 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[4] >= 5))
+    llllIIIIllIIlIlIIllIIllIll = eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(6, 5).any(lambda x: x > 50) or not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[0] or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] > 7 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[17] >= 63 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] != 7 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[17] > 29 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] >= 6 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] != 7 or (not eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] == 9 and (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(11, 2).any(lambda x: x and x < 7)) or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[13] == 8 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[12] and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[12] < 7)) or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[1] == 6 and eventPlayer.IIIlIlIllIlllIllllIlIllIll <= 99 or (eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[5] >= 3 and (eventPlayer.IIIlIlIllIlllIllllIlIllIll >= 121 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[2] >= 6 or eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[4] >= 5))
     eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[17] += 100
 
 
@@ -3529,10 +3529,10 @@ def lllIllIlIIllllIlIlIlllllll():
     if eventPlayer.IIllIIlIIllIIlIIlIlllIIllI:
         if llllIIIIllIIlIlIIllIIllIll == 9 or llllIIIIllIIlIlIIllIIllIll >= 7 and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[eventPlayer.lllllIIlllIlllllIIlIIlllII + 11] < 7:
             lIlIlIIlIIIIlIllIIllllllll = 1
-        elif all([i and i <= 6 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 11, 3)]) and all([i == 9 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 14, 3)]):
+        elif eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 11, 3).all(lambda x: x and x <= 6) and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 14, 3).all(lambda x: x == 9):
             lIlIlIIlIIIIlIllIIllllllll = 2
     elif eventPlayer.IIlIIIIllllIllIIlIIIIlIlll == 4:
-        if all([i and i <= 6 and i == eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[eventPlayer.lllllIIlllIlllllIIlIIlllII + 11] for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 12, 2)]) and all([i == 9 for i in eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 14, 3)]):
+        if eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 12, 2).all(lambda x: x and x <= 6 and x == eventPlayer.IIlIlIlIIlIIIllIllIlIIllll[eventPlayer.lllllIIlllIlllllIIlIIlllII + 11]) and eventPlayer.IIlIlIlIIlIIIllIllIlIIllll.slice(eventPlayer.lllllIIlllIlllllIIlIIlllII + 14, 3).all(lambda x: x == 9):
             lIlIlIIlIIIIlIllIIllllllll = 3
     elif eventPlayer.IIlIIIIllllIllIIlIIIIlIlll == 5 and llllIIIIllIIlIlIIllIIllIll == 9:
         lIlIlIIlIIIIlIllIIllllllll = 4
@@ -3693,11 +3693,11 @@ def llIllIlIIIllIIlIlIlllIIllI():
     if not IlIIlIIIlllIIlIllIIIIIllIl:
         return
     goto loc+(eventPlayer.llllllIllIIlllllIlIIlIIllI[8] - 1) * 2
-    playEffect([player for player in getPlayers(Team.2) if player.lIlIIIIlIIlIIlIIlIIIllllII[11]], DynamicEffect.GOOD_PICKUP_EFFECT, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition(), true)
+    playEffect(getPlayers(Team.2).filter(lambda player: player.lIlIIIIlIIlIIlIIlIIIllllII[11]), DynamicEffect.GOOD_PICKUP_EFFECT, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition(), true)
     return
-    playEffect([player for player in getPlayers(Team.2) if player.lIlIIIIlIIlIIlIIlIIIllllII[11]], DynamicEffect.BAD_PICKUP_EFFECT, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition(), true)
+    playEffect(getPlayers(Team.2).filter(lambda player: player.lIlIIIIlIIlIIlIIlIIIllllII[11]), DynamicEffect.BAD_PICKUP_EFFECT, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition(), true)
     return
-    playEffect([player for player in getPlayers(Team.2) if player.lIlIIIIlIIlIIlIIlIIIllllII[11]], DynamicEffect.RING_EXPLOSION, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition() + Vector.UP, 4)
+    playEffect(getPlayers(Team.2).filter(lambda player: player.lIlIIIIlIIlIIlIIlIIIllllII[11]), DynamicEffect.RING_EXPLOSION, IIlIlllIlIIIIllIIlIlIlIlll[4][IlIIlIIIlllIIlIllIIIIIllIl - 1], lIIlllIllllIlIIIIlIllIIIlI.getPosition() + Vector.UP, 4)
 
 
 def lIIlllIlIIlIIIllIllllIlllI():
@@ -4230,7 +4230,7 @@ def IIlIIlllIIIIIlIIIIllIIIIIl():
         IIIlIlllIllllIlllllllIIlII = eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI.concat(eventPlayer.IIIllIIlIlIIIlllllllIIIlIl)
     else:
         IIIlIlllIllllIlllllllIIlII = eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI
-    eventPlayer.IlIIlIIlIIlIIIIlIlIllllllI[3] = (sorted(IIIlIlllIllllIlllllllIIlII.exclude(lIllIIlIlIIIIIlIIIlIlIlllI), lambda i: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i + lllIllIlIlllIIIIlIIlIIllII))))[0]
+    eventPlayer.IlIIlIIlIIlIIIIlIlIllllllI[3] = (sorted(IIIlIlllIllllIlllllllIIlII.exclude(lIllIIlIlIIIIIlIIIlIlIlllI), lambda x: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), x + lllIllIlIlllIIIIlIIlIIllII))))[0]
     if eventPlayer.IlIIlIIlIIlIIIIlIlIllllllI[3] and eventPlayer.IlIIlIIlIIlIIIIlIlIllllllI[3] == eventPlayer.IIIllIIlIlIIIlllllllIIIlIl:
         eventPlayer.IlIIlIIlIIlIIIIlIlIllllllI[2] = Color.GRAY
         return
@@ -4497,18 +4497,18 @@ def llIIlIlIIIIIllIIlIllIIIlII():
 def lIIIIIIllIIllIlIIIlIlIlIll():
     @Name "llIIlIlIIlIIIlIlIlllllIIII"
     
-    IIIIlllIIIIlIIIlIIIIllllIl = sorted(eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI, lambda player: distance(player, eventPlayer.getPosition()))[0]
+    IIIIlllIIIIlIIIlIIIIllllIl = sorted(eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI, lambda x: distance(x, eventPlayer.getPosition()))[0]
     lIIIIIllllIlIIIIlIIIlIIIll = eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI.index(IIIIlllIIIIlIIIlIIIIllllIl)
     if eventPlayer.llllllIllIIlllllIlIIlIIllI[0] != 2 or distance(IIIIlllIIIIlIIIlIIIIllllIl, eventPlayer) <= 2.5:
         return
-    lIIIIIllllIlIIIIlIIIlIIIll = (sorted(llIlIlIllIIllIlIlllIIlllIl.slice(0, 3), lambda i: distance(eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI[i], eventPlayer) - ((15 * (not eventPlayer.llIIIlllIIIlllllIIllIIIIIl[i] % 1)) * eventPlayer.IIIIIIIIlIIlIIIIIIIllIIIII[1])))[0]
+    lIIIIIllllIlIIIIlIIIlIIIll = (sorted(llIlIlIllIIllIlIlllIIlllIl.slice(0, 3), lambda x: distance(eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI[x], eventPlayer) - ((15 * (not eventPlayer.llIIIlllIIIlllllIIllIIIIIl[x] % 1)) * eventPlayer.IIIIIIIIlIIlIIIIIIIllIIIII[1])))[0]
     IIIIlllIIIIlIIIlIIIIllllIl = eventPlayer.lIIIIllIIIIIlIIIIllllIlIlI[lIIIIIllllIlIIIIlIIIlIIIll]
 
 
 def lIlIllllIllllIIIllllIIIIlI():
     @Name "IIIIIlIIIllIIlIlllIIIllIlI"
     
-    IIIlIlllIllllIlllllllIIlII = sorted(IllIlIIIlIlIIIlIlllIIIllII, lambda player: distance(player, eventPlayer))[0]
+    IIIlIlllIllllIlllllllIIlII = sorted(IllIlIIIlIlIIIlIlllIIIllII, lambda x: distance(x, eventPlayer))[0]
 
 
 def IllIIIIllIlIIIIIlIlIlIlIll():
@@ -4550,7 +4550,7 @@ def lIIIlllIlIIllIlllllllIlllI():
     if not eventPlayer.IIIlIlIllIlllIllllIlIllIll:
         return
     IIIlIlllIllllIlllllllIIlII = raycast(eventPlayer.getEyePosition(), eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * 1.5, getPlayers(Team.2), eventPlayer, false).getHitPosition() + vect(0, -1.25, 0)
-    eventPlayer.IIIIlIIlIIlIlIIllIIlIIIIII = (sorted([i for i in getPlayers(Team.2).exclude(eventPlayer) if i.IIIlIlIllIlllIllllIlIllIll and distance(i, IIIlIlllIllllIlllllllIIlII) <= 1.25], lambda i: distance(i, IIIlIlllIllllIlllllllIIlII)))[0]
+    eventPlayer.IIIIlIIlIIlIlIIllIIlIIIIII = (sorted(getPlayers(Team.2).exclude(eventPlayer).filter(lambda x: x.IIIlIlIllIlllIllllIlIllIll and distance(x, IIIlIlllIllllIlllllllIIlII) <= 1.25), lambda x: distance(x, IIIlIlllIllllIlllllllIIlII)))[0]
     if not eventPlayer.IIIIlIIlIIlIlIIllIIlIIIIII in getPlayers(Team.2):
         return
     eventPlayer.IIllIIllIIIIIlIlIIllIllllI = eventPlayer.lIIIIIllIlIIlIlIIIlIlIIlII
@@ -4607,7 +4607,7 @@ def lIlIllllllllIIIIllIlIlIIlI():
     
     llllIIIIllIIlIlIIllIIllIll = false
     if distance(eventPlayer, IlIlIIIlIIllllIllIlllllIll) <= IIIlIIlIIIIIlIlIIIlIllIlII and not eventPlayer.isDuplicatingAHero():
-        IIIlIlllIllllIlllllllIIlII = sorted(IllIlIIIlIlIIIlIlllIIIllII.slice(2, 9), lambda i: distance(i, eventPlayer))[0]
+        IIIlIlllIllllIlllllllIIlII = sorted(IllIlIIIlIlIIIlIlllIIIllII.slice(2, 9), lambda x: distance(x, eventPlayer))[0]
         if distance(eventPlayer, IIIlIlllIllllIlllllllIIlII) <= 1.75:
             if eventPlayer.lIlIlIIIlllIIIIlIIlIlllllI[0] and eventPlayer.lIlIlIIIlllIIIIlIIlIlllllI[0] != IIIlIlllIllllIlllllllIIlII:
                 goto lbl_0
@@ -4648,7 +4648,7 @@ def IIIIlllllIIIlllIIlllIllllI():
     
     if eventPlayer.IlllIllIlIlllIlIlIIlIllIlI != 1:
         return
-    eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI = [i for i in eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1] if eventPlayer.isInViewAngle(i, 2.4)][0]
+    eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI = eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1].filter(lambda x: eventPlayer.isInViewAngle(x, 2.4))[0]
     if eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI:
         eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI = eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1].index(eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI) + 1
         if eventPlayer.lIlIlllIIlIlllIIIIllIIlIlI <= 10:
@@ -4769,6 +4769,6 @@ def lllllllIIIIIIIllIIllllIIlI():
 def IIIlIlllllIlIlllIIIllIIllI():
     @Name "IllIIllIIlIlIlIIllllIllllI"
     
-    eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1] = [llIlIIIlllIlIllllllllllIII + ((directionFromAngles(IlIllllIIIIIIIIlllIIllIIII + i.x * eventPlayer.IIlIllllIllIIllIlIIlIIlIll[0], i.y * eventPlayer.IIlIllllIllIIllIlIIlIIlIll[0])) * 1000) for i in [vect(5.345, -9.893, 0), vect(0.412, -9.893, 0), vect(-4.515, -9.893, 0), vect(5.345, -4.636, 0), vect(0.412, -4.636, 0), vect(-4.515, -4.636, 0), vect(5.345, 0.769, 0), vect(0.412, 0.769, 0), vect(-4.515, 0.769, 0), vect(-9.388, 0.769, 0), vect(-9.179, -9.893, 0), vect(-9.091, -4.636, 0)]]
+    eventPlayer.IIlIllllIllIIllIlIIlIIlIll[1] = [vect(5.345, -9.893, 0), vect(0.412, -9.893, 0), vect(-4.515, -9.893, 0), vect(5.345, -4.636, 0), vect(0.412, -4.636, 0), vect(-4.515, -4.636, 0), vect(5.345, 0.769, 0), vect(0.412, 0.769, 0), vect(-4.515, 0.769, 0), vect(-9.388, 0.769, 0), vect(-9.179, -9.893, 0), vect(-9.091, -4.636, 0)].map(lambda x: llIlIIIlllIlIllllllllllIII + ((directionFromAngles(IlIllllIIIIIIIIlllIIllIIII + x.x * eventPlayer.IIlIllllIllIIllIlIIlIIlIll[0], x.y * eventPlayer.IIlIllllIllIIllIlIIlIIlIll[0])) * 1000))
 
 

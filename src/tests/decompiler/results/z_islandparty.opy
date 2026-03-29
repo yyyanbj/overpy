@@ -488,7 +488,7 @@ rule "Is in setup {GLOBAL}":
     wait(1.5)
     potatoPos = vect(500, 500, 500)
     hudSubtext(getAllPlayers(), " \r\n\u0009\u0009\r\n\u0009\u0009\r\n\u0009\u0009\r\n\u0009\u0009\r\n\u0009\u0009\r\n\u0009\u0009", HudPosition.LEFT, -999, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if len(hofPlayers) > 0], "Hall of fame", HudPosition.RIGHT, -600, Color.ORANGE, HudReeval.VISIBILITY_AND_SORT_ORDER)
+    hudSubtext(getAllPlayers().filter(lambda _: len(hofPlayers) > 0), "Hall of fame", HudPosition.RIGHT, -600, Color.ORANGE, HudReeval.VISIBILITY_AND_SORT_ORDER)
     createInWorldText(getAllPlayers(), "CODE: {0}".format(islandPartyCode), vect(0, 200, 0), 4, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     wait(3.5)
     getAllPlayers().communicate(Comms.COUNTDOWN)
@@ -508,17 +508,17 @@ rule "Disable bulit-in game mode & start timer variables {Game in progress GLOBA
     timeCounter = 0.001
     roundTimer = 60
     #Timer of the round HUD {Standard}
-    hudHeader([player for player in getAllPlayers() if roundTimer > 10], ":{0}".format(round(roundTimer)), HudPosition.RIGHT, -999, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(getAllPlayers().filter(lambda _: roundTimer > 10), ":{0}".format(round(roundTimer)), HudPosition.RIGHT, -999, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     #Timer of the round HUD {Last moments}
-    hudHeader([player for player in getAllPlayers() if roundTimer <= 10], ":{0}".format(round(roundTimer)), HudPosition.RIGHT, -999, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(getAllPlayers().filter(lambda _: roundTimer <= 10), ":{0}".format(round(roundTimer)), HudPosition.RIGHT, -999, Color.RED, HudReeval.VISIBILITY_AND_STRING)
     #Timer of the round HUD separator
     hudSubheader(getAllPlayers(), " ", HudPosition.RIGHT, -998, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     #Creates a HUD in the top with [svr load: {0} | svr avg: {1} | svr peak: {2}] LOW LOAD(GREEN)
-    hudSubheader([i for i in hostPlayer if (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 < 128 and "#Jokaes" == l"#{0}".format(hostPlayer)], "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING)
+    hudSubheader(hostPlayer.filter(lambda _: (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 < 128 and "#Jokaes" == l"#{0}".format(hostPlayer)), "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.LIME_GREEN, HudReeval.VISIBILITY_AND_STRING)
     #Creates a HUD in the top with [svr load: {0} | svr avg: {1} | svr peak: {2}] MID LOAD(ORANGE)
-    hudSubheader([i for i in hostPlayer if (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 >= 128 and (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 <= 192 and "#Jokaes" == l"#{0}".format(hostPlayer)], "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubheader(hostPlayer.filter(lambda _: (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 >= 128 and (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 <= 192 and "#Jokaes" == l"#{0}".format(hostPlayer)), "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
     #Creates a HUD in the top with [svr load: {0} | svr avg: {1} | svr peak: {2}] HIGH LOAD(RED)
-    hudSubheader([i for i in hostPlayer if (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 > 192 and "#Jokaes" == l"#{0}".format(hostPlayer)], "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+    hudSubheader(hostPlayer.filter(lambda _: (getServerLoad() + getAverageServerLoad() + getPeakServerLoad()) / 3 > 192 and "#Jokaes" == l"#{0}".format(hostPlayer)), "svr load: {0} | svr avg: {1} | svr peak: {2}".format(getServerLoad(), getAverageServerLoad(), getPeakServerLoad()), HudPosition.TOP, -100, Color.RED, HudReeval.VISIBILITY_AND_STRING)
     hofPlayers = []
     pointfeedHud = []
     pointfeedHudTimes = [true, true, true, true, true, true]
@@ -993,7 +993,7 @@ rule "Last seconds sound":
 
 
 rule "HUD Pointfeed reduce times":
-    @Condition any([player == 3.744 for player in pointfeedHudTimes]) == true
+    @Condition pointfeedHudTimes.any(lambda x: x == 3.744) == true
     
     while true:
         for pointfeedHudTimesIt in range(len(pointfeedHudTimes)):
@@ -1012,7 +1012,7 @@ rule "Destroy HUD Pointfeed {more than 6}":
 
 
 rule "Destroy HUD Pointfeed {time}":
-    @Condition any([player <= 0 for player in pointfeedHudTimes]) == true
+    @Condition pointfeedHudTimes.any(lambda x: x <= 0) == true
     
     while true:
         for pointfeedHudTimesIt in range(len(pointfeedHudTimes)):
@@ -1052,7 +1052,7 @@ rule "HoF effect":
     
     hudHeader(eventPlayer, "You seam to enjoy this mode. You should join discord.io/IslandParty {0}".format(iconString(Icon.HAPPY)), HudPosition.TOP, 1000, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.discordLinkForHofPlayersHud = getLastCreatedText()
-    #createEffect([player for player in getAllPlayers() if eventPlayer.isAlive()], Effect.SPARKLES, Color.ORANGE, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    #createEffect(getAllPlayers().filter(lambda _: eventPlayer.isAlive()), Effect.SPARKLES, Color.ORANGE, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
     wait(1)
     playEffect(eventPlayer, DynamicEffect.BUFF_IMPACT_SOUND, Color.WHITE, eventPlayer, 200)
@@ -1294,35 +1294,35 @@ rule "DVA init global":
     dvaObjectiveEffects = []
     dvaObjectiveIcons = []
     dvaObjectivePos = [vect(random.uniform(-100, 100), random.uniform(45, 100), random.uniform(-100, 100)), vect(random.uniform(-100, 100), random.uniform(45, 100), random.uniform(-100, 100)), vect(random.uniform(-100, 100), random.uniform(45, 100), random.uniform(-100, 100)), vect(random.uniform(-100, 100), random.uniform(45, 100), random.uniform(-100, 100)), vect(random.uniform(-100, 100), random.uniform(45, 100), random.uniform(-100, 100))]
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 0], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 0), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 0], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 0), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 0], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 0), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[0], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 1], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 1), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 1], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 1), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 1], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 1), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[1], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 2], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 2), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 2], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 2), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 2], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 2), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[2], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 3], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 3), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 3], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 3), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 3], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 3), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[3], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 4], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 4), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 4], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 4), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.dvaPoints == 4], Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.dvaPoints == 4), Effect.GOOD_AURA, Color.PURPLE, dvaObjectivePos[4], 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     dvaObjectiveEffects.append(getLastCreatedEntity())
 
 
@@ -1674,12 +1674,12 @@ rule "ECHO not healing":
 rule "ECHO points common rings":
     @Event eachPlayer
     @Hero echo
-    @Condition any([distance(eventPlayer, player) <= 2.15 for player in commonRingsPos]) == true
+    @Condition commonRingsPos.any(lambda x: distance(eventPlayer, x) <= 2.15) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.ECHO
     
-    eventPlayer.echoClosestRing = sorted(commonRingsPos, lambda player: distance(eventPlayer, player))[0]
+    eventPlayer.echoClosestRing = sorted(commonRingsPos, lambda x: distance(eventPlayer, x))[0]
     wait()
     eventPlayer.echoClosestRing = commonRingsPos.index(eventPlayer.echoClosestRing)
     eventPlayer.echoPoints++
@@ -1691,12 +1691,12 @@ rule "ECHO points common rings":
 rule "ECHO points rare rings":
     @Event eachPlayer
     @Hero echo
-    @Condition any([distance(eventPlayer, player) <= 2.15 for player in rareRingsPos]) == true
+    @Condition rareRingsPos.any(lambda x: distance(eventPlayer, x) <= 2.15) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.ECHO
     
-    eventPlayer.echoClosestRing = sorted(rareRingsPos, lambda player: distance(eventPlayer, player))[0]
+    eventPlayer.echoClosestRing = sorted(rareRingsPos, lambda x: distance(eventPlayer, x))[0]
     wait()
     eventPlayer.echoClosestRing = rareRingsPos.index(eventPlayer.echoClosestRing)
     eventPlayer.echoPoints += 2
@@ -1708,12 +1708,12 @@ rule "ECHO points rare rings":
 rule "ECHO points epic rings":
     @Event eachPlayer
     @Hero echo
-    @Condition any([distance(eventPlayer, player) <= 2.15 for player in epicRingsPos]) == true
+    @Condition epicRingsPos.any(lambda x: distance(eventPlayer, x) <= 2.15) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.ECHO
     
-    eventPlayer.echoClosestRing = sorted(epicRingsPos, lambda player: distance(eventPlayer, player))[0]
+    eventPlayer.echoClosestRing = sorted(epicRingsPos, lambda x: distance(eventPlayer, x))[0]
     wait()
     eventPlayer.echoClosestRing = epicRingsPos.index(eventPlayer.echoClosestRing)
     eventPlayer.echoPoints += 4
@@ -1725,12 +1725,12 @@ rule "ECHO points epic rings":
 rule "ECHO points legendary rings":
     @Event eachPlayer
     @Hero echo
-    @Condition any([distance(eventPlayer, player) <= 2.15 for player in legendaryRingsPos]) == true
+    @Condition legendaryRingsPos.any(lambda x: distance(eventPlayer, x) <= 2.15) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.ECHO
     
-    eventPlayer.echoClosestRing = sorted(legendaryRingsPos, lambda player: distance(eventPlayer, player))[0]
+    eventPlayer.echoClosestRing = sorted(legendaryRingsPos, lambda x: distance(eventPlayer, x))[0]
     wait()
     eventPlayer.echoClosestRing = legendaryRingsPos.index(eventPlayer.echoClosestRing)
     eventPlayer.echoPoints += 5
@@ -1742,12 +1742,12 @@ rule "ECHO points legendary rings":
 rule "ECHO teleports":
     @Event eachPlayer
     @Hero echo
-    @Condition any([distance(eventPlayer, player) <= 2.15 for player in echoTeleportPos]) == true
+    @Condition echoTeleportPos.any(lambda x: distance(eventPlayer, x) <= 2.15) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.ECHO
     
-    eventPlayer.teleport(sorted(echoTeleportPos, lambda player: distance(eventPlayer, player))[1])
+    eventPlayer.teleport(sorted(echoTeleportPos, lambda x: distance(eventPlayer, x))[1])
     wait()
     playEffect(getAllPlayers(), DynamicEffect.GOOD_EXPLOSION, Color.GREEN, eventPlayer, 1)
     playEffect(getAllPlayers(), DynamicEffect.EXPLOSION_SOUND, Color.GREEN, eventPlayer, 100)
@@ -1841,7 +1841,7 @@ rule "LUCIO init player":
     @Condition heroOfTheRound == Hero.LUCIO
     
     eventPlayer.lucioPointsHud = null
-    createIcon(eventPlayer, sorted(snotPos, lambda player: distance(eventPlayer.getPosition(), player))[0], Icon.RING_THICK, IconReeval.VISIBILITY_AND_POSITION, Color.GREEN)
+    createIcon(eventPlayer, sorted(snotPos, lambda x: distance(eventPlayer.getPosition(), x))[0], Icon.RING_THICK, IconReeval.VISIBILITY_AND_POSITION, Color.GREEN)
     eventPlayer.lucioClosestSnotIcon = getLastCreatedEntity()
     eventPlayer.lucioSpeed = 100
     eventPlayer.lucioPoints = 0
@@ -1907,12 +1907,12 @@ rule "LUCIO Snot":
 rule "LUCIO point":
     @Event eachPlayer
     @Hero lucio
-    @Condition any([distance(eventPlayer, player) <= 2 for player in snotPos]) == true
+    @Condition snotPos.any(lambda x: distance(eventPlayer, x) <= 2) == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.LUCIO
     
-    eventPlayer.lucioClosestSnot = sorted(snotPos, lambda player: distance(eventPlayer, player))[0]
+    eventPlayer.lucioClosestSnot = sorted(snotPos, lambda x: distance(eventPlayer, x))[0]
     wait()
     eventPlayer.lucioClosestSnot = snotPos.index(eventPlayer.lucioClosestSnot)
     eventPlayer.lucioPoints++
@@ -2081,10 +2081,10 @@ rule "MCCREE pas\u200bs the potato":
     potatoPos = victim
     eventPlayer.mccreeInvincibleTime = 1
     eventPlayer.setStatusEffect(null, Status.INVINCIBLE, eventPlayer.mccreeInvincibleTime)
-    createInWorldText([player for player in getAllPlayers() if eventPlayer.mccreeInvincibleTime > 0], "INVINCIBLE: {0}".format(eventPlayer.mccreeInvincibleTime), attacker, 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
+    createInWorldText(getAllPlayers().filter(lambda _: eventPlayer.mccreeInvincibleTime > 0), "INVINCIBLE: {0}".format(eventPlayer.mccreeInvincibleTime), attacker, 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
     eventPlayer.mccreeInvincibleText = getLastCreatedText()
     wait()
-    hudHeader([i for i in eventPlayer if eventPlayer.mccreeInvincibleTime > 0], "INVINCIBLE: {0}".format(eventPlayer.mccreeInvincibleTime), HudPosition.LEFT, 2, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.mccreeInvincibleTime > 0), "INVINCIBLE: {0}".format(eventPlayer.mccreeInvincibleTime), HudPosition.LEFT, 2, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.mccreeInvincibleHud = getLastCreatedText()
     wait()
     chaseOverTime(eventPlayer.mccreeInvincibleTime, 0, eventPlayer.mccreeInvincibleTime)
@@ -2204,15 +2204,15 @@ rule "MEI init player":
     eventPlayer.setMaxHealth(0.04)
     hudHeader(eventPlayer, "{1} AMMO: {0}/3".format(eventPlayer.meiAmmo, abilityIconString(Hero.MEI, Button.SECONDARY_FIRE)), HudPosition.LEFT, 0, Color.SKY_BLUE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.meiAmmoHud = getLastCreatedText()
-    hudHeader([i for i in eventPlayer if eventPlayer.meiMeeleCatchCooldown >= 2], "{1} CATCH COOLDOWN: {0}".format(eventPlayer.meiMeeleCatchCooldown, abilityIconString(Hero.MEI, Button.MELEE)), HudPosition.LEFT, 0.1, Color.SKY_BLUE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.meiMeeleCatchCooldown >= 2), "{1} CATCH COOLDOWN: {0}".format(eventPlayer.meiMeeleCatchCooldown, abilityIconString(Hero.MEI, Button.MELEE)), HudPosition.LEFT, 0.1, Color.SKY_BLUE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.meiCatchActiveCooldownHud = getLastCreatedText()
-    hudHeader([i for i in eventPlayer if eventPlayer.meiMeeleCatchCooldown > 0 and eventPlayer.meiMeeleCatchCooldown < 2], "{1} CATCH COOLDOWN: {0}".format(eventPlayer.meiMeeleCatchCooldown, abilityIconString(Hero.MEI, Button.MELEE)), HudPosition.LEFT, 0.1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.meiMeeleCatchCooldown > 0 and eventPlayer.meiMeeleCatchCooldown < 2), "{1} CATCH COOLDOWN: {0}".format(eventPlayer.meiMeeleCatchCooldown, abilityIconString(Hero.MEI, Button.MELEE)), HudPosition.LEFT, 0.1, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.meiCatchCooldownHud = getLastCreatedText()
-    createInWorldText([player for player in getAllPlayers() if eventPlayer.meiAmmo > 0 and eventPlayer.isAlive()], "{0}".format(abilityIconString(Hero.MEI, Button.ULTIMATE)), eventPlayer, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.SKY_BLUE)
+    createInWorldText(getAllPlayers().filter(lambda _: eventPlayer.meiAmmo > 0 and eventPlayer.isAlive()), "{0}".format(abilityIconString(Hero.MEI, Button.ULTIMATE)), eventPlayer, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.SKY_BLUE)
     eventPlayer.meiHasAmmoIcon = getLastCreatedText()
-    createInWorldText([i for i in eventPlayer if eventPlayer.meiHasPickedUpAnyAmmo == false], "{0} crouch on me {1}".format(iconString(Icon.ARROW_DOWN), "[{0}]".format(inputBindingString(Button.CROUCH)) if inputBindingString(Button.CROUCH) != "" else ""), sorted(meiSnowPos, lambda player: distance(eventPlayer.getPosition(), player))[0] + vect(0, 0.5, 0), 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.SKY_BLUE)
+    createInWorldText(eventPlayer.filter(lambda _: eventPlayer.meiHasPickedUpAnyAmmo == false), "{0} crouch on me {1}".format(iconString(Icon.ARROW_DOWN), "[{0}]".format(inputBindingString(Button.CROUCH)) if inputBindingString(Button.CROUCH) != "" else ""), sorted(meiSnowPos, lambda x: distance(eventPlayer.getPosition(), x))[0] + vect(0, 0.5, 0), 1, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.SKY_BLUE)
     eventPlayer.meiCrouchOnMeText = getLastCreatedText()
-    createEffect([player for player in getAllPlayers() if eventPlayer.meiMeeleCatchCooldown >= 2], Effect.SPHERE, Color.SKY_BLUE, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda _: eventPlayer.meiMeeleCatchCooldown >= 2), Effect.SPHERE, Color.SKY_BLUE, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.meiCatchSphereEffect = getLastCreatedEntity()
 
 
@@ -2298,14 +2298,14 @@ rule "MEI Kill":
 rule "MEI Pick up Snow":
     @Event eachPlayer
     @Hero mei
-    @Condition any([distance(eventPlayer, player) <= 2 for player in meiSnowPos]) == true
+    @Condition meiSnowPos.any(lambda x: distance(eventPlayer, x) <= 2) == true
     @Condition eventPlayer.isCrouching() == true
     @Condition isGameInProgress() == true
     @Condition eventPlayer.isAlive() == true
     @Condition heroOfTheRound == Hero.MEI
     
     if eventPlayer.meiAmmo < 3:
-        eventPlayer.meiClosestSnow = sorted(meiSnowPos, lambda player: distance(eventPlayer, player))[0]
+        eventPlayer.meiClosestSnow = sorted(meiSnowPos, lambda x: distance(eventPlayer, x))[0]
         wait()
         eventPlayer.meiClosestSnow = meiSnowPos.index(eventPlayer.meiClosestSnow)
         playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.WHITE, eventPlayer, 1)
@@ -2518,13 +2518,13 @@ rule "PHARAH init effects":
     @Condition eventPlayer.isAlive() == true
     
     wait(2)
-    createEffect([player for player in getAllPlayers() if eventPlayer.pharahHeal == true], Effect.GOOD_AURA, Color.YELLOW, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda _: eventPlayer.pharahHeal == true), Effect.GOOD_AURA, Color.YELLOW, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.pharahHealEffect = getLastCreatedEntity()
-    createEffect([player for player in getAllPlayers() if eventPlayer.getHealth() > 199], Effect.GOOD_AURA, Color.AQUA, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda _: eventPlayer.getHealth() > 199), Effect.GOOD_AURA, Color.AQUA, eventPlayer, 1, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.pharahDamageBoostEffect = getLastCreatedEntity()
-    hudHeader([i for i in eventPlayer if eventPlayer.pharahHeal == true], "HEALING", HudPosition.LEFT, 2, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.pharahHeal == true), "HEALING", HudPosition.LEFT, 2, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.pharahHealHud = getLastCreatedText()
-    hudHeader([i for i in eventPlayer if eventPlayer.getHealth() > 199], "DAMAGE BOOST", HudPosition.LEFT, 2, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.getHealth() > 199), "DAMAGE BOOST", HudPosition.LEFT, 2, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.pharahDamageBoostHud = getLastCreatedText()
 
 
@@ -2642,7 +2642,7 @@ rule "REIN knockback effect on all abilities":
     chaseAtRate(victim.reinAttackerCreditTimer, 0, 1)
     if attacker.reinUltTimer > 0:
         goto lbl_0
-    attacker.reinTempUltCharge = eventPlayer.getUltCharge() + (13 - ((len([player for player in getAllPlayers() if player.reinIsAlive == true])) / 2))
+    attacker.reinTempUltCharge = eventPlayer.getUltCharge() + (13 - ((len(getAllPlayers().filter(lambda player: player.reinIsAlive == true))) / 2))
     attacker.setUltCharge(attacker.reinTempUltCharge)
     lbl_0:
 
@@ -3107,50 +3107,50 @@ rule "SOLDIER init global":
     soldierObjectivePos = []
     soldierObjectivePos = [vect(-18, 0, -18), vect(-18, 0, 0), vect(-18, 0, 18), vect(0, 0, -18), vect(0, 0, 18), vect(18, 0, -18), vect(18, 0, 0), vect(18, 0, 18)]
     soldierObjectivePos = random.shuffle(soldierObjectivePos)
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 0], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 0), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 0], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 0), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 0], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 0), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[0], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 1], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 1), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 1], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 1), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 1], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 1), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[1], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 2], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 2), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 2], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 2), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 2], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 2), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[2], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 3], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 3), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 3], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 3), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 3], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 3), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[3], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 4], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 4), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 4], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 4), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 4], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 5], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 4), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[4], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 5), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 5], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 5), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 5], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 6], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 5), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[5], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 6), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 6], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 6), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 6], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 7], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 6), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[6], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 7), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 7], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 7), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
-    createEffect([player for player in getAllPlayers() if player.soldierPoints == 7], Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+    createEffect(getAllPlayers().filter(lambda player: player.soldierPoints == 7), Effect.LIGHT_SHAFT, Color.BLUE, soldierObjectivePos[7], 1.5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     soldierObjectiveEffects.append(getLastCreatedEntity())
 
 
@@ -3290,7 +3290,7 @@ rule "SYM init player":
     @Condition heroOfTheRound == Hero.SYMMETRA
     
     #Brig flag text above the head for the player who reached the color first
-    createInWorldText([player for player in getAllPlayers() if symPlayersInTheSelectedColor[0] == eventPlayer], "{0}".format(abilityIconString(Hero.BRIGITTE, Button.ULTIMATE)), eventPlayer, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(getAllPlayers().filter(lambda _: symPlayersInTheSelectedColor[0] == eventPlayer), "{0}".format(abilityIconString(Hero.BRIGITTE, Button.ULTIMATE)), eventPlayer, 2, Clip.SURFACES, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     eventPlayer.symFirstPlayerInColorText = getLastCreatedText()
     eventPlayer.setStatusEffect(null, Status.ROOTED, 9999)
     eventPlayer.disablePlayerCollision()
@@ -3298,7 +3298,7 @@ rule "SYM init player":
     wait(0.512)
     eventPlayer.teleport(vect(0, 0, 0))
     #Left HUD showing which position you finish the run to the color + brig flag icon if you finished 1st
-    hudHeader([i for i in eventPlayer if eventPlayer.symIn and symPhase == "someoneReachedTheSelectedColor"], "{0}{1}".format(symPlayersInTheSelectedColor.index(eventPlayer) + 1, eventPlayer.symOrdinalString), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudHeader(eventPlayer.filter(lambda _: eventPlayer.symIn and symPhase == "someoneReachedTheSelectedColor"), "{0}{1}".format(symPlayersInTheSelectedColor.index(eventPlayer) + 1, eventPlayer.symOrdinalString), HudPosition.LEFT, 2, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     eventPlayer.symOrdinalPosHud = getLastCreatedText()
 
 
@@ -3331,41 +3331,41 @@ rule "SYM init global":
     symColoredSpheresEffectsAndText.append(getLastCreatedEntity())
     createEffect(getAllPlayers(), Effect.SPHERE, Color.YELLOW, symColorsPositions[8], 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     symColoredSpheresEffectsAndText.append(getLastCreatedEntity())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[1]) <= 5], "BLUE", symColorsPositions[1] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[1]) <= 5), "BLUE", symColorsPositions[1] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[2]) <= 5], "GREEN", symColorsPositions[2] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[2]) <= 5), "GREEN", symColorsPositions[2] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[3]) <= 5], "ORANGE", symColorsPositions[3] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[3]) <= 5), "ORANGE", symColorsPositions[3] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[4]) <= 5], "PURPLE", symColorsPositions[4] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[4]) <= 5), "PURPLE", symColorsPositions[4] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[5]) <= 5], "RED", symColorsPositions[5] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[5]) <= 5), "RED", symColorsPositions[5] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[6]) <= 5], "TURQUOISE", symColorsPositions[6] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[6]) <= 5), "TURQUOISE", symColorsPositions[6] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[7]) <= 5], "WHITE", symColorsPositions[7] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 15, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[7]) <= 5), "WHITE", symColorsPositions[7] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    createInWorldText([player for player in getAllPlayers() if distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[8]) <= 5], "YELLOW", symColorsPositions[8] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
+    createInWorldText(getAllPlayers().filter(lambda player: distance(raycast(player.getEyePosition(), player.getEyePosition() + player.getFacingDirection() * 21.21, null, getAllPlayers(), false).getHitPosition(), symColorsPositions[8]) <= 5), "YELLOW", symColorsPositions[8] + vect(0, 1.5, 0), 2, Clip.SURFACES, WorldTextReeval.VISIBILITY)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 1], "THE COLOR IS...", HudPosition.TOP, 3, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 1), "THE COLOR IS...", HudPosition.TOP, 3, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 2], "THE COLOR IS...", HudPosition.TOP, 3, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 2), "THE COLOR IS...", HudPosition.TOP, 3, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 3], "THE COLOR IS...", HudPosition.TOP, 3, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 3), "THE COLOR IS...", HudPosition.TOP, 3, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 4], "THE COLOR IS...", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 4), "THE COLOR IS...", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 5], "THE COLOR IS...", HudPosition.TOP, 3, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 5), "THE COLOR IS...", HudPosition.TOP, 3, Color.RED, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 6], "THE COLOR IS...", HudPosition.TOP, 3, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 6), "THE COLOR IS...", HudPosition.TOP, 3, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 7], "THE COLOR IS...", HudPosition.TOP, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 7), "THE COLOR IS...", HudPosition.TOP, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext([player for player in getAllPlayers() if symColorDeciding == 8], "THE COLOR IS...", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda _: symColorDeciding == 8), "THE COLOR IS...", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext(getAllPlayers(), "Syms in: {0}".format(len([player for player in getAllPlayers() if player.symIn])), HudPosition.LEFT, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers(), "Syms in: {0}".format(len(getAllPlayers().filter(lambda player: player.symIn))), HudPosition.LEFT, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
-    hudSubtext(getAllPlayers(), "Syms out: {0}".format(len([player for player in getAllPlayers() if player.symIn == false and player.isAlive()])), HudPosition.LEFT, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers(), "Syms out: {0}".format(len(getAllPlayers().filter(lambda player: player.symIn == false and player.isAlive()))), HudPosition.LEFT, 4, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     symColoredSpheresEffectsAndText.append(getLastCreatedText())
     symTheColorIsSelectedTrigger()
 
@@ -3401,7 +3401,7 @@ rule "SYM invisibility ON 2":
     @Condition distance(eventPlayer.getPosition(), getClosestPlayer(eventPlayer, Team.ALL)) <= 2
     @Disabled
     
-    ([player for player in getAllPlayers() if distance(player.getPosition(), eventPlayer.getPosition()) <= 2]).setInvisibility(Invis.ALL)
+    (getAllPlayers().filter(lambda player: distance(player.getPosition(), eventPlayer.getPosition()) <= 2)).setInvisibility(Invis.ALL)
 
 
 rule "SYM invisibility OFF 2":
@@ -3412,7 +3412,7 @@ rule "SYM invisibility OFF 2":
     @Condition distance(eventPlayer.getPosition(), getClosestPlayer(eventPlayer, Team.ALL)) > 2
     @Disabled
     
-    ([player for player in getAllPlayers() if distance(player.getPosition(), eventPlayer.getPosition()) > 2]).setInvisibility(Invis.NONE)
+    (getAllPlayers().filter(lambda player: distance(player.getPosition(), eventPlayer.getPosition()) > 2)).setInvisibility(Invis.NONE)
 
 
 rule "SYM decidingOnAColor PHASE":
@@ -3447,28 +3447,28 @@ rule "SYM theColorIsSelected PHASE":
     wait(0.032)
     symPlayersInTheSelectedColor = []
     if symColorSelected == 1:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 1 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS BLUE", HudPosition.TOP, 3, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 1 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS BLUE", HudPosition.TOP, 3, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 2:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 2 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS GREEN", HudPosition.TOP, 3, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 2 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS GREEN", HudPosition.TOP, 3, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 3:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 3 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS ORANGE", HudPosition.TOP, 3, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 3 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS ORANGE", HudPosition.TOP, 3, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 4:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 4 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS PURPLE", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 4 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS PURPLE", HudPosition.TOP, 3, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 5:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 5 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS RED", HudPosition.TOP, 3, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 5 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS RED", HudPosition.TOP, 3, Color.RED, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 6:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 6 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS TURQUOISE", HudPosition.TOP, 3, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 6 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS TURQUOISE", HudPosition.TOP, 3, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 7:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 7 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS WHITE", HudPosition.TOP, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 7 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS WHITE", HudPosition.TOP, 3, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     elif symColorSelected == 8:
-        hudHeader([player for player in getAllPlayers() if symColorSelected == 8 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")], "THE COLOR IS YELLOW", HudPosition.TOP, 3, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+        hudHeader(getAllPlayers().filter(lambda _: symColorSelected == 8 and (symPhase == "theColorIsSelected" or symPhase == "theColorIsSelectedEnd" or symPhase == "someoneReachedTheSelectedColor")), "THE COLOR IS YELLOW", HudPosition.TOP, 3, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
         symSelectedColorHud = getLastCreatedText()
     symPhase = "theColorIsSelectedEnd"
     #smallMessage(getAllPlayers(), "end of theColorIsSelected")
@@ -3479,7 +3479,7 @@ rule "SYM someoneReachedTheSelectedColor TRIGGER":
     @Condition heroOfTheRound == Hero.SYMMETRA
     @Condition symPhase == "theColorIsSelectedEnd"
     #@Condition len(symPlayersInTheSelectedColor) >= 1
-    @Condition any([player.symIn for player in playersStartOfTheRound]) == true
+    @Condition playersStartOfTheRound.any(lambda x: x.symIn) == true
     
     symPhase = "someoneReachedTheSelectedColor"
 
@@ -3546,7 +3546,7 @@ rule "SYM innerRoundTimerIsOver PHASE":
 def symScoring():
     @Name "SYM scoring"
     
-    #symVictims = [player for player in playersStartOfTheRound if player.isAlive()].exclude(symPlayersInTheSelectedColor)
+    #symVictims = playersStartOfTheRound.filter(lambda x: x.isAlive()).exclude(symPlayersInTheSelectedColor)
     symVictims = getLivingPlayers(Team.ALL).exclude(symPlayersInTheSelectedColor)
     symVictims.forceButtonPress(Button.ABILITY_2)
     wait(0.032)
@@ -4008,7 +4008,7 @@ rule "Dummy Aim Bot (TEST)":
     @Condition eventPlayer.isDummy() == true
     #@Condition "Jokaes" == "{0}".format(hostPlayer) == true
     
-    eventPlayer.startFacing(directionTowards(eventPlayer, sorted([player for player in getAllPlayers() if player.isAlive()], lambda i: distance(eventPlayer, i))[1]), 10000)
+    eventPlayer.startFacing(directionTowards(eventPlayer, sorted(getAllPlayers().filter(lambda player: player.isAlive()), lambda x: distance(eventPlayer, x))[1]), 10000)
     eventPlayer.startForcingButton(Button.ABILITY_2)
     eventPlayer.startForcingButton(Button.ABILITY_1)
     eventPlayer.startForcingButton(Button.SECONDARY_FIRE)
@@ -4050,7 +4050,7 @@ rule "Dummy Moving (TEST)":
     @Condition eventPlayer.isDummy() == true
     #@Condition "Jokaes" == "{0}".format(hostPlayer) == true
     
-    eventPlayer.startThrottleInDirection(directionTowards(eventPlayer, sorted([player for player in getAllPlayers() if player.isAlive()], lambda i: distance(eventPlayer, i))[1]), 1, Relativity.TO_WORLD)
+    eventPlayer.startThrottleInDirection(directionTowards(eventPlayer, sorted(getAllPlayers().filter(lambda player: player.isAlive()), lambda x: distance(eventPlayer, x))[1]), 1, Relativity.TO_WORLD)
 
 
 rule "Skip round (TEST)":

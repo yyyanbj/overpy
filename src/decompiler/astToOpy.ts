@@ -605,21 +605,17 @@ export function astToOpy(content: Ast): string {
 
         //Determine the current array element / current array index name
         setCurrentArrayElementName("");
-        if (isTypeSuitable({ Array: "Player" }, content.args[0].type)) {
+        if (isTypeSuitable({ Array: "Player" }, content.args[0].type, false)) {
             setCurrentArrayElementName("player");
         } else {
-            setCurrentArrayElementName("i");
+            setCurrentArrayElementName("x");
         }
 
-        if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"]) && !astContainsFunctions(content.args[1], ["__currentArrayElement__"]) && !(content.name === "__mappedArray__" && content.args[0].name === "__filteredArray__" && astContainsFunctions(content.args[0].args[1], ["__currentArrayElement__"]))) {
+        if (!astContainsFunctions(content.args[1], ["__currentArrayElement__"])) {
             setCurrentArrayElementName("_");
         }
 
-        if (currentArrayElementName === "i") {
-            setCurrentArrayIndexName("idx");
-        } else {
-            setCurrentArrayIndexName("i");
-        }
+        setCurrentArrayIndexName("i");
 
         while (isVarName(currentArrayElementName, true)) {
             setCurrentArrayElementName(currentArrayElementName + "_");
@@ -631,51 +627,30 @@ export function astToOpy(content: Ast): string {
 
         var result = "";
         if (content.name === "__all__" || content.name === "__any__") {
-            result += content.name.replace(/_/g, "") + "(";
+            var funcName = content.name.replace(/_/g, "");
             if (content.args[1].name === "__currentArrayElement__") {
                 //If there is just "current array element", no need to explicitly put it
-                result += opyArray;
+                result += opyArray + "." + funcName + "()";
             } else {
-                result += "[" + astToOpy(content.args[1]) + " for " + currentArrayElementName;
+                result += opyArray + "." + funcName + "(lambda " + currentArrayElementName;
                 if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
                     result += ", " + currentArrayIndexName;
                 }
-                result += " in ";
-                var opIn = opyArray;
-                if (astContainsFunctions(content.args[0], ["__ifThenElse__"])) {
-                    opIn = "(" + opIn + ")";
-                }
-                result += opIn + "]";
+                result += ": " + astToOpy(content.args[1]) + ")";
             }
-            result += ")";
         } else if (content.name === "__mappedArray__") {
-            result += "[" + astToOpy(content.args[1]) + " for " + currentArrayElementName;
-            if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"]) || (content.args[0].name === "__filteredArray__" && astContainsFunctions(content.args[0].args[1], ["__currentArrayIndex__"]))) {
-                result += ", " + currentArrayIndexName;
-            }
-            result += " in ";
-            if (content.args[0].name === "__filteredArray__") {
-                result += astToOpy(content.args[0].args[0]) + " if " + astToOpy(content.args[0].args[1]);
-            } else {
-                result += opyArray;
-            }
-            result += "]";
-        } else if (content.name === "__filteredArray__") {
-            result += "[" + currentArrayElementName + " for " + currentArrayElementName;
+            
+            result += opyArray + ".map(lambda " + currentArrayElementName;
             if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
                 result += ", " + currentArrayIndexName;
             }
-            result += " in ";
-            var opArray = opyArray;
-            if (astContainsFunctions(content.args[0], ["__ifThenElse__"])) {
-                opArray = "(" + opArray + ")";
+            result += ": " + astToOpy(content.args[1]) + ")";
+        } else if (content.name === "__filteredArray__") {
+            result += opyArray + ".filter(lambda " + currentArrayElementName;
+            if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
+                result += ", " + currentArrayIndexName;
             }
-            result += opArray + " if ";
-            var opIf = astToOpy(content.args[1]);
-            if (astContainsFunctions(content.args[1], ["__ifThenElse__"])) {
-                opIf = "(" + opIf + ")";
-            }
-            result += opIf + "]";
+            result += ": " + astToOpy(content.args[1]) + ")";
         } else if (content.name === "__sortedArray__") {
             result += "sorted(" + opyArray;
             //If there is just "current array element", no need to explicitly put it

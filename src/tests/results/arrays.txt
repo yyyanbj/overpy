@@ -198,6 +198,41 @@ rule ("other array functions") {
     }
 }
 
+rule ("member array functions") {
+    event {
+        Ongoing - Global;
+    }
+    actions {
+        Set Global Variable(A, Is True For All(All Players(All Teams), Compare((Current Array Element).A, ==, 2)));
+        Set Global Variable(A, Is True For All(All Players(All Teams), Current Array Element));
+        "true"
+        Set Global Variable(A, True);
+        "len(getAllPlayers()) == 0    =>    not len(getAllPlayers())"
+        Set Global Variable(A, Not(Number Of Players(All Teams)));
+        "true"
+        Set Global Variable(A, True);
+        "true"
+        Set Global Variable(A, True);
+        Set Global Variable(A, Is True For Any(All Players(All Teams), Compare((Current Array Element).A, ==, 2)));
+        Set Global Variable(A, Is True For Any(All Players(All Teams), Current Array Element));
+        "false"
+        Set Global Variable(A, False);
+        "len(getAllPlayers()) > 0"
+        Set Global Variable(A, Compare(Number Of Players(All Teams), >, 0));
+        "false"
+        Set Global Variable(A, False);
+        "false"
+        Set Global Variable(A, False);
+        Set Global Variable(A, Filtered Array(All Players(All Teams), Compare((Current Array Element).A, ==, 2)));
+        Set Global Variable(A, Mapped Array(All Players(All Teams), Health(Current Array Element)));
+        Set Global Variable(A, Filtered Array(Global.A, Compare(Current Array Element, !=, Current Array Index)));
+        Set Global Variable(A, Mapped Array(Global.A, Add(Current Array Element, Current Array Index)));
+        Set Global Variable(A, Is True For All(All Players(All Teams), Compare((Current Array Element).A, >, 0)));
+        Set Global Variable(A, Is True For Any(All Players(All Teams), Compare((Current Array Element).A, ==, Current Array Index)));
+        Set Global Variable(A, Mapped Array(Filtered Array(All Players(All Teams), Compare((Current Array Element).A, ==, 2)), Health(Current Array Element)));
+    }
+}
+
 rule ("array to string") {
     event {
         Ongoing - Global;

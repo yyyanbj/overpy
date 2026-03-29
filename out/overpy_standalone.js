@@ -38192,7 +38192,7 @@ function shouldInterruptAfterDeadline(deadline) {
   };
 }
 
-// src/runtime/quickjs.ts
+// src/quickjs.ts
 var QUICKJS_WASM_ASSET_NAME = "quickjs-ng.wasm";
 var MACRO_TIMEOUT_MS = 1e3;
 var POST_COMPILE_HOOK_TIMEOUT_MS = 2e3;
@@ -38200,6 +38200,9 @@ var MAX_RUNTIME_MEMORY_BYTES = 64 * 1024 * 1024;
 var MAX_RUNTIME_STACK_BYTES = 512 * 1024;
 var quickJSModule = null;
 var scriptCache = {};
+function isNodeRuntime() {
+  return typeof process !== "undefined" && typeof process.versions?.node === "string";
+}
 function loadQuickJSFFI() {
   return Promise.resolve().then(() => require_ffi()).then((mod) => mod.QuickJSFFI);
 }
@@ -38219,9 +38222,6 @@ var quickJSVariant = {
   importFFI: loadQuickJSFFI,
   importModuleLoader: loadQuickJSModuleLoader
 };
-function isNodeRuntime() {
-  return typeof process !== "undefined" && typeof process.versions?.node === "string";
-}
 function getQuickJSWasmLocation() {
   if (isNodeRuntime()) {
     const path = require("path");
@@ -38240,6 +38240,7 @@ var loadQuickJSModule = memoizePromiseFactory(async () => {
   return quickJSModule;
 });
 async function initializeQuickJSRuntime() {
+  if (IS_IN_BROWSER) return;
   await loadQuickJSModule();
 }
 function getQuickJSModule() {
@@ -38284,6 +38285,9 @@ function getTimeoutMs(kind) {
   return kind === "postCompileHook" ? POST_COMPILE_HOOK_TIMEOUT_MS : MACRO_TIMEOUT_MS;
 }
 function executeQuickJSScript(script, options = {}) {
+  if (IS_IN_BROWSER) {
+    throw new Error("Javascript macro execution is not supported in browser environment");
+  }
   if (script in scriptCache) {
     return scriptCache[script];
   }
@@ -38435,11 +38439,19 @@ function tokenize(content) {
       let hookPath = getFilePaths(content2.substring("#!postCompileHook ".length).trim(), rootPath)[0];
       const scriptText = getFileContent(hookPath);
       setPostCompileHook((content3) => {
-        return executeQuickJSScript(`var content = ${JSON.stringify(content3)};
+        try {
+          return executeQuickJSScript(`var content = ${JSON.stringify(content3)};
 ${scriptText}`, {
-          filename: hookPath,
-          kind: "postCompileHook"
-        });
+            filename: hookPath,
+            kind: "postCompileHook"
+          });
+        } catch (e) {
+          if (e instanceof Error) {
+            addScriptErrorFileStack(e, hookPath, 1);
+          }
+          error(e);
+        }
+        ;
       });
       return;
     }
@@ -38812,10 +38824,6 @@ function resolveMacro(macro, args = [], indentLevel) {
           kind: "macro",
           lineOffset: builtInJsFunctionsNbLines
         });
-        if (!result) {
-          error("Script '" + getFilenameFromPath(macro.scriptPath) + "' yielded an invalid result.\nPlease note that your script should yield a primitive value (e.g. a number or a string) as the final result.");
-        }
-        result = result.toString();
       } catch (e) {
         if (e instanceof Error) {
           addScriptErrorFileStack(e, macro.scriptPath, builtInJsFunctionsNbLines);
@@ -45964,6 +45972,39 @@ astParsingFunctions[".addToScore"] = function(content) {
       return getAstForUselessInstruction();
     }
   }
+  return content;
+};
+
+// src/compiler/functions/__all__.ts
+astParsingFunctions["__all__"] = function(content) {
+  if (enableOptimization) {
+    if (content.args[0].name === "__array__" && content.args[0].args.length === 0) {
+      return getAstForTrue();
+    }
+    if (!astContainsFunctions(content.args[1], ["__currentArrayElement__", "__currentArrayIndex__"]) && isDefinitelyTruthy(content.args[1])) {
+      return getAstForTrue();
+    }
+    if (!astContainsFunctions(content.args[1], ["__currentArrayElement__", "__currentArrayIndex__"]) && isDefinitelyFalsy(content.args[1])) {
+      return new Ast2("__not__", [new Ast2("len", [content.args[0]])]);
+    }
+  }
+  return content;
+};
+
+// src/compiler/functions/__any__.ts
+astParsingFunctions["__any__"] = function(content) {
+  if (enableOptimization) {
+    if (content.args[0].name === "__array__" && content.args[0].args.length === 0) {
+      return getAstForFalse();
+    }
+    if (!astContainsFunctions(content.args[1], ["__currentArrayElement__", "__currentArrayIndex__"]) && isDefinitelyFalsy(content.args[1])) {
+      return getAstForFalse();
+    }
+    if (!astContainsFunctions(content.args[1], ["__currentArrayElement__", "__currentArrayIndex__"]) && isDefinitelyTruthy(content.args[1])) {
+      return new Ast2("__greaterThan__", [new Ast2("len", [content.args[0]]), getAstFor0()]);
+    }
+  }
+  content.name = "__any__";
   return content;
 };
 
@@ -66910,6 +66951,54 @@ function parseMember(object, member) {
       stringAst.fileStack = getFileStackRange(object.concat(...member));
       return stringAst;
     } else {
+      if (["map", "filter", "all", "any"].includes(name) && args !== null) {
+        if (args.length === 2) {
+          args[0].push({ text: ",", fileStack: [] });
+          args[0].push(...args[1]);
+          args = args.slice(0, 1);
+        }
+        if ((name === "all" || name === "any") && args.length === 0) {
+          let result3 = new Ast2("__" + name + "__", [parse(object), new Ast2("__currentArrayElement__")]);
+          result3.fileStack = getFileStackRange(object.concat(...member));
+          return result3;
+        }
+        if (args.length !== 1) {
+          error("Function '." + name + "' takes 1 argument (a lambda expression), received " + args.length);
+        }
+        var lambdaArgs = splitTokens(args[0], ":");
+        if (lambdaArgs.length !== 2) {
+          error("Syntax for ." + name + "() is '." + name + "(lambda x: expression(x))'");
+        }
+        if (lambdaArgs[0].length < 2) {
+          error("Expected 'lambda x' before ':'");
+        }
+        if (lambdaArgs[0][0].text !== "lambda") {
+          error("Expected 'lambda x' before ':'");
+        }
+        if (lambdaArgs[0].length === 2) {
+          setCurrentArrayElementName(lambdaArgs[0][1].text);
+          setCurrentArrayIndexName("");
+        } else if (lambdaArgs[0].length === 4) {
+          if (lambdaArgs[0][2].text !== ",") {
+            error("Expected ',' after '" + lambdaArgs[0][1].text + "', but found '" + lambdaArgs[0][2].text, lambdaArgs[0][2].fileStack);
+          }
+          setCurrentArrayElementName(lambdaArgs[0][1].text);
+          setCurrentArrayIndexName(lambdaArgs[0][3].text);
+        } else {
+          error("Expected 1 or 3 tokens after 'lambda', but got " + (lambdaArgs[0].length - 1), lambdaArgs[0][0].fileStack);
+        }
+        var lambdaBody = parse(lambdaArgs[1]);
+        setCurrentArrayElementName("");
+        setCurrentArrayIndexName("");
+        let result2 = new Ast2({
+          "map": "__mappedArray__",
+          "filter": "__filteredArray__",
+          "all": "__all__",
+          "any": "__any__"
+        }[name], [parse(object), lambdaBody]);
+        result2.fileStack = getFileStackRange(object.concat(...member));
+        return result2;
+      }
       let functionAliases = {
         "setCamera": "startCamera",
         "disableHeroHUD": "disableHeroHud",
@@ -67312,7 +67401,7 @@ function isTypeSuitable(expectedType, receivedType, valueTypeIsSuitable = true) 
     } else if (typeof expectedType === "object") {
       var expectedTypeName = Object.keys(expectedType)[0];
       if (expectedTypeName === "Array") {
-        return receivedType === "Value";
+        return receivedType === "Value" && valueTypeIsSuitable;
       } else if (["Vector", "Direction", "Position", "Velocity"].includes(expectedTypeName)) {
         return isTypeSuitable(expectedTypeName, receivedType);
       }
@@ -68272,7 +68361,7 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
     "return": "String"
   },
   "all": {
-    "description": "Whether every value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `all([player.A == 2 for player in getAllPlayers()])`",
+    "description": "Whether every value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `all([player.A == 2 for player in getAllPlayers()])`\n\n**Note**: The `.all()` member function is preferred over this syntax: `getAllPlayers().all(lambda player: player.A == 2)`",
     "args": [
       {
         "name": "array",
@@ -68283,10 +68372,11 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
       }
     ],
     "isConstant": true,
-    "return": "bool"
+    "return": "bool",
+    "hideFromAutocomplete": true
   },
   "any": {
-    "description": "Whether any value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `any([player.A == 2 for player in getAllPlayers()])`",
+    "description": "Whether any value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `any([player.A == 2 for player in getAllPlayers()])`\n\n**Note**: The `.any()` member function is preferred over this syntax: `getAllPlayers().any(lambda player: player.A == 2)`",
     "args": [
       {
         "name": "array",
@@ -68297,7 +68387,8 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
       }
     ],
     "isConstant": true,
-    "return": "bool"
+    "return": "bool",
+    "hideFromAutocomplete": true
   },
   ".append": {
     "description": "Appends the specified value to the specified array. Note that this function is really the equivalent of `extend()`, that is, `[1,2].append([3,4])` will produce `[1,2,3,4]` instead of `[1,2,[3,4]]`. Modifies the array in-place; use `concat` to instead return a copy of the array.\n\nExample: `A.append(3)`",
@@ -68314,6 +68405,92 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
     ],
     class: "Array",
     return: "void"
+  },
+  ".all": {
+    "description": "Whether the lambda function evaluates to true for every element of the array. If no argument is provided, checks whether every element is truthy. Returns true for an empty array.\n\nExample: `getAllPlayers().all(lambda player: player.A == 2)`\n\nWith index: `array.all(lambda elem, idx: elem > idx)`\n\nWithout lambda: `array.all()` (equivalent to `array.all(lambda x: x)`)",
+    "args": [
+      {
+        "name": "array",
+        "description": "The array whose values will be considered.",
+        "type": {
+          "Array": "Object"
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "The lambda function that is evaluated for each element of the array. Must return a boolean. If omitted, defaults to the element itself.",
+        "type": "Lambda",
+        "default": "<current array element>"
+      }
+    ],
+    class: "Array",
+    "isConstant": true,
+    "return": "bool"
+  },
+  ".any": {
+    "description": "Whether the lambda function evaluates to true for any element of the array. If no lambda is provided, checks whether any element is truthy. Returns false for an empty array.\n\nExample: `getAllPlayers().any(lambda player: player.A == 2)`\n\nWith index: `array.any(lambda elem, idx: elem > idx)`\n\nWithout lambda: `array.any()` (equivalent to `array.any(lambda x: x)`)",
+    "args": [
+      {
+        "name": "array",
+        "description": "The array whose values will be considered.",
+        "type": {
+          "Array": "Object"
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "The lambda function that is evaluated for each element of the array. Must return a boolean. If omitted, defaults to the element itself.",
+        "type": "Lambda",
+        "default": "<current array element>"
+      }
+    ],
+    class: "Array",
+    "isConstant": true,
+    "return": "bool"
+  },
+  ".filter": {
+    "description": "A copy of the specified array with any values that do not match the lambda condition removed.\n\nExample: `getAllPlayers().filter(lambda player: player.A == 2)`\n\nWith index: `array.filter(lambda elem, idx: elem > idx)`",
+    "args": [
+      {
+        "name": "array",
+        "description": "The array whose copy will be filtered.",
+        "type": {
+          "Array": "Object"
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "The lambda function that is evaluated for each element of the copied array. If it returns true, the element is kept; otherwise, it is removed.",
+        "type": "Lambda"
+      }
+    ],
+    class: "Array",
+    "isConstant": true,
+    "return": {
+      "Array": "Object"
+    }
+  },
+  ".map": {
+    "description": "A copy of the specified array with the values mapped according to the lambda function that is evaluated for each element.\n\nExample: `getAllPlayers().map(lambda player: player.A + 2)`\n\nWith index: `array.map(lambda elem, idx: elem + idx)`",
+    "args": [
+      {
+        "name": "array",
+        "description": "The array whose copy will be mapped.",
+        "type": {
+          "Array": "Object"
+        }
+      },
+      {
+        "name": "lambda",
+        "description": "The lambda function that is evaluated for each element. The return value is used as the new element.",
+        "type": "Lambda"
+      }
+    ],
+    class: "Array",
+    "isConstant": true,
+    "return": {
+      "Array": "Object"
+    }
   },
   "arrayToString": {
     "description": "Displays an array (otherwise, casting an array to a string will only display the first value). The second argument is the maximum length of the array (arrays can go up to 1000, which would generate a lot of elements). If the array length is above the maximum length, an ellipsis (...) will be displayed along with the amount of elements remaining.",
@@ -70095,19 +70272,15 @@ function astToOpy(content) {
   if (["__all__", "__any__", "__filteredArray__", "__sortedArray__", "__mappedArray__"].includes(content.name)) {
     var opyArray = astToOpy(content.args[0]);
     setCurrentArrayElementName("");
-    if (isTypeSuitable({ Array: "Player" }, content.args[0].type)) {
+    if (isTypeSuitable({ Array: "Player" }, content.args[0].type, false)) {
       setCurrentArrayElementName("player");
     } else {
-      setCurrentArrayElementName("i");
+      setCurrentArrayElementName("x");
     }
-    if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"]) && !astContainsFunctions(content.args[1], ["__currentArrayElement__"]) && !(content.name === "__mappedArray__" && content.args[0].name === "__filteredArray__" && astContainsFunctions(content.args[0].args[1], ["__currentArrayElement__"]))) {
+    if (!astContainsFunctions(content.args[1], ["__currentArrayElement__"])) {
       setCurrentArrayElementName("_");
     }
-    if (currentArrayElementName === "i") {
-      setCurrentArrayIndexName("idx");
-    } else {
-      setCurrentArrayIndexName("i");
-    }
+    setCurrentArrayIndexName("i");
     while (isVarName(currentArrayElementName, true)) {
       setCurrentArrayElementName(currentArrayElementName + "_");
     }
@@ -70116,50 +70289,28 @@ function astToOpy(content) {
     }
     var result = "";
     if (content.name === "__all__" || content.name === "__any__") {
-      result += content.name.replace(/_/g, "") + "(";
+      var funcName = content.name.replace(/_/g, "");
       if (content.args[1].name === "__currentArrayElement__") {
-        result += opyArray;
+        result += opyArray + "." + funcName + "()";
       } else {
-        result += "[" + astToOpy(content.args[1]) + " for " + currentArrayElementName;
+        result += opyArray + "." + funcName + "(lambda " + currentArrayElementName;
         if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
           result += ", " + currentArrayIndexName;
         }
-        result += " in ";
-        var opIn = opyArray;
-        if (astContainsFunctions(content.args[0], ["__ifThenElse__"])) {
-          opIn = "(" + opIn + ")";
-        }
-        result += opIn + "]";
+        result += ": " + astToOpy(content.args[1]) + ")";
       }
-      result += ")";
     } else if (content.name === "__mappedArray__") {
-      result += "[" + astToOpy(content.args[1]) + " for " + currentArrayElementName;
-      if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"]) || content.args[0].name === "__filteredArray__" && astContainsFunctions(content.args[0].args[1], ["__currentArrayIndex__"])) {
-        result += ", " + currentArrayIndexName;
-      }
-      result += " in ";
-      if (content.args[0].name === "__filteredArray__") {
-        result += astToOpy(content.args[0].args[0]) + " if " + astToOpy(content.args[0].args[1]);
-      } else {
-        result += opyArray;
-      }
-      result += "]";
-    } else if (content.name === "__filteredArray__") {
-      result += "[" + currentArrayElementName + " for " + currentArrayElementName;
+      result += opyArray + ".map(lambda " + currentArrayElementName;
       if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
         result += ", " + currentArrayIndexName;
       }
-      result += " in ";
-      var opArray = opyArray;
-      if (astContainsFunctions(content.args[0], ["__ifThenElse__"])) {
-        opArray = "(" + opArray + ")";
+      result += ": " + astToOpy(content.args[1]) + ")";
+    } else if (content.name === "__filteredArray__") {
+      result += opyArray + ".filter(lambda " + currentArrayElementName;
+      if (astContainsFunctions(content.args[1], ["__currentArrayIndex__"])) {
+        result += ", " + currentArrayIndexName;
       }
-      result += opArray + " if ";
-      var opIf = astToOpy(content.args[1]);
-      if (astContainsFunctions(content.args[1], ["__ifThenElse__"])) {
-        opIf = "(" + opIf + ")";
-      }
-      result += opIf + "]";
+      result += ": " + astToOpy(content.args[1]) + ")";
     } else if (content.name === "__sortedArray__") {
       result += "sorted(" + opyArray;
       if (content.args[1].name !== "__currentArrayElement__") {

@@ -554,7 +554,7 @@ rule "":
         if llIIllllIIll:
             destroyAllHudTexts()
             destroyAllProgressBarHuds()
-            declarePlayerVictory(sorted(IlIlllIIllIl, lambda player: player.llIllllllIIl).last())
+            declarePlayerVictory(sorted(IlIlllIIllIl, lambda x: x.llIllllllIIl).last())
             wait(2.5)
             restartMatch()
         wait(0.1)
@@ -633,34 +633,34 @@ rule "":
     llIIIlllIlll.append(vect(1.4, 900.85, false))
     llIIIlllIlll.append(vect(1.4, 900.25, false))
     lIllllIIIlIl = "English#Français#Deutsch#Español de España#Español de México#Русский#Português".split(lIllIlllIlll)
-    createInWorldText([player for player in IlIlllIIllIl if not player.lIlIllIIIllI], "Click to join the game#Cliquez pour rejoindre le jeu#Klicken Sie, um dem Spiel beizutreten#Haz clic para unirte al juego".split(lIllIlllIlll).concat("Haz clic para unirte al juego#Нажмите, чтобы присоединиться к игре#Clique para entrar no jogo".split(lIllIlllIlll))[localPlayer.IllIIllIllII], Vector.UP * 901.25, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], "Select your Language#Sélectionnez votre langue#Wählen Sie Ihre Sprache#Seleccione su idioma#Seleccione su idioma".split(lIllIlllIlll).concat("Выберите свой язык#Selecione seu idioma".split(lIllIlllIlll))[localPlayer.IllIIllIllII], Vector.UP * 901.25, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
-    createInWorldText([player for player in IlIlllIIllIl if not player.lIlIllIIIllI], "{0} {1} {0}".format(iconString(Icon.CHECKMARK), lIllllIIIlIl[localPlayer.IllIIllIllII]), Vector.UP * 900.15, 1.2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
-    createInWorldText([player for player in IlIlllIIllIl if not player.lIlIllIIIllI], "{0}{1}{2}".format(lIllIlIIIIIl.IllIlIllIlIl[localPlayer.IllIIllIllII], inputBindingString(Button.INTERACT) if localPlayer.hasSpawned() else "INTERACT", lIllIlIIIIIl.IIIIllllIIIl[localPlayer.IllIIllIllII]), Vector.UP * 900, 1.2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: not x.lIlIllIIIllI), "Click to join the game#Cliquez pour rejoindre le jeu#Klicken Sie, um dem Spiel beizutreten#Haz clic para unirte al juego".split(lIllIlllIlll).concat("Haz clic para unirte al juego#Нажмите, чтобы присоединиться к игре#Clique para entrar no jogo".split(lIllIlllIlll))[localPlayer.IllIIllIllII], Vector.UP * 901.25, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), "Select your Language#Sélectionnez votre langue#Wählen Sie Ihre Sprache#Seleccione su idioma#Seleccione su idioma".split(lIllIlllIlll).concat("Выберите свой язык#Selecione seu idioma".split(lIllIlllIlll))[localPlayer.IllIIllIllII], Vector.UP * 901.25, 3, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: not x.lIlIllIIIllI), "{0} {1} {0}".format(iconString(Icon.CHECKMARK), lIllllIIIlIl[localPlayer.IllIIllIllII]), Vector.UP * 900.15, 1.2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: not x.lIlIllIIIllI), "{0}{1}{2}".format(lIllIlIIIIIl.IllIlIllIlIl[localPlayer.IllIIllIllII], inputBindingString(Button.INTERACT) if localPlayer.hasSpawned() else "INTERACT", lIllIlIIIIIl.IIIIllllIIIl[localPlayer.IllIIllIllII]), Vector.UP * 900, 1.2, Clip.NONE, WorldTextReeval.VISIBILITY_AND_STRING)
     wait(true)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.09, llIIIlllIlll) <= 0.4 else Color.SKY_BLUE, llIIIlllIlll, 0.4, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], lIllllIIIlIl, llIIIlllIlll + Vector.DOWN * 0.05, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.11, llIIIlllIlll[true]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[true], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], " \n \n \nEspañol\nde España", llIIIlllIlll[true] + Vector.DOWN * 0.05, 1.3, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.19, llIIIlllIlll[2]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[2], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], " \n \n \nEspañol\nde México", llIIIlllIlll[2] + Vector.DOWN * 0.05, 1.3, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.11, llIIIlllIlll[3]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[3], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], lIllllIIIlIl[true], llIIIlllIlll[3] + Vector.DOWN * 0.05, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.19, llIIIlllIlll[4]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[4], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], lIllllIIIlIl[2], llIIIlllIlll[4] + Vector.DOWN * 0.05, 1.6, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.31, llIIIlllIlll[5]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[5], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], lIllllIIIlIl[5], llIIIlllIlll[5] + Vector.DOWN * 0.05, 1.6, Clip.NONE, WorldTextReeval.VISIBILITY)
-    createEffect([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.39, llIIIlllIlll[6]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[6], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
-    createInWorldText([player for player in IlIlllIIllIl if player.lIlIllIIIllI and not player.IlIIIIIIllIl], lIllllIIIlIl[6], llIIIlllIlll[6] + Vector.DOWN * 0.05, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.09, llIIIlllIlll) <= 0.4 else Color.SKY_BLUE, llIIIlllIlll, 0.4, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), lIllllIIIlIl, llIIIlllIlll + Vector.DOWN * 0.05, 2.5, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.11, llIIIlllIlll[true]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[true], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), " \n \n \nEspañol\nde España", llIIIlllIlll[true] + Vector.DOWN * 0.05, 1.3, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.19, llIIIlllIlll[2]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[2], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), " \n \n \nEspañol\nde México", llIIIlllIlll[2] + Vector.DOWN * 0.05, 1.3, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.11, llIIIlllIlll[3]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[3], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), lIllllIIIlIl[true], llIIIlllIlll[3] + Vector.DOWN * 0.05, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.19, llIIIlllIlll[4]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[4], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), lIllllIIIlIl[2], llIIIlllIlll[4] + Vector.DOWN * 0.05, 1.6, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.31, llIIIlllIlll[5]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[5], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), lIllllIIIlIl[5], llIIIlllIlll[5] + Vector.DOWN * 0.05, 1.6, Clip.NONE, WorldTextReeval.VISIBILITY)
+    createEffect(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), Effect.SPHERE, Color.GREEN if localPlayer.hasSpawned() and distance(localPlayer.getEyePosition() + localPlayer.getFacingDirection() * 3.39, llIIIlllIlll[6]) <= 0.25 else Color.SKY_BLUE, llIIIlllIlll[6], 0.25, EffectReeval.VISIBILITY_AND_COLOR)
+    createInWorldText(IlIlllIIllIl.filter(lambda x: x.lIlIllIIIllI and not x.IlIIIIIIllIl), lIllllIIIlIl[6], llIIIlllIlll[6] + Vector.DOWN * 0.05, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY)
 
 
 rule "":
     wait(900)
     while true:
-        if llIIllllIIll and ((len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy() and player.IlIIIIIIllIl])) < 3):
+        if llIIllllIIll and ((len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy() and x.IlIIIIIIllIl))) < 3):
             destroyAllHudTexts()
             destroyAllProgressBarHuds()
-            declarePlayerVictory(sorted(IlIlllIIllIl, lambda player: player.llIllllllIIl).last())
+            declarePlayerVictory(sorted(IlIlllIIllIl, lambda x: x.llIllllllIIl).last())
             wait(2.5)
             restartMatch()
             return
@@ -889,13 +889,13 @@ def lIIlIllIlIll():
     wait()
     hudSubheader(IlIlllIIllIl, [eventPlayer.IlllIlIllIlI[IllIIlIllIII], eventPlayer.IllllIIIIIII[IllIIlIllIII], eventPlayer.IIlIllIlIllI[IllIIlIllIII], eventPlayer.IlIIIIIlIlll[IllIIlIllIII], eventPlayer.lIllIlIIIIlI[IllIIlIllIII], eventPlayer.IlllIIIIlIIl[IllIIlIllIII], eventPlayer.IIllIlllIIIl[IllIIlIllIII]][localPlayer.IllIIllIllII] if eventPlayer.IlllIlIllIlI[IllIIlIllIII] else IIIIIllllIlI, HudPosition.TOP, 8, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     wait()
-    hudSubheader([] if localPlayer.IIIIllllIIlI else IlIlllIIllIl, "{0}{1}".format("{0}{1}{2}".format(lIllIlIIIIIl.IllIlIllIlIl[localPlayer.IllIIllIllII], inputBindingString(Button.INTERACT) if localPlayer.hasSpawned() else "INTERACT", "{0}\n\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\n".format(lIllIlIIIIIl.IIIIllllIIIl[localPlayer.IllIIllIllII])), "{0}{1}{0}".format(iconString(Icon.DIAMOND), lIllIlIIIIIl.lIlIllIlIlIl[localPlayer.IllIIllIllII]) if any([player.llIllllllIIl for player in IlIlllIIllIl]) else IIIIIllllIlI), HudPosition.LEFT, -50, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubheader([] if localPlayer.IIIIllllIIlI else IlIlllIIllIl, "{0}{1}".format("{0}{1}{2}".format(lIllIlIIIIIl.IllIlIllIlIl[localPlayer.IllIIllIllII], inputBindingString(Button.INTERACT) if localPlayer.hasSpawned() else "INTERACT", "{0}\n\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\n".format(lIllIlIIIIIl.IIIIllllIIIl[localPlayer.IllIIllIllII])), "{0}{1}{0}".format(iconString(Icon.DIAMOND), lIllIlIIIIIl.lIlIllIlIlIl[localPlayer.IllIIllIllII]) if IlIlllIIllIl.any(lambda x: x.llIllllllIIl) else IIIIIllllIlI), HudPosition.LEFT, -50, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     wait()
     progressBarHud(IlIlllIIllIl if localPlayer.IIIIllllIIlI else [], localPlayer.IIIIllllIIlI, eventPlayer.IIIlIIllIlll[localPlayer.IllIIllIllII], HudPosition.LEFT, -50, lIIIIllIlIll, Color.WHITE, ProgressHudReeval.VISIBILITY_AND_VALUES)
     wait()
-    hudSubheader([player for player in IlIlllIIllIl if not player.IlIIIIIIllIl or player != localPlayer or IIlIIllIIlll and player in [hostPlayer, lIlIIIlIIllI]], "\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\n{0} {1}\n{2}".format(iconString(Icon.QUESTION_MARK), "Players' Language:#Langue des Joueurs :#Sprache der Spieler:#Idioma los Jugadores:#Idioma los Jugadores:#Язык Игроков:".split(lIllIlllIlll).concat("Idioma dos Jogadores:")[localPlayer.IllIIllIllII], eventPlayer.lllIIIIIIIlI), HudPosition.LEFT, -52, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+    hudSubheader(IlIlllIIllIl.filter(lambda x: not x.IlIIIIIIllIl or x != localPlayer or IIlIIllIIlll and x in [hostPlayer, lIlIIIlIIllI]), "\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\u2028\n{0} {1}\n{2}".format(iconString(Icon.QUESTION_MARK), "Players' Language:#Langue des Joueurs :#Sprache der Spieler:#Idioma los Jugadores:#Idioma los Jugadores:#Язык Игроков:".split(lIllIlllIlll).concat("Idioma dos Jogadores:")[localPlayer.IllIIllIllII], eventPlayer.lllIIIIIIIlI), HudPosition.LEFT, -52, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
     wait()
-    hudSubheader([player for player in IlIlllIIllIl if not player.IlIIIIIIllIl or player != localPlayer or IIlIIllIIlll and player in [hostPlayer, lIlIIIlIIllI]], eventPlayer.lIIllIlIIIlI, HudPosition.LEFT, -51, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
+    hudSubheader(IlIlllIIllIl.filter(lambda x: not x.IlIIIIIIllIl or x != localPlayer or IIlIIllIIlll and x in [hostPlayer, lIlIIIlIIllI]), eventPlayer.lIIllIlIIIlI, HudPosition.LEFT, -51, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.ALWAYS)
     wait()
     createInWorldText(localPlayer if localPlayer.hasSpawned() and not getMatchTime() and not llIlIlllIIll and not IlIllIlIIllI and llIlIIllIIll <= 0.35 and not localPlayer.IllIIllIIlII and not localPlayer.lIIlIIIlIIlI and localPlayer.isAlive() and not localPlayer.isCommunicatingEmote() else [], eventPlayer.IlIIlllIlllI[localPlayer.IllIIllIllII], updateEveryFrame(localPlayer.getEyePosition() + (true * (1.465 * (directionFromAngles(horizontalAngleOfDirection(localPlayer.getFacingDirection()), verticalAngleOfDirection(localPlayer.getFacingDirection()) - 90)) + 3 * localPlayer.getFacingDirection()))), 4, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.WHITE, SpecVisibility.NEVER)
     wait()
@@ -1673,7 +1673,7 @@ def IIIIlIIIllIl():
     setMatchTime(180)
     while IlIIIIIlIlll:
         wait(true * llllIIllIlII)
-        IlIIIIIlIlll -= true if any([player.getSlot() < 12 and not player.isDummy() and player.IlIIIIIIllIl for player in IlIlllIIllIl]) else false
+        IlIIIIIlIlll -= true if IlIlllIIllIl.any(lambda x: x.getSlot() < 12 and not x.isDummy() and x.IlIIIIIIllIl) else false
     destroyHudText(llIIllllIIll)
     destroyEffect(lIllIlIIIIlI)
     destroyEffect(IlllIIIIlIIl)
@@ -1707,9 +1707,9 @@ def IIllIIIIlIlI():
     
     IllllIIIIIII = false
     while IllllIIIIIII <= 11:
-        if (len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy()])) < 3 and ((len([player for player in IlIlllIIllIl if player.getSlot() < 12 and player.isDummy()])) < (3 - (len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy()])))):
+        if (len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy()))) < 3 and ((len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.isDummy()))) < (3 - (len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy()))))):
             createDummy(Hero.TORBJORN, Team.ALL, IllllIIIIIII, null, null)
-        elif (len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy()])) >= 3 or (len([player for player in IlIlllIIllIl if player.getSlot() < 12 and player.isDummy()])) > 3:
+        elif (len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy()))) >= 3 or (len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.isDummy()))) > 3:
             destroyDummy(Team.ALL, IllllIIIIIII)
         wait(0.05)
         if IllllIIIIIII == 11:
@@ -1719,10 +1719,10 @@ def IIllIIIIlIlI():
 
 
 rule "":
-    IIIlIIIlllIl = [player for player in IlIlllIIllIl if player.lIllIllllIll]
-    if IIIlIIIlllIl and len([player for player in IlIlllIIllIl if player.getSlot() < 12]) > 9:
-        sorted(IIIlIIIlllIl, lambda player: player.getSlot())[0].removeFromGame()
-        IIIlIIIlllIl = [player for player in IlIlllIIllIl if player.lIllIllllIll]
+    IIIlIIIlllIl = IlIlllIIllIl.filter(lambda x: x.lIllIllllIll)
+    if IIIlIIIlllIl and len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12)) > 9:
+        sorted(IIIlIIIlllIl, lambda x: x.getSlot())[0].removeFromGame()
+        IIIlIIIlllIl = IlIlllIIllIl.filter(lambda x: x.lIllIllllIll)
         wait(0.25)
         loop()
     wait(2)
@@ -1741,10 +1741,10 @@ rule "":
 rule "":
     @Condition getTotalTimeElapsed() > 30
     
-    if len([player for player in IlIlllIIllIl if not player.isDummy()]) and (not ([player for player in IlIlllIIllIl if not player.lIllIllllIll and not player.getSlot()])):
+    if len(IlIlllIIllIl.filter(lambda x: not x.isDummy())) and (not (IlIlllIIllIl.filter(lambda x: not x.lIllIllllIll and not x.getSlot()))):
         async(llIlIIllIIll, AsyncBehavior.RESTART)
     wait(2)
-    if (len([player for player in IlIlllIIllIl if not player.isDummy()])) < 12 and ([player for player in IlIlllIIllIl if not player.lIllIllllIll and player.getSlot() == 11]):
+    if (len(IlIlllIIllIl.filter(lambda x: not x.isDummy()))) < 12 and (IlIlllIIllIl.filter(lambda x: not x.lIllIllllIll and x.getSlot() == 11)):
         async(llIlIIllIIll, AsyncBehavior.RESTART)
     wait(2)
     loop()
@@ -1756,7 +1756,7 @@ def llIlIIllIIll():
     IlIlIIIIIIlI = 1
     while IlIlIIIIIIlI <= 11:
         wait(0.1)
-        ([player for player in IlIlllIIllIl if not player.lIllIllllIll and player.getSlot() == IlIlIIIIIIlI]).moveToTeam(Team.ALL, -1)
+        (IlIlllIIllIl.filter(lambda x: not x.lIllIllllIll and x.getSlot() == IlIlIIIIIIlI)).moveToTeam(Team.ALL, -1)
         wait(0.1)
         IlIlIIIIIIlI++
 
@@ -1766,7 +1766,7 @@ def IllIIlIllIII():
     
     lIllIlIIIIIl.lIllIllllIIl = []
     lIllIlIIIIIl.IlIllllIlIlI = false
-    lIllIlIIIIIl.IIIlIIIlIlIl = sorted(sorted([player for player in IlIlllIIllIl if not player.isDummy() and not player.lIllIllllIll and player.IllIIllIllII != -1], lambda i: i.IIlIIllllIIl), lambda i: i.IllIIllIllII)
+    lIllIlIIIIIl.IIIlIIIlIlIl = sorted(sorted(IlIlllIIllIl.filter(lambda x: not x.isDummy() and not x.lIllIllllIll and x.IllIIllIllII != -1), lambda x: x.IIlIIllllIIl), lambda x: x.IllIIllIllII)
     while lIllIlIIIIIl.IlIllllIlIlI < 12:
         if lIllIlIIIIIl.IIIlIIIlIlIl[lIllIlIIIIIl.IlIllllIlIlI]:
             lIllIlIIIIIl.lIllIllllIIl.append("{0} - {1}{2}".format(lIllllIIIlIl[lIllIlIIIIIl.IIIlIIIlIlIl[lIllIlIIIIIl.IlIllllIlIlI].IllIIllIllII], lIllIlIIIIIl.IIIlIIIlIlIl[lIllIlIIIIIl.IlIllllIlIlI], "\n" if lIllIlIIIIIl.IlIllllIlIlI != 5 else IIIIIllllIlI))
@@ -1821,8 +1821,8 @@ def lIIlllIlllIl():
         loop()
     wait()
     lIIlIIlIIlII = 30 if IIIIllllIIll >= 101 else llIIIIIIllII[IIIIllllIIll] if llIIIIIIllII[IIIIllllIIll] else 5
-    ([player for player in IlIlllIIllIl if player.getSlot() < 12]).preloadHero(IlllIllIIIIl[IIIIllllIIll])
-    ([player for player in IlIlllIIllIl if player.getSlot() >= 12]).preloadHero(IlIIIIIllIll[IIIIllllIIll])
+    (IlIlllIIllIl.filter(lambda x: x.getSlot() < 12)).preloadHero(IlllIllIIIIl[IIIIllllIIll])
+    (IlIlllIIllIl.filter(lambda x: x.getSlot() >= 12)).preloadHero(IlIIIIIllIll[IIIIllllIIll])
     if IIIIllllIIll >= 101:
         smallMessage(IlIlllIIllIl, "{0}{1}{0}".format(iconString(Icon.FIRE), " Boss Time! [Worth 3 Score] # C'est l'heure du Boss ! [3 Points] # Boss Zeit! [Wert: 3 Punkte] # Hora del Jefe! [Vale 3 puntos] ".split(lIllIlllIlll).concat(" ¡Hora del Jefe! [Vale 3 puntos] # Время босс-раунда! [Дает 3 очка] # Hora do boss! [Vale 3 pontos] ".split(lIllIlllIlll))[localPlayer.IllIIllIllII]))
         if IIlllllIIIlI != 1 and not IIIlIIllIlll:
@@ -1856,7 +1856,7 @@ def lIIlllIlllIl():
     IlIllIlIIllI = true
     IlIlllIIllIl.IllIllIlIIIl = lIIlIIlIIlII if IIIIllllIIll >= 101 else 99
     if IIlllllIIIlI == 1:
-        ([player for player in IlIlllIIllIl if not player.lIllIllllIll and not player.IlIIIIIIllIl and player.getScore() < lllllllIllll + 3]).addToScore(2 if IIIIllllIIll >= 101 else true)
+        (IlIlllIIllIl.filter(lambda x: not x.lIllIllllIll and not x.IlIIIIIIllIl and x.getScore() < lllllllIllll + 3)).addToScore(2 if IIIIllllIIll >= 101 else true)
     wait(true)
     llIllIllIlll = true
     chaseAtRate(lIllllIIIllI, false, 100 / lIIlIIlIIlII * IlIIIIIlllll, ChaseRateReeval.NONE)
@@ -1888,7 +1888,7 @@ def llIllIIIlIlI():
     llIlIIllIIll += 0.05
     wait(0.4 * llllIIllIlII)
     if IllIIlIllIII and llIlIIllIIll == 0.35:
-        [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].lIIlllIlllIl = true
+        IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).lIIlllIlllIl = true
         if IIIIllllIIll in [10, 14, 16, 21, 22, 28, 29, 34, 37, 42, 47, 48, 52, 60, 102, 104, 109, 110, 111, 112, 114]:
             createDummy(IlIIIIIllIll[IIIIllllIIll] if IlIIIIIllIll[IIIIllllIIll] else Hero.TORBJORN, Team.ALL, 13, null, null)
             if not IIIIllllIIll in [34, 42, 47, 48, 52, 102, 104, 109, 110, 112]:
@@ -1903,9 +1903,9 @@ rule "":
     @Condition lIIlIIlIIlII == false
     
     if IllIIlIllIII in [3, 9, 11, 12, 13, 15, 16, 17, 19, 20, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 36, 39, 41, 42, 45, 46, 49, 53, 54, 55, 56, 57, 58, 59, 60, 63, 62, 63, 64]:
-        kill([player for player in llIlllIlllII if not player.IlllIIlIIIIl])
+        kill(llIlllIlllII.filter(lambda x: not x.IlllIIlIIIIl))
     wait()
-    ([player for player in IlIlllIIllIl if not player.isDummy() and player.IlIIIIIIllIl and (player.isAlive() or player.IlllIIlIIIIl)]).addToScore(3 if IllIIlIllIII >= 101 else true)
+    (IlIlllIIllIl.filter(lambda x: not x.isDummy() and x.IlIIIIIIllIl and (x.isAlive() or x.IlllIIlIIIIl))).addToScore(3 if IllIIlIllIII >= 101 else true)
     wait()
     IIIIllllIIll()
     if IllIIlIllIII == 104:
@@ -1926,7 +1926,7 @@ rule "":
 def IIIIllllIIll():
     @Name ""
     
-    lllllllIllll = ((sorted([player for player in IlIlllIIllIl if not player.isDummy() and player.getSlot() < 12 and player.IlIIIIIIllIl], lambda i: i.getScore()))[0] if IIlllllIIIlI == 1 else (sorted([player for player in IlIlllIIllIl if not player.isDummy() and player.getSlot() < 12 and player.IlIIIIIIllIl], lambda i: i.getScore())).last()).getScore()
+    lllllllIllll = ((sorted(IlIlllIIllIl.filter(lambda x: not x.isDummy() and x.getSlot() < 12 and x.IlIIIIIIllIl), lambda x: x.getScore()))[0] if IIlllllIIIlI == 1 else (sorted(IlIlllIIllIl.filter(lambda x: not x.isDummy() and x.getSlot() < 12 and x.IlIIIIIIllIl), lambda x: x.getScore())).last()).getScore()
     if IIlllllIIIlI == 1 and lllllllIllll >= 99:
         lllllllIllll = 0
 
@@ -1935,7 +1935,7 @@ rule "":
     @Event playerLeft
     
     IlIlllIIllIl = getAllPlayers()
-    llIlllIlllII = [player for player in IlIlllIIllIl if player.getSlot() < 12 and player.lIIlllIlllIl and player.isAlive()]
+    llIlllIlllII = IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.lIIlllIlllIl and x.isAlive())
     if eventPlayer.isDummy():
         return
     async(IIllIIIIlIlI, AsyncBehavior.NOOP)
@@ -2536,7 +2536,7 @@ rule "":
         bigMessage(IlIlllIIllIl, "{0}{1}{0}".format(iconString(Icon.BOLT), " Host: Saving Replay... # Hôte : Sauvegarde du replay... # Veranstalter: Speichere Wiederholung... ".split(lIllIlllIlll).concat(" Lider: Repetición guardada. # Host: Guardando repetición... # Владелец: Сохраняем момент... # Dono: Salvando replay... ".split(lIllIlllIlll))[localPlayer.IllIIllIllII]))
         destroyAllHudTexts()
         destroyAllProgressBarHuds()
-        declarePlayerVictory(sorted(IlIlllIIllIl, lambda player: player.llIllllllIIl).last())
+        declarePlayerVictory(sorted(IlIlllIIllIl, lambda x: x.llIllllllIIl).last())
         wait(2.5)
         restartMatch()
 
@@ -2588,7 +2588,7 @@ def IllIIllIllII():
 rule "":
     @Condition IlIllIlIIllI == true
     
-    llIlllIlllII = [player for player in IlIlllIIllIl if player.getSlot() < 12 and player.lIIlllIlllIl and player.isAlive()]
+    llIlllIlllII = IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.lIIlllIlllIl and x.isAlive())
     wait(0.1)
     if IllIIlIllIII in [11, 12, 13, 14, 15, 17, 19, 20, 24, 25, 26, 27, 29, 30, 31, 32, 33, 38, 39, 40, 45, 47, 48, 49, 51, 52, 55, 56, 57, 58, 59, 61, 62, 63, 65, 105, 106, 111, 112, 113, 114, 115, 42, 60, 62]:
         llIlllIlllII.setPrimaryFireEnabled(false)
@@ -2710,11 +2710,11 @@ rule "":
         createIcon(IlIlllIIllIl, lIllIlIIIIlI + Vector.UP, Icon.ARROW_DOWN, IconReeval.VISIBILITY_AND_POSITION, lIIllIIIIlll)
         IlllIlIlIllI.append(getLastCreatedEntity())
         wait(0.1)
-        chaseAtRate(lIllIlIIIIlI, IllIIllIIlII[sorted(llIlllIlllII, lambda player: player.getScore())[0].getSlot()] if IllIIlIllIII == 8 else random.choice(IlIIIIIlIlll.exclude(lIllIlIIIIlI)), 2.3 if IllIIlIllIII == 8 else 2.9, ChaseRateReeval.NONE)
+        chaseAtRate(lIllIlIIIIlI, IllIIllIIlII[sorted(llIlllIlllII, lambda x: x.getScore())[0].getSlot()] if IllIIlIllIII == 8 else random.choice(IlIIIIIlIlll.exclude(lIllIlIIIIlI)), 2.3 if IllIIlIllIII == 8 else 2.9, ChaseRateReeval.NONE)
         if IllIIlIllIII == 51:
             return
         wait(0.3 + 4 * llllIIllIlII)
-        kill([player for player in llIlllIlllII if distance(player, lIllIlIIIIlI) > 2.4])
+        kill(llIlllIlllII.filter(lambda x: distance(x, lIllIlIIIIlI) > 2.4))
     elif IllIIlIllIII in [12, 13, 56, 64]:
         if IllIIlIllIII == 13:
             llIlllIlllII.setMoveSpeed(150)
@@ -2754,7 +2754,7 @@ rule "":
         createInWorldText(IlIlllIIllIl, lIllIlIIIIlI.last(), IlIIIIIlIlll.last() + Vector.UP, 3, Clip.NONE, WorldTextReeval.VISIBILITY)
         IlllIlIlIllI.append(getLastCreatedText())
         wait(0.4 + 4.9 * llllIIllIlII, Wait.ABORT_WHEN_FALSE)
-        kill([player for player in llIlllIlllII if player.getPosition().y < 900])
+        kill(llIlllIlllII.filter(lambda x: x.getPosition().y < 900))
         if IllIIlIllIII == 18:
             smallMessage(IlIlllIIllIl, "{0}     {1}     {2}".format(iconString(Icon.ARROW_RIGHT), lIllIlIIIIlI[IIllIlllIIIl], iconString(Icon.ARROW_LEFT)))
         else:
@@ -2828,7 +2828,7 @@ rule "":
             IlIlllIIllIl.stopScalingBarriers()
         else:
             wait(3 * llllIIllIlII)
-            kill([player for player in llIlllIlllII if distance(player, IllllllIIIIl) > 2.5])
+            kill(llIlllIlllII.filter(lambda x: distance(x, IllllllIIIIl) > 2.5))
             IlIlllIIllIl.stopScalingBarriers()
     elif IllIIlIllIII == 25:
         wait(0.5)
@@ -2868,7 +2868,7 @@ rule "":
         wait(0.5)
         while len(IlIIIIIlIlll) < floor(len(llIlllIlllII) * 0.7):
             IIllIIllIllI = vect(random.uniform(-7, 7), true, random.uniform(-7, 7))
-            while any([distance(player, Vector.UP) <= 3 for player in IIllIIllIllI]):
+            while IIllIIllIllI.any(lambda x: distance(x, Vector.UP) <= 3):
                 IIllIIllIllI = vect(random.uniform(-7, 7), true, random.uniform(-7, 7))
                 wait()
             IlIIIIIlIlll.append(IIllIIllIllI)
@@ -2894,16 +2894,16 @@ rule "":
     elif IllIIlIllIII in [43, 65]:
         IlIIIIIlIlll = 3
         if IllIIlIllIII == 43:
-            hudText([player for player in IlIlllIIllIl if player.llIllIIIlIlI], iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
+            hudText(IlIlllIIllIl.filter(lambda x: x.llIllIIIlIlI), iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
             IlllIlIlIllI.append(getLastCreatedText())
-            hudText([player for player in IlIlllIIllIl if not player.llIllIIIlIlI], iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
+            hudText(IlIlllIIllIl.filter(lambda x: not x.llIllIIIlIlI), iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
             IlllIlIlIllI.append(getLastCreatedText())
             hudSubtext(IlIlllIIllIl if IlIIIIIlIlll else [], "Isolate in:#Isolez-vous dans :#Isoliert in:#íslate en:#íslate en:#Изолируйся через:#Isole em:".split(lIllIlllIlll)[localPlayer.IllIIllIllII], HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
             IlllIlIlIllI.append(getLastCreatedText())
         else:
-            hudText([player for player in IlIlllIIllIl if not player.IllllllIIIIl], iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
+            hudText(IlIlllIIllIl.filter(lambda x: not x.IllllllIIIIl), iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
             IlllIlIlIllI.append(getLastCreatedText())
-            hudText([player for player in IlIlllIIllIl if player.IllllllIIIIl], iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
+            hudText(IlIlllIIllIl.filter(lambda x: x.IllllllIIIIl), iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 8, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
             IlllIlIlIllI.append(getLastCreatedText())
             hudSubtext(IlIlllIIllIl if IlIIIIIlIlll else [], "Start Tracking in:#Commencez à viser dans :#Starten Sie die Aufspüren in:#Comienza a seguir a la bola con tu mira en:".split(lIllIlllIlll).concat("Comineza a seguir la bola con la mira en:#Начни следить через:#Comece a mirar em:".split(lIllIlllIlll))[localPlayer.IllIIllIllII], HudPosition.TOP, 9, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
             IlllIlIlIllI.append(getLastCreatedText())
@@ -2927,7 +2927,7 @@ rule "":
         IlllIlIlIllI.append(getLastCreatedEntity())
     elif IllIIlIllIII in [48, 62]:
         llIlllIlllII.setMoveSpeed(false)
-        [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setInvisibility(Invis.NONE)
+        IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setInvisibility(Invis.NONE)
         IIllIlllIIIl = 11
         lIIlllIllIlI = 55
         hudSubtext(IlIlllIIllIl, "Clock:#L'horloge :#Uhr:#Reloj:#Reloj:#Часы:#Relógio:".split(lIllIlllIlll)[localPlayer.IllIIllIllII], HudPosition.TOP, 8, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
@@ -3001,7 +3001,7 @@ rule "":
         createEffect(IlIlllIIllIl, Effect.LIGHT_SHAFT, lIIllIIIIlll, false, 6.5, EffectReeval.VISIBILITY)
         IlllIlIlIllI.append(getLastCreatedEntity())
         wait(true + 5 * llllIIllIlII)
-        kill([player for player in llIlllIlllII if distance(player, IllllllIIIIl) > 6.5])
+        kill(llIlllIlllII.filter(lambda x: distance(x, IllllllIIIIl) > 6.5))
 
 
 rule "":
@@ -3033,13 +3033,13 @@ rule "":
         IIllIIllIllI = lIIlllIllIlI
         hudSubtext(IlIlllIIllIl, "Go to:#Allez vers :#Gehe zu:#Ves a:#Ve al:#Беги к:#Vá para:".split(lIllIlllIlll)[localPlayer.IllIIllIllII], HudPosition.TOP, 10, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
         IlllIlIlIllI.append(getLastCreatedText())
-        hudText([player for player in IlIlllIIllIl if distance(IlllIIIIlIIl, player) > 2.3], "▒", lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 11, [Color.WHITE, lIIIIllIlIll, lIIllIIIIlll, lIllIlIlIlIl, llIIlIIlllIl, lIlIlIlIllIl, llllIIIllIlI, IIIIIlIlllIl][lIllIlIIIIlI.index(IlllIIIIlIIl)], null, null, HudReeval.VISIBILITY_STRING_AND_COLOR)
+        hudText(IlIlllIIllIl.filter(lambda x: distance(IlllIIIIlIIl, x) > 2.3), "▒", lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 11, [Color.WHITE, lIIIIllIlIll, lIIllIIIIlll, lIllIlIlIlIl, llIIlIIlllIl, lIlIlIlIllIl, llllIIIllIlI, IIIIIlIlllIl][lIllIlIIIIlI.index(IlllIIIIlIIl)], null, null, HudReeval.VISIBILITY_STRING_AND_COLOR)
         IlllIlIlIllI.append(getLastCreatedText())
-        hudText([player for player in IlIlllIIllIl if distance(IlllIIIIlIIl, player) <= 2.3], iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 11, [Color.WHITE, lIIIIllIlIll, lIIllIIIIlll, lIllIlIlIlIl, llIIlIIlllIl, lIlIlIlIllIl, llllIIIllIlI, IIIIIlIlllIl][lIllIlIIIIlI.index(IlllIIIIlIIl)], null, null, HudReeval.VISIBILITY_STRING_AND_COLOR)
+        hudText(IlIlllIIllIl.filter(lambda x: distance(IlllIIIIlIIl, x) <= 2.3), iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 11, [Color.WHITE, lIIIIllIlIll, lIIllIIIIlll, lIllIlIlIlIl, llIIlIIlllIl, lIlIlIlIllIl, llllIIIllIlI, IIIIIlIlllIl][lIllIlIIIIlI.index(IlllIIIIlIIl)], null, null, HudReeval.VISIBILITY_STRING_AND_COLOR)
         IlllIlIlIllI.append(getLastCreatedText())
         progressBarHud(IlIlllIIllIl, IIllIIllIllI * 25, null, HudPosition.TOP, 12, [Color.WHITE, lIIIIllIlIll, lIIllIIIIlll, lIllIlIlIlIl, llIIlIIlllIl, lIlIlIlIllIl, llllIIIllIlI, IIIIIlIlllIl][lIllIlIIIIlI.index(IlllIIIIlIIl)])
         IlllIlIlIllI.append(getLastCreatedText())
-        [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setMoveSpeed(200)
+        IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setMoveSpeed(200)
         wait(true)
         async(lIllllIIllIl, AsyncBehavior.RESTART)
         async(IlIIIIIIllIl, AsyncBehavior.RESTART)
@@ -3052,7 +3052,7 @@ rule "":
             IIllIIllIllI = lIIlllIllIlI
             chaseAtRate(IIllIIllIllI, false, true, ChaseRateReeval.NONE)
             wait(lIIlllIllIlI, Wait.ABORT_WHEN_FALSE)
-            kill([player for player in llIlllIlllII if distance(player, IlllIIIIlIIl) > 2.3])
+            kill(llIlllIlllII.filter(lambda x: distance(x, IlllIIIIlIIl) > 2.3))
             if lIIlllIllIlI > 4:
                 lIIlllIllIlI--
             elif lIIlllIllIlI > 3:
@@ -3177,7 +3177,7 @@ def lIllllIIllIl():
     @Name ""
     
     if IllIIlIllIII in [19, 20]:
-        createEffect([player for player in IlIlllIIllIl if player.IlllIIlIIIIl or lIllIlIIIIIl.lIIlIllIlIll and player.isDead()], Effect.SPHERE, lIIllIIIIlll, ([vect(-0.5, 1.3, false), vect(0.5, 1.3, false), vect(-0.5, 0.8, false), vect(0.5, 0.8, false)])[IlIIIIIlIlll if IllIIlIllIII == 19 else lIllIlIIIIlI], 0.25, EffectReeval.VISIBILITY)
+        createEffect(IlIlllIIllIl.filter(lambda x: x.IlllIIlIIIIl or lIllIlIIIIIl.lIIlIllIlIll and x.isDead()), Effect.SPHERE, lIIllIIIIlll, ([vect(-0.5, 1.3, false), vect(0.5, 1.3, false), vect(-0.5, 0.8, false), vect(0.5, 0.8, false)])[IlIIIIIlIlll if IllIIlIllIII == 19 else lIllIlIIIIlI], 0.25, EffectReeval.VISIBILITY)
         IlllIlIlIllI.append(getLastCreatedEntity())
     elif IllIIlIllIII == 25:
         createEffect(IlIlllIIllIl, Effect.SPHERE, lIlIlIlIllIl, false, 18, EffectReeval.VISIBILITY)
@@ -3207,21 +3207,21 @@ def lIllllIIllIl():
         createEffect(IlIlllIIllIl, Effect.SPHERE, Color.WHITE, IIIIIllIlllI, 1.6, EffectReeval.VISIBILITY)
         IlllIlIlIllI.append(getLastCreatedEntity())
     elif IllIIlIllIII == 103:
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI, player) > 2.3], Effect.SPHERE, Color.WHITE, lIllIlIIIIlI, 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI, x) > 2.3), Effect.SPHERE, Color.WHITE, lIllIlIIIIlI, 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[true], player) > 2.3], Effect.SPHERE, lIIIIllIlIll, lIllIlIIIIlI[true], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[true], x) > 2.3), Effect.SPHERE, lIIIIllIlIll, lIllIlIIIIlI[true], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[2], player) > 2.3], Effect.SPHERE, lIIllIIIIlll, lIllIlIIIIlI[2], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[2], x) > 2.3), Effect.SPHERE, lIIllIIIIlll, lIllIlIIIIlI[2], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[3], player) > 2.3], Effect.SPHERE, lIllIlIlIlIl, lIllIlIIIIlI[3], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[3], x) > 2.3), Effect.SPHERE, lIllIlIlIlIl, lIllIlIIIIlI[3], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[4], player) > 2.3], Effect.SPHERE, llIIlIIlllIl, lIllIlIIIIlI[4], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[4], x) > 2.3), Effect.SPHERE, llIIlIIlllIl, lIllIlIIIIlI[4], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[5], player) > 2.3], Effect.SPHERE, lIlIlIlIllIl, lIllIlIIIIlI[5], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[5], x) > 2.3), Effect.SPHERE, lIlIlIlIllIl, lIllIlIIIIlI[5], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI[6], player) > 2.3], Effect.SPHERE, llllIIIllIlI, lIllIlIIIIlI[6], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI[6], x) > 2.3), Effect.SPHERE, llllIIIllIlI, lIllIlIIIIlI[6], 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
-        createEffect([player for player in IlIlllIIllIl if distance(lIllIlIIIIlI.last(), player) > 2.3], Effect.SPHERE, IIIIIlIlllIl, lIllIlIIIIlI.last(), 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
+        createEffect(IlIlllIIllIl.filter(lambda x: distance(lIllIlIIIIlI.last(), x) > 2.3), Effect.SPHERE, IIIIIlIlllIl, lIllIlIIIIlI.last(), 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
         createEffect(IlIlllIIllIl, Effect.RING, Color.WHITE, lIllIlIIIIlI, 2.3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
         IlllIlIlIllI.append(getLastCreatedEntity())
@@ -3356,8 +3356,8 @@ rule "":
                 wait(0.4)
             while IllIIlIllIII:
                 if eventPlayer.IIlIlllIllII:
-                    IlIIIIIlIlll = sorted(llIlllIlllII, lambda player: player.getScore())
-                    lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: player.getScore()).last())
+                    IlIIIIIlIlll = sorted(llIlllIlllII, lambda x: x.getScore())
+                    lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: x.getScore()).last())
                     wait(0.05, Wait.ABORT_WHEN_FALSE)
                     eventPlayer.IllllllIIIIl = IlIIIIIlIlll.last()
                 elif eventPlayer.lIIllIlIllII:
@@ -3370,8 +3370,8 @@ rule "":
                 eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
         elif IllIIlIllIII == 14:
             if eventPlayer.IIlIlllIllII:
-                IlIIIIIlIlll = sorted(llIlllIlllII, lambda player: player.getScore())
-                lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: player.getScore()).last())
+                IlIIIIIlIlll = sorted(llIlllIlllII, lambda x: x.getScore())
+                lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: x.getScore()).last())
                 wait(0.05)
                 eventPlayer.IllllllIIIIl = IlIIIIIlIlll.last()
             elif eventPlayer.lIIllIlIllII:
@@ -3414,7 +3414,7 @@ rule "":
             else:
                 wait(0.75)
             while IllIIlIllIII:
-                eventPlayer.teleport((sorted(llIlllIlllII, lambda player: player.getScore()).last() if eventPlayer.IIlIlllIllII else random.choice(llIlllIlllII)) + vect(random.uniform(-1.5, 1.5), 12, random.uniform(-1.5, 1.5)))
+                eventPlayer.teleport((sorted(llIlllIlllII, lambda x: x.getScore()).last() if eventPlayer.IIlIlllIllII else random.choice(llIlllIlllII)) + vect(random.uniform(-1.5, 1.5), 12, random.uniform(-1.5, 1.5)))
                 wait(0.25)
                 kill(eventPlayer)
                 wait(0.25)
@@ -3504,7 +3504,7 @@ rule "":
             if IllIIlIllIII == 29:
                 eventPlayer.setMoveSpeed(130)
             elif IllIIlIllIII == 60:
-                [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setInvisibility(Invis.NONE)
+                IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setInvisibility(Invis.NONE)
             eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.IllllllIIIIl), 200)
             eventPlayer.startForcingThrottle(true, true, false, true, false, true)
             wait(0.984)
@@ -3516,8 +3516,8 @@ rule "":
             if eventPlayer.IIlIlllIllII:
                 IlIIIIIlIlll = random.randint(false, true)
                 lIllIlIIIIlI = random.randint(false, true)
-                IlllIIIIlIIl = sorted(llIlllIlllII, lambda player: player.getScore())
-                IIllIlllIIIl = IlllIIIIlIIl.index(sorted(IlllIIIIlIIl, lambda player: player.getScore()).last())
+                IlllIIIIlIIl = sorted(llIlllIlllII, lambda x: x.getScore())
+                IIllIlllIIIl = IlllIIIIlIIl.index(sorted(IlllIIIIlIIl, lambda x: x.getScore()).last())
                 wait(0.03)
                 eventPlayer.IllllllIIIIl = IlllIIIIlIIl.last()
                 eventPlayer.teleport(vect(36 if IlIIIIIlIlll else -36, false, eventPlayer.IllllllIIIIl.z))
@@ -3564,7 +3564,7 @@ rule "":
             wait(true)
             eventPlayer.startThrottleInDirection(directionTowards(eventPlayer, eventPlayer.IllllllIIIIl), true, Relativity.TO_WORLD)
             eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.llIllIIIlIlI.getEyePosition() + Vector.UP), 500)
-            [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setInvisibility(Invis.NONE)
+            IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setInvisibility(Invis.NONE)
             async(IlIIIlIIllll, AsyncBehavior.RESTART)
             async(IIIIIllIlllI, AsyncBehavior.RESTART)
             eventPlayer.teleport(random.choice(lIIlIIIIlIIl))
@@ -3589,7 +3589,7 @@ rule "":
                 IlIIIIIlIlll.append(vect(-3.75, false, 8))
                 IlIIIIIlIlll.append(vect(-3.75, false, -8))
                 if IllIIlIllIII == 47:
-                    hudSubtext([player for player in IlIlllIIllIl if player.IllllllIIIIl], "{0}{1}{0}".format(iconString(Icon.NO), " Delay Penalty # Délai de pénalité # Verspätungs-Strafe # Penalización por retraso # Punição de atraso # Штраф-задержка ".split(lIllIlllIlll).concat(" Penalidade de demora ")[localPlayer.IllIIllIllII]), HudPosition.TOP, 8, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
+                    hudSubtext(IlIlllIIllIl.filter(lambda x: x.IllllllIIIIl), "{0}{1}{0}".format(iconString(Icon.NO), " Delay Penalty # Délai de pénalité # Verspätungs-Strafe # Penalización por retraso # Punição de atraso # Штраф-задержка ".split(lIllIlllIlll).concat(" Penalidade de demora ")[localPlayer.IllIIllIllII]), HudPosition.TOP, 8, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
                     IlllIlIlIllI.append(getLastCreatedText())
                     IIllIlllIIIl = random.uniform(2.8, 3.8)
             wait(0.5)
@@ -3627,7 +3627,7 @@ rule "":
     else:
         if IllIIlIllIII == 7:
             wait(0.9 + 4 * llllIIllIlII)
-            if any([distance(eventPlayer, i) <= 1.8 for i in [lIllIlIIIIlI, IlllIIIIlIIl, IIllIlllIIIl, lIIlllIllIlI]]):
+            if [lIllIlIIIIlI, IlllIIIIlIIl, IIllIlllIIIl, lIIlllIllIlI].any(lambda x: distance(eventPlayer, x) <= 1.8):
                 return
             kill(eventPlayer)
         elif IllIIlIllIII in [17, 31, 43, 63]:
@@ -3702,7 +3702,7 @@ rule "":
             wait(0.4)
             eventPlayer.startForcingPosition(lIIlllIllIlI[eventPlayer.getSlot()], false)
             wait(true + 4 * llllIIllIlII)
-            if distance(eventPlayer, IlIIIIIlIlll[lIllIlIIIIlI]) > 2.5 and any([distance(eventPlayer, player) <= 2.5 for player in IlIIIIIlIlll]):
+            if distance(eventPlayer, IlIIIIIlIlll[lIllIlIIIIlI]) > 2.5 and IlIIIIIlIlll.any(lambda x: distance(eventPlayer, x) <= 2.5):
                 return
             kill(eventPlayer)
         elif IllIIlIllIII == 45:
@@ -3743,7 +3743,7 @@ rule "":
             while IllIIlIllIII:
                 eventPlayer.setAbilityCooldown(Button.ABILITY_1, false)
                 if eventPlayer.IIlIlllIllII:
-                    lIllIlIIIIlI = sorted(llIlllIlllII, lambda player: player.getScore()).last().getPosition()
+                    lIllIlIIIIlI = sorted(llIlllIlllII, lambda x: x.getScore()).last().getPosition()
                     IlllIIIIlIIl = random.randint(false, true)
                     eventPlayer.teleport(vect(16 if IlllIIIIlIIl else -16, false, lIllIlIIIIlI.z))
                     wait(0.03, Wait.ABORT_WHEN_FALSE)
@@ -3760,7 +3760,7 @@ rule "":
                 eventPlayer.IllllllIIIIl = true
                 eventPlayer.stopFacing()
                 wait(true, Wait.ABORT_WHEN_FALSE)
-                while any([player.isUsingAbility1() for player in IlIlllIIllIl]):
+                while IlIlllIIllIl.any(lambda x: x.isUsingAbility1()):
                     wait(0.05, Wait.ABORT_WHEN_FALSE)
                 if eventPlayer.IIlIlllIllII and IIllIlllIIIl != 100:
                     chaseAtRate(IlIIIIIlIlll, IlIIIIIlIlll + 20, 40 * IlIIIIIlllll, ChaseRateReeval.NONE)
@@ -3865,7 +3865,7 @@ rule "":
                 chaseAtRate(IlIIIIIlIlll, 20, 40 * IlIIIIIlllll, ChaseRateReeval.NONE)
                 while IllIIlIllIII:
                     if IIllIlllIIIl.isDead() or not entityExists(IIllIlllIIIl):
-                        IIllIlllIIIl = (sorted(sorted(llIlllIlllII, lambda player: player.getScore()), lambda i: i.getScore() if IIlllllIIIlI == 1 else distance(eventPlayer, i))).last()
+                        IIllIlllIIIl = (sorted(sorted(llIlllIlllII, lambda x: x.getScore()), lambda x: x.getScore() if IIlllllIIIlI == 1 else distance(eventPlayer, x))).last()
                     wait(0.1, Wait.ABORT_WHEN_FALSE)
         elif IllIIlIllIII == 109:
             eventPlayer.startForcingButton(Button.ABILITY_1)
@@ -3901,8 +3901,8 @@ rule "":
                 wait(0.6)
             while IllIIlIllIII:
                 if eventPlayer.IIlIlllIllII:
-                    IlIIIIIlIlll = sorted(llIlllIlllII, lambda player: player.getScore())
-                    lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: player.getScore()).last())
+                    IlIIIIIlIlll = sorted(llIlllIlllII, lambda x: x.getScore())
+                    lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: x.getScore()).last())
                     wait(0.05, Wait.ABORT_WHEN_FALSE)
                     eventPlayer.IllllllIIIIl = IlIIIIIlIlll.last()
                 elif eventPlayer.lIIllIlIllII:
@@ -3928,9 +3928,9 @@ rule "":
                 IlllIlIlIllI.append(getLastCreatedEntity())
                 createEffect(IlIlllIIllIl, Effect.RING, lIIllIIIIlll, false, 2.5, EffectReeval.VISIBILITY)
                 IlllIlIlIllI.append(getLastCreatedEntity())
-                progressBarHud([player for player in IlIlllIIllIl if not player.IllllllIIIIl], IlllIIIIlIIl, null, HudPosition.TOP, 12, llIIlIIlllIl, Color.WHITE, ProgressHudReeval.VISIBILITY_AND_VALUES)
+                progressBarHud(IlIlllIIllIl.filter(lambda x: not x.IllllllIIIIl), IlllIIIIlIIl, null, HudPosition.TOP, 12, llIIlIIlllIl, Color.WHITE, ProgressHudReeval.VISIBILITY_AND_VALUES)
                 IlllIlIlIllI.append(getLastCreatedText())
-                progressBarHud([player for player in IlIlllIIllIl if player.IllllllIIIIl], IlllIIIIlIIl, null, HudPosition.TOP, 12, lIIllIIIIlll, Color.WHITE, ProgressHudReeval.VISIBILITY_AND_VALUES)
+                progressBarHud(IlIlllIIllIl.filter(lambda x: x.IllllllIIIIl), IlllIIIIlIIl, null, HudPosition.TOP, 12, lIIllIIIIlll, Color.WHITE, ProgressHudReeval.VISIBILITY_AND_VALUES)
                 IlllIlIlIllI.append(getLastCreatedText())
                 IIllIlllIIIl = true
                 hudText(IIllIlllIIIl, "{0}{1}... ".format(" Starting in # Début dans # Starte in # Empezando en # Empezando en: # Начинаем через # Começando em ".split(lIllIlllIlll)[localPlayer.IllIIllIllII], lIllIlIIIIlI), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 13, Color.WHITE, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
@@ -3940,9 +3940,9 @@ rule "":
                     wait(true * llllIIllIlII, Wait.ABORT_WHEN_FALSE)
                     lIllIlIIIIlI--
                 IIllIlllIIIl = false
-                hudText([player for player in IlIlllIIllIl if not player.IllllllIIIIl], iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 13, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
+                hudText(IlIlllIIllIl.filter(lambda x: not x.IllllllIIIIl), iconString(Icon.WARNING), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 13, llIIlIIlllIl, null, null, HudReeval.VISIBILITY)
                 IlllIlIlIllI.append(getLastCreatedText())
-                hudText([player for player in IlIlllIIllIl if player.IllllllIIIIl], iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 13, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
+                hudText(IlIlllIIllIl.filter(lambda x: x.IllllllIIIIl), iconString(Icon.CHECKMARK), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 13, lIIllIIIIlll, null, null, HudReeval.VISIBILITY)
                 IlllIlIlIllI.append(getLastCreatedText())
                 IlIlllIIllIl.setMeleeEnabled(true)
                 IlIlllIIllIl.setJumpEnabled(true)
@@ -3957,7 +3957,7 @@ rule "":
                     if eventPlayer.IIlIlllIllII:
                         IlIIIIIlIlll = random.choice(([0, 1, 2, 3].concat(4 if eventPlayer.getAmmo(false) != eventPlayer.getMaxAmmo(false) else [])).exclude(IlIIIIIlIlll))
                     wait(0.016, Wait.ABORT_WHEN_FALSE)
-                    [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setPrimaryFireEnabled(true)
+                    IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setPrimaryFireEnabled(true)
                     if not IlIIIIIlIlll:
                         eventPlayer.forceButtonPress(Button.JUMP)
                         wait(1.95, Wait.ABORT_WHEN_FALSE)
@@ -3978,7 +3978,7 @@ rule "":
                         eventPlayer.forceButtonPress(Button.RELOAD)
                         wait(1.95, Wait.ABORT_WHEN_FALSE)
                     if eventPlayer.IIlIlllIllII:
-                        kill([player for player in llIlllIlllII if not player.IllllllIIIIl])
+                        kill(llIlllIlllII.filter(lambda x: not x.IllllllIIIIl))
                         wait(0.016, Wait.ABORT_WHEN_FALSE)
                         IlIlllIIllIl.IllllllIIIIl = false
                     else:
@@ -4061,7 +4061,7 @@ def IIIIIllIlllI():
     @Name ""
     
     if IllIIlIllIII in [104, 110]:
-        createIcon([player for player in IlIlllIIllIl if not player.isInViewAngle(eventPlayer, 45)], eventPlayer, Icon.ARROW_DOWN, IconReeval.VISIBILITY, lIIllIIIIlll)
+        createIcon(IlIlllIIllIl.filter(lambda x: not x.isInViewAngle(eventPlayer, 45)), eventPlayer, Icon.ARROW_DOWN, IconReeval.VISIBILITY, lIIllIIIIlll)
     else:
         createIcon(IlIlllIIllIl, eventPlayer, Icon.ARROW_DOWN, IconReeval.VISIBILITY, lIIllIIIIlll)
     IlllIlIlIllI.append(getLastCreatedEntity())
@@ -4078,9 +4078,9 @@ def lIIlIIIlIIlI():
     @Name ""
     
     if IllIIlIllIII == 106:
-        IIllIlllIIIl = sorted(llIlllIlllII, lambda player: player.getScore()).last()
+        IIllIlllIIIl = sorted(llIlllIlllII, lambda x: x.getScore()).last()
     elif IllIIlIllIII == 107:
-        IlIIIIIlIlll = (sorted(sorted(llIlllIlllII, lambda player: player.getScore()), lambda i: i.getScore() if IIlllllIIIlI == 1 else i.IllllllIIIIl)).last()
+        IlIIIIIlIlll = (sorted(sorted(llIlllIlllII, lambda x: x.getScore()), lambda x: x.getScore() if IIlllllIIIlI == 1 else x.IllllllIIIIl)).last()
 
 
 def IlllIIlIIIIl():
@@ -4118,7 +4118,7 @@ rule "":
         victim.setStatusEffect(null, Status.PHASED_OUT, 1.95 * llllIIllIlII)
     elif IllIIlIllIII == 36:
         eventPlayer.IllllllIIIIl[victim.getSlot()]++
-        if any([player >= 20 for player in eventPlayer.IllllllIIIIl]):
+        if eventPlayer.IllllllIIIIl.any(lambda x: x >= 20):
             eventPlayer.llIllIIIlIlI = getPlayersInSlot(eventPlayer.IllllllIIIIl.index(sorted(eventPlayer.IllllllIIIIl).last()), Team.ALL)
             eventPlayer.llIllIIIlIlI.setStatusEffect(null, Status.FROZEN, true)
             eventPlayer.llIllIIIlIlI.setStatusEffect(null, Status.PHASED_OUT, true)
@@ -4171,7 +4171,7 @@ rule "":
 def llIllllllIIl():
     @Name ""
     
-    kill((getPlayersInRadius(eventPlayer, 5, Team.ALL).exclude([player for player in IlIlllIIllIl if player.isUsingAbility1()] if IllIIlIllIII == 63 else eventPlayer)).exclude(eventPlayer), eventPlayer)
+    kill((getPlayersInRadius(eventPlayer, 5, Team.ALL).exclude(IlIlllIIllIl.filter(lambda x: x.isUsingAbility1()) if IllIIlIllIII == 63 else eventPlayer)).exclude(eventPlayer), eventPlayer)
     playEffect(IlIlllIIllIl, DynamicEffect.RING_EXPLOSION, llIIlIIlllIl, eventPlayer.getPosition(), 10)
 
 
@@ -4280,13 +4280,13 @@ rule "":
     IlIlllIIllIl.IllIIllIIlII = false
     IlIlllIIllIl.lIIlIIIlIIlI = false
     wait()
-    if getTotalTimeElapsed() > 30 and ((len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy() and not player.lIllIllllIll])) == false or not getMatchTime() and IIlllllIIIlI != 1 and not lllllllIllll and ((len([player for player in IlIlllIIllIl if player.getSlot() < 12 and not player.isDummy() and player.IlIIIIIIllIl])) < 3)):
+    if getTotalTimeElapsed() > 30 and ((len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy() and not x.lIllIllllIll))) == false or not getMatchTime() and IIlllllIIIlI != 1 and not lllllllIllll and ((len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and not x.isDummy() and x.IlIIIIIIllIl))) < 3)):
         restartMatch()
         return
-    if not getMatchTime() and ((len([player for player in IlIlllIIllIl if not player.isDummy() and player.getSlot() < 12 and player.IlIIIIIIllIl and player.getScore() == lllllllIllll])) < 2):
+    if not getMatchTime() and ((len(IlIlllIIllIl.filter(lambda x: not x.isDummy() and x.getSlot() < 12 and x.IlIIIIIIllIl and x.getScore() == lllllllIllll))) < 2):
         IlIIllIlIllI = true
         pauseMatchTime()
-        IlIIIIIlIlll = 2 + (ceil(1.1 * (len([player for player in IlIlllIIllIl if player.getSlot() < 12 and player.IlIIIIIIllIl]))))
+        IlIIIIIlIlll = 2 + (ceil(1.1 * (len(IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.IlIIIIIIllIl)))))
         hudText(IlIlllIIllIl, "{0}{1} ".format(" Next Match in # Prochain match dans # Nächstes Spiel in # Siguiente partida en # Siguiente partida en # Следующий матч через ".split(lIllIlllIlll).concat(" Próxima partida em ")[localPlayer.IllIIllIllII], IlIIIIIlIlll), lllIIllllIIl, lllIIllllIIl, HudPosition.TOP, 4, Color.WHITE, null, null, HudReeval.VISIBILITY_AND_STRING)
         async(IIIIlIIIllIl, AsyncBehavior.RESTART)
         llIllIIlllll = 2 if IIlllllIIIlI == 1 else false
@@ -4297,9 +4297,9 @@ rule "":
         IlIIIIIlllll = true
         IlIlllIIllIl.stopModifyingVoicelinePitch()
         IIlllllIIIlI = false
-        ([player for player in IlIlllIIllIl if player.getSlot() < 12 and player.IlIIIIIIllIl]).setInvisibility(Invis.NONE)
-        [player for player in IlIlllIIllIl if player.IlIIIIIIllIl].setMoveSpeed(100)
-        ([player for player in IlIlllIIllIl if player.isDummy() or player.lIllIllllIll]).setScore(-1)
+        (IlIlllIIllIl.filter(lambda x: x.getSlot() < 12 and x.IlIIIIIIllIl)).setInvisibility(Invis.NONE)
+        IlIlllIIllIl.filter(lambda x: x.IlIIIIIIllIl).setMoveSpeed(100)
+        (IlIlllIIllIl.filter(lambda x: x.isDummy() or x.lIllIllllIll)).setScore(-1)
         if IlIlIllIlIlI:
             IlIlIllIlIlI = false
         else:
@@ -4422,7 +4422,7 @@ rule "":
     @Condition eventPlayer.isUsingAbility2() == true
     @Condition eventPlayer.isFiringPrimaryFire() == true
     
-    kill([i for i in IlIlllIIllIl.exclude(eventPlayer) if distance(eventPlayer, i) <= 5 and eventPlayer.isInViewAngle(i, 60)], eventPlayer)
+    kill(IlIlllIIllIl.exclude(eventPlayer).filter(lambda x: distance(eventPlayer, x) <= 5 and eventPlayer.isInViewAngle(x, 60)), eventPlayer)
 
 
 rule "":
@@ -4453,9 +4453,9 @@ rule "":
     @Condition llIllIllIlll == true
     @Condition len(llIlllIlllII) >= 2
     @Condition eventPlayer in llIlllIlllII == true
-    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]) <= (1.5 if IllIIlIllIII == 2 else 5)
+    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]) <= (1.5 if IllIIlIllIII == 2 else 5)
     
-    eventPlayer.IllllllIIIIl = sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]
+    eventPlayer.IllllllIIIIl = sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]
     wait()
     kill(eventPlayer.IllllllIIIIl, eventPlayer)
     kill(eventPlayer, eventPlayer.IllllllIIIIl)
@@ -4555,10 +4555,10 @@ rule "":
     @Condition llIllIllIlll == true
     @Condition lIIlIIlIIlII <= 4
     @Condition eventPlayer.getHorizontalSpeed() == true
-    @Condition distance(eventPlayer, sorted(IlIlllIIllIl.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]) <= 1.5
+    @Condition distance(eventPlayer, sorted(IlIlllIIllIl.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]) <= 1.5
     
-    sorted(IlIlllIIllIl.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0].applyImpulse(directionTowards(eventPlayer, sorted(IlIlllIIllIl.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0].getPosition() + Vector.UP * 0.1), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
-    sorted(IlIlllIIllIl.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0].IlIIIlIIllll = eventPlayer
+    sorted(IlIlllIIllIl.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0].applyImpulse(directionTowards(eventPlayer, sorted(IlIlllIIllIl.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0].getPosition() + Vector.UP * 0.1), 40, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
+    sorted(IlIlllIIllIl.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0].IlIIIlIIllll = eventPlayer
     wait()
     if ruleCondition:
         loop()
@@ -4617,9 +4617,9 @@ rule "":
     @Hero torbjorn
     @Condition IllIIlIllIII in [18, 50] == true
     @Condition llIllIllIlll == true
-    @Condition any([distance(eventPlayer, player) <= 1 for player in IlIIIIIlIlll]) == true
+    @Condition IlIIIIIlIlll.any(lambda x: distance(eventPlayer, x) <= 1) == true
     
-    eventPlayer.IllllllIIIIl = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: distance(eventPlayer, player))[0])
+    eventPlayer.IllllllIIIIl = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: distance(eventPlayer, x))[0])
     if eventPlayer.IllllllIIIIl == IIllIlllIIIl or (false if IIllIIllIllI else eventPlayer.IllllllIIIIl == lIIlllIllIlI):
         eventPlayer.teleport(Vector.UP * 1000)
         eventPlayer.setGravity(false)
@@ -4783,7 +4783,7 @@ rule "":
     @Condition llIllIllIlll == true
     
     wait(0.03, Wait.ABORT_WHEN_FALSE)
-    if any([distance(i, eventPlayer) * sinDeg(acosDeg(dotProduct(i.getFacingDirection(), directionTowards(i, eventPlayer)))) <= 0.2 for i in [player for player in IlIlllIIllIl if player.getSlot() >= 12]]):
+    if IlIlllIIllIl.filter(lambda x: x.getSlot() >= 12).any(lambda x: distance(x, eventPlayer) * sinDeg(acosDeg(dotProduct(x.getFacingDirection(), directionTowards(x, eventPlayer)))) <= 0.2):
         kill(eventPlayer)
     if ruleCondition:
         loop()
@@ -4832,7 +4832,7 @@ rule "":
     @Hero dva
     @Condition IllIIlIllIII == 25
     @Condition llIllIllIlll == true
-    @Condition any([distance(IlIIIIIlIlll, i) <= 2 for i in [eventPlayer.getEyePosition(), eventPlayer.getPosition()]]) == true
+    @Condition [eventPlayer.getEyePosition(), eventPlayer.getPosition()].any(lambda x: distance(IlIIIIIlIlll, x) <= 2) == true
     
     eventPlayer.IlllIIlIIIIl = true
 
@@ -4858,8 +4858,8 @@ rule "":
     if ruleCondition:
         loop()
     eventPlayer.IlllIIlIIIIl = true
-    [player for player in llIlllIlllII if player.hasStatus(Status.HACKED)].setInvisibility(Invis.ALL)
-    kill([player for player in llIlllIlllII if player.hasStatus(Status.HACKED)], eventPlayer)
+    llIlllIlllII.filter(lambda x: x.hasStatus(Status.HACKED)).setInvisibility(Invis.ALL)
+    kill(llIlllIlllII.filter(lambda x: x.hasStatus(Status.HACKED)), eventPlayer)
 
 
 rule "":
@@ -4972,7 +4972,7 @@ rule "":
     stopChasingVariable(eventPlayer.lIllllIIllIl)
     if IllIIlIllIII != 33:
         return
-    (([player for player in IlIlllIIllIl if distance(player, eventPlayer.IllllllIIIIl) <= 2 or distance(player, eventPlayer.llIllIIIlIlI) <= 2 or distance(player, eventPlayer.lIlIIIIllIII) <= 2 or distance(player, eventPlayer.lIllllIIllIl) <= 2 or distance(player, eventPlayer.IIIIIllIlllI) <= 2]).exclude(eventPlayer)).IlIIIlIIllll = eventPlayer
+    ((IlIlllIIllIl.filter(lambda x: distance(x, eventPlayer.IllllllIIIIl) <= 2 or distance(x, eventPlayer.llIllIIIlIlI) <= 2 or distance(x, eventPlayer.lIlIIIIllIII) <= 2 or distance(x, eventPlayer.lIllllIIllIl) <= 2 or distance(x, eventPlayer.IIIIIllIlllI) <= 2)).exclude(eventPlayer)).IlIIIlIIllll = eventPlayer
 
 
 rule "":
@@ -5025,8 +5025,8 @@ rule "":
     @Condition eventPlayer.IlllIIlIIIIl == false
     
     wait(0.05, Wait.ABORT_WHEN_FALSE)
-    if any([distance(eventPlayer, player) <= 2 or distance(eventPlayer.IllllllIIIIl, player) <= 2 or distance(eventPlayer.llIllIIIlIlI, player) <= 2 or distance(eventPlayer.lIlIIIIllIII, player) <= 2 or distance(eventPlayer.lIllllIIllIl, player) <= 2 or distance(eventPlayer.IIIIIllIlllI, player) <= 2 for player in IlIIIIIlIlll]):
-        eventPlayer.lIIlIIIIlIIl = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: distance(eventPlayer, player))[0])
+    if IlIIIIIlIlll.any(lambda x: distance(eventPlayer, x) <= 2 or distance(eventPlayer.IllllllIIIIl, x) <= 2 or distance(eventPlayer.llIllIIIlIlI, x) <= 2 or distance(eventPlayer.lIlIIIIllIII, x) <= 2 or distance(eventPlayer.lIllllIIllIl, x) <= 2 or distance(eventPlayer.IIIIIllIlllI, x) <= 2):
+        eventPlayer.lIIlIIIIlIIl = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: distance(eventPlayer, x))[0])
         wait()
         if lIllIlIIIIlI[eventPlayer.lIIlIIIIlIIl]:
             eventPlayer.IlllIIlIIIIl = true
@@ -5088,7 +5088,7 @@ rule "":
     @Condition IllIIlIllIII == 43
     @Condition IlIllIlIIllI == true
     @Condition len(llIlllIlllII) >= 2
-    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]) < 5
+    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]) < 5
     
     eventPlayer.llIllIIIlIlI = true
 
@@ -5100,7 +5100,7 @@ rule "":
     @Condition IlIllIlIIllI == true
     @Condition eventPlayer.isAlive() == true
     @Condition len(llIlllIlllII) >= 2
-    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]) >= 5
+    @Condition distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]) >= 5
     
     eventPlayer.llIllIIIlIlI = false
 
@@ -5208,7 +5208,7 @@ rule "":
     @Hero genji
     @Condition IllIIlIllIII == 49
     @Condition llIllIllIlll == true
-    @Condition any([distance(eventPlayer, i) <= 1.6 for i in [lIIlllIllIlI[false], lIIlllIllIlI[true]]]) == true
+    @Condition [lIIlllIllIlI[false], lIIlllIllIlI[true]].any(lambda x: distance(eventPlayer, x) <= 1.6) == true
     
     heal(eventPlayer, null, 9999)
     eventPlayer.IlllIIlIIIIl = true
@@ -5251,7 +5251,7 @@ rule "":
     @Condition lIIlIIlIIlII <= 1
     
     wait(0.1, Wait.ABORT_WHEN_FALSE)
-    if any([distance(eventPlayer, i) <= lIIlllIllIlI for i in [IlIIIIIlIlll, lIllIlIIIIlI, IlllIIIIlIIl, IIllIlllIIIl]]):
+    if [IlIIIIIlIlll, lIllIlIIIIlI, IlllIIIIlIIl, IIllIlllIIIl].any(lambda x: distance(eventPlayer, x) <= lIIlllIllIlI):
         eventPlayer.setStatusEffect(null, Status.BURNING, 6)
         kill(eventPlayer)
     if ruleCondition:
@@ -5574,7 +5574,7 @@ rule "":
     @Hero echo
     @Condition IllIIlIllIII == 105
     @Condition llIllIllIlll == true
-    @Condition any([distance(eventPlayer, player) <= 4 for player in lIllIlIIIIlI]) == true
+    @Condition lIllIlIIIIlI.any(lambda x: distance(eventPlayer, x) <= 4) == true
     
     chaseAtRate(eventPlayer.IllllllIIIIl, false, 100 * IlIIIIIlllll, ChaseRateReeval.NONE)
     eventPlayer.setStatusEffect(null, Status.BURNING, 9999)
@@ -5586,7 +5586,7 @@ rule "":
     @Condition IllIIlIllIII == 105
     @Condition llIllIllIlll == true
     @Condition eventPlayer.isAlive() == true
-    @Condition all([distance(eventPlayer, player) > 4 for player in lIllIlIIIIlI]) == true
+    @Condition lIllIlIIIIlI.all(lambda x: distance(eventPlayer, x) > 4) == true
     
     stopChasingVariable(eventPlayer.IllllllIIIIl)
     eventPlayer.clearStatusEffect(Status.BURNING)
@@ -5671,7 +5671,7 @@ def IIlIIllllIIl():
     if IIllIlllIIIl.isDead() or not entityExists(IIllIlllIIIl):
         async(lIIlIIIlIIlI, AsyncBehavior.RESTART)
     else:
-        IIllIlllIIIl = sorted(llIlllIlllII.exclude(IIllIlllIIIl), lambda i: angleBetweenVectors(IIllIlllIIIl.getFacingDirection(), directionTowards(IIllIlllIIIl, i)))[0]
+        IIllIlllIIIl = sorted(llIlllIlllII.exclude(IIllIlllIIIl), lambda x: angleBetweenVectors(IIllIlllIIIl.getFacingDirection(), directionTowards(IIllIlllIIIl, x)))[0]
     if IlIIIIIlIlll < 100:
         chaseAtRate(IlIIIIIlIlll, IlIIIIIlIlll + 20, 40 * IlIIIIIlllll, ChaseRateReeval.NONE)
     else:
@@ -5793,8 +5793,8 @@ rule "":
         else:
             eventPlayer.lIllllIIllIl = eventPlayer.lIlIIIIllIII
         eventPlayer.lIIlIIIIlIIl = false
-    if any([distance(eventPlayer.lIllllIIllIl, player) <= 6 for player in IIllIlllIIIl]):
-        eventPlayer.llIllIIIlIlI = IIllIlllIIIl.index(sorted(IIllIlllIIIl, lambda player: distance(eventPlayer.lIllllIIllIl, player))[0])
+    if IIllIlllIIIl.any(lambda x: distance(eventPlayer.lIllllIIllIl, x) <= 6):
+        eventPlayer.llIllIIIlIlI = IIllIlllIIIl.index(sorted(IIllIlllIIIl, lambda x: distance(eventPlayer.lIllllIIllIl, x))[0])
         if not lIIlllIllIlI[eventPlayer.llIllIIIlIlI]:
             playEffect(IlIlllIIllIl, DynamicEffect.GOOD_EXPLOSION, llIIlIIlllIl, IIllIlllIIIl[eventPlayer.llIllIIIlIlI] + vect(false, 1.5, false), 5)
             lIIlllIllIlI[eventPlayer.llIllIIIlIlI] = true
@@ -5809,7 +5809,7 @@ rule "":
     while IllIIlIllIII:
         if eventPlayer.getAbilityCooldown(Button.ABILITY_1) > 1:
             eventPlayer.setAbilityCooldown(Button.ABILITY_1, 1)
-        eventPlayer.IIIIIllIlllI = sorted(IIllIlllIIIl, lambda player: distance(eventPlayer, player))[0]
+        eventPlayer.IIIIIllIlllI = sorted(IIllIlllIIIl, lambda x: distance(eventPlayer, x))[0]
         if lIIlllIllIlI[IIllIlllIIIl.index(eventPlayer.IIIIIllIlllI)] and distance(eventPlayer, eventPlayer.IIIIIllIlllI) <= 6:
             chaseAtRate(eventPlayer.IllllllIIIIl, false, 25 * IlIIIIIlllll, ChaseRateReeval.NONE)
             eventPlayer.setStatusEffect(null, Status.BURNING, 9999)
@@ -6111,7 +6111,7 @@ rule "":
     @Condition llIllIllIlll == true
     
     wait(0.1)
-    if distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0]) <= 3 and eventPlayer.isInViewAngle(sorted(llIlllIlllII.exclude(eventPlayer), lambda i: distance(eventPlayer, i))[0], 45):
+    if distance(eventPlayer, sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0]) <= 3 and eventPlayer.isInViewAngle(sorted(llIlllIlllII.exclude(eventPlayer), lambda x: distance(eventPlayer, x))[0], 45):
         eventPlayer.applyImpulse(directionTowards(eventPlayer.getEyePosition() + eventPlayer.getFacingDirection() * true, eventPlayer.getEyePosition()), eventPlayer.getSpeed() * 9, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
     loop()
 
@@ -6138,8 +6138,8 @@ rule "":
     eventPlayer.setKnockbackReceived(80)
     while IllIIlIllIII:
         if eventPlayer.IIlIlllIllII:
-            IlIIIIIlIlll = sorted(llIlllIlllII, lambda player: player.getScore())
-            lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: player.getScore()).last())
+            IlIIIIIlIlll = sorted(llIlllIlllII, lambda x: x.getScore())
+            lIllIlIIIIlI = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: x.getScore()).last())
             wait()
             eventPlayer.llIllIIIlIlI = IlIIIIIlIlll.last()
         elif eventPlayer.lIIllIlIllII:
@@ -6151,7 +6151,7 @@ rule "":
         eventPlayer.teleport(IllllllIIIIl)
         eventPlayer.IllllllIIIIl = 100
         wait(4 * llllIIllIlII)
-        kill([player for player in llIlllIlllII if distance(eventPlayer, player) <= 7 - len(llIlllIlllII) * 0.3], eventPlayer)
+        kill(llIlllIlllII.filter(lambda x: distance(eventPlayer, x) <= 7 - len(llIlllIlllII) * 0.3), eventPlayer)
         playEffect(IlIlllIIllIl, DynamicEffect.GOOD_EXPLOSION, lIIIIllIlIll, eventPlayer, 2.5 * (7 - len(llIlllIlllII) * 0.3))
 
 
@@ -6160,7 +6160,7 @@ rule "":
     @Hero wreckingBall
     @Condition IllIIlIllIII == 114
     
-    eventPlayer.llIllIIIlIlI = sorted(llIlllIlllII.exclude(attacker), lambda i: angleBetweenVectors(attacker.getFacingDirection(), directionTowards(attacker, i)))[0]
+    eventPlayer.llIllIIIlIlI = sorted(llIlllIlllII.exclude(attacker), lambda x: angleBetweenVectors(attacker.getFacingDirection(), directionTowards(attacker, x)))[0]
 
 
 def lIllIllllIIl():
@@ -6168,7 +6168,7 @@ def lIllIllllIIl():
     
     lIllIlIIIIlI = vect(random.uniform(-12, 12), false, random.uniform(-12, 12))
     wait(0.05)
-    if IllIIlIllIII and any([distance(lIllIlIIIIlI, player) <= 6 for player in IlIIIIIlIlll]):
+    if IllIIlIllIII and IlIIIIIlIlll.any(lambda x: distance(lIllIlIIIIlI, x) <= 6):
         loop()
 
 
@@ -6178,7 +6178,7 @@ rule "":
     @Condition IllIIlIllIII == 115
     @Condition eventPlayer.IllllllIIIIl == false
     @Condition eventPlayer.llIllIIIlIlI < 100
-    @Condition any([distance(eventPlayer, player) <= 1.5 for player in IlIIIIIlIlll]) == true
+    @Condition IlIIIIIlIlll.any(lambda x: distance(eventPlayer, x) <= 1.5) == true
     @Condition eventPlayer.isCrouching() == true
     
     eventPlayer.setMoveSpeed(false)
@@ -6190,14 +6190,14 @@ rule "":
     @Event eachPlayer
     @Hero mei
     @Condition IllIIlIllIII == 115
-    @Condition (all([distance(eventPlayer, player) >= 1.5 for player in IlIIIIIlIlll]) or not eventPlayer.isCrouching() or eventPlayer.llIllIIIlIlI == 100 or eventPlayer.isDead()) == true
+    @Condition (IlIIIIIlIlll.all(lambda x: distance(eventPlayer, x) >= 1.5) or not eventPlayer.isCrouching() or eventPlayer.llIllIIIlIlI == 100 or eventPlayer.isDead()) == true
     
     stopChasingVariable(eventPlayer.llIllIIIlIlI)
     eventPlayer.setMoveSpeed(150 if IIlllllIIIlI == 4 else 100)
     eventPlayer.setJumpEnabled(true)
     if eventPlayer.llIllIIIlIlI == 100:
         eventPlayer.IllllllIIIIl = true
-        eventPlayer.lIlIIIIllIII = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda player: distance(eventPlayer.getPosition(), player))[0])
+        eventPlayer.lIlIIIIllIII = IlIIIIIlIlll.index(sorted(IlIIIIIlIlll, lambda x: distance(eventPlayer.getPosition(), x))[0])
         eventPlayer.setSecondaryFireEnabled(true)
         playEffect(IlIlllIIllIl, DynamicEffect.GOOD_PICKUP_EFFECT, Color.SKY_BLUE, eventPlayer.getPosition(), true)
         destroyEffect(IlllIIIIlIIl[eventPlayer.lIlIIIIllIII])
@@ -6257,7 +6257,7 @@ def IIIlIIllIlII():
     llllIlIIIlll.append(IIlllllIIIlI)
     if IIlllllIIIlI == 1:
         setMatchTime(90)
-        ([player for player in IlIlllIIllIl if player.isDummy() or player.lIllIllllIll]).setScore(99)
+        (IlIlllIIllIl.filter(lambda x: x.isDummy() or x.lIllIllllIll)).setScore(99)
     elif IIlllllIIIlI == 3:
         setSlowMotion(75)
         llllIIllIlII = 0.75

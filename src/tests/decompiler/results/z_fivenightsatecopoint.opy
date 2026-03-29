@@ -269,7 +269,7 @@ rule "[G] Power 0":
 rule "[G] Rein Charge":
     @Condition isGameInProgress() == true
     @Condition getPlayersInSlot(1, Team.1).isAlive() == true
-    @Condition (any([i >= 3 or i <= -3 for i in [BastionPhase, EchoPhase]]) or ZenDoorNumber) == true
+    @Condition ([BastionPhase, EchoPhase].any(lambda x: x >= 3 or x <= -3) or ZenDoorNumber) == true
     @Condition getPlayersInSlot(1, Team.1).isUsingAbility1() == false
     
     getPlayersInSlot(1, Team.1).cancelPrimaryAction()
@@ -313,7 +313,7 @@ rule "[G] Main Setup":
     #HUD
     if NightNumber == 5:
         goto lbl_0
-    hudText(getAllPlayers(), "{0} AM".format(12 if CurrentTime < 1 else floor(CurrentTime)), "NIGHT {0}".format(NightNumber + 1), "CHEATS ENABLED" if any(Cheats) else l"", HudPosition.RIGHT, 0, Color.WHITE, Color.WHITE, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers(), "{0} AM".format(12 if CurrentTime < 1 else floor(CurrentTime)), "NIGHT {0}".format(NightNumber + 1), "CHEATS ENABLED" if Cheats.any() else l"", HudPosition.RIGHT, 0, Color.WHITE, Color.WHITE, Color.TURQUOISE, HudReeval.VISIBILITY_AND_STRING)
     lbl_0:
     hudHeader(getAllPlayers(), "POWER: {0}%".format(floor(Power)), HudPosition.LEFT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     hudText(getAllPlayers(), null, " \r\nUSAGE", "{0}{0}{0}{0}{0}".format("■").substring(0, PowerUsage), HudPosition.LEFT, 1, Color.WHITE, Color.WHITE, Color.GREEN if PowerUsage <= 2 else Color.YELLOW if PowerUsage > 2 and PowerUsage <= 3 else Color.RED, HudReeval.VISIBILITY_STRING_AND_COLOR)
@@ -1647,7 +1647,7 @@ def ZenSequence():
     
     Zen.setInvisibility(Invis.NONE)
     Zen.startFacing(directionTowards(Zen.getEyePosition(), CamPositions[CurrentCam]), 1000)
-    Zen.teleport(sorted(ZenPositions, lambda player: distance(player, CamPositions[CurrentCam]))[0])
+    Zen.teleport(sorted(ZenPositions, lambda x: distance(x, CamPositions[CurrentCam]))[0])
     waitUntil(Player_.isHoldingButton(Button.PRIMARY_FIRE) or Player_.isHoldingButton(Button.SECONDARY_FIRE) or Player_.isHoldingButton(Button.INTERACT), 1.5 - ZenAI / 30)
     if Player_.isHoldingButton(Button.PRIMARY_FIRE) or Player_.isHoldingButton(Button.SECONDARY_FIRE) or Player_.isHoldingButton(Button.INTERACT):
         Zen.setInvisibility(Invis.ALL)
@@ -1663,7 +1663,7 @@ def ZenSequence():
         waitUntil(CurrentCam, 1.7 - ZenAI / 30)
         if CurrentCam:
             Zen.setInvisibility(Invis.ALL)
-            Zen.teleport(sorted(ZenPositions, lambda player: distance(player, CamPositions[CurrentCam]))[0])
+            Zen.teleport(sorted(ZenPositions, lambda x: distance(x, CamPositions[CurrentCam]))[0])
             wait(4)
             return
         else:
@@ -1703,7 +1703,7 @@ rule "[G] Zen Progression":
     @Condition CurrentCam != ZenPickedCamAndPos[0]
     @Condition ZenAI > 0
     
-    Zen.startFacing(directionTowards(Zen.getEyePosition(), sorted(CamPositions.exclude(null), lambda i: distance(Zen.getEyePosition(), i))[0]), 1000)
+    Zen.startFacing(directionTowards(Zen.getEyePosition(), sorted(CamPositions.exclude(null), lambda x: distance(Zen.getEyePosition(), x))[0]), 1000)
     wait(6.5 - ZenAI / 15, Wait.ABORT_WHEN_FALSE)
     if random.randint(1, 20) > ZenAI:
         ZenMove()

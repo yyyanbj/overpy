@@ -367,13 +367,13 @@ rule "global init":
         wait(false)
     spawn_line = vectorTowards(spawn_corners[0], spawn_corners.last())
     pauseMatchTime()
-    hudHeader([player for player in getAllPlayers() if not objective_complete and not no_hud and not player.shop], " {0}   OBJECTIVE: {1}   {0}".format(newline, objective), HudPosition.TOP, false, rgb(obj_color_r, obj_color_g, obj_color_b), HudReeval.VISIBILITY_STRING_AND_COLOR)
+    hudHeader(getAllPlayers().filter(lambda player: not objective_complete and not no_hud and not player.shop), " {0}   OBJECTIVE: {1}   {0}".format(newline, objective), HudPosition.TOP, false, rgb(obj_color_r, obj_color_g, obj_color_b), HudReeval.VISIBILITY_STRING_AND_COLOR)
     objective = "Wait for players to assemble."
     async(obj_color, AsyncBehavior.RESTART)
     createEffect(getAllPlayers(), Effect.RING, Color.AQUA, skip_cutscene_pos, 2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     createInWorldText(getAllPlayers() if skip_cutscene_pos.y < 900 else [], "Group up here to skip the dialogue!", skip_cutscene_pos, 1.2, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.AQUA)
     createEffect(getAllPlayers(), Effect.RING, Color.GREEN, objective_pos, 4, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-    createIcon([player for player in getAllPlayers() if objective_pos.y < 900 and not player.shop], objective_pos, Icon.ARROW_DOWN, IconReeval.VISIBILITY_AND_POSITION, Color.GREEN)
+    createIcon(getAllPlayers().filter(lambda player: objective_pos.y < 900 and not player.shop), objective_pos, Icon.ARROW_DOWN, IconReeval.VISIBILITY_AND_POSITION, Color.GREEN)
     hudSubtext(getAllPlayers(), " \n\n\n\n", HudPosition.LEFT, false, Color.WHITE, HudReeval.VISIBILITY)
     boundary_corners = [vect(12.6, 6, -118.814), vect(42.805, 6, -44.411)]
     boundary_line = vectorTowards(boundary_corners[0], boundary_corners.last())
@@ -381,37 +381,37 @@ rule "global init":
     shop_campos = [vect(-23.327, 7.679, -91.651), vect(-21.86, 7.679, -94.904)]
     shop_left = normalize(crossProduct(directionTowards(shop_campos[0], shop_campos.last()), Vector.DOWN))
     wait(false)
-    hudHeader([player for player in getAllPlayers() if player.shop], " {0}   {1}   {0}".format(newline, "Move - WASD, Select - {0}, Back - {1}, Exit - {2}".format(inputBindingString(Button.PRIMARY_FIRE), inputBindingString(Button.SECONDARY_FIRE), inputBindingString(Button.JUMP))), HudPosition.TOP, false, rgb(obj_color_g, obj_color_r, obj_color_b), HudReeval.VISIBILITY_STRING_AND_COLOR)
+    hudHeader(getAllPlayers().filter(lambda player: player.shop), " {0}   {1}   {0}".format(newline, "Move - WASD, Select - {0}, Back - {1}, Exit - {2}".format(inputBindingString(Button.PRIMARY_FIRE), inputBindingString(Button.SECONDARY_FIRE), inputBindingString(Button.JUMP))), HudPosition.TOP, false, rgb(obj_color_g, obj_color_r, obj_color_b), HudReeval.VISIBILITY_STRING_AND_COLOR)
     potions_price = [50, 50, 40, 30, 50, 150, 100, 100, 150, 5]
     hudSubtext(getAllPlayers() if no_hud else [], " {0}{0}{0}{0}{0}{0}{0}".format("{0}{0}{0}{0}{0}{0}{0}".format(newline)), HudPosition.LEFT, -10, Color.WHITE, HudReeval.VISIBILITY)
     hudSubtext(getAllPlayers() if no_hud else [], " {0}{0}{0}{0}{0}{0}{0}".format("{0}{0}{0}{0}{0}{0}{0}".format(newline)), HudPosition.RIGHT, -10, Color.WHITE, HudReeval.VISIBILITY)
     fullwidth_spaces = " \u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002\u2002"
     hudSubtext(getAllPlayers(), ("{0}{1}{2}".format("\u200b" if main_speaker in [Hero.REINHARDT, Hero.SOMBRA] else "{0} {1}: ".format(heroIcon(main_speaker), t2_names_array[t2_heroes_array.index(main_speaker)]), main_dialogue.replace("Jersey McGee", cowboy_name).substring(0, letter_scroll), fullwidth_spaces.substring(0, strLen(main_dialogue) - letter_scroll + true))) if main_dialogue else " ", HudPosition.TOP, 2, t2_hero_colours[t2_heroes_array.index(main_speaker)], HudReeval.VISIBILITY_STRING_AND_COLOR)
-    hudSubtext([player for player in getAllPlayers() if player.potions != null], " {0}{1} Potion effects:".format(newline, iconString(Icon.POISON_2)), HudPosition.LEFT, 20, rgb(213, 184, 255), HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions != null), " {0}{1} Potion effects:".format(newline, iconString(Icon.POISON_2)), HudPosition.LEFT, 20, rgb(213, 184, 255), HudReeval.VISIBILITY_AND_STRING)
     wait(false)
-    hudSubtext([player for player in getAllPlayers() if player.potions[0] > false], "+{0}% damage dealt".format(localPlayer.potions[0] * 5), HudPosition.LEFT, 21, Color.RED, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[true] > false], "+{0}% healing dealt".format(localPlayer.potions[true] * 5), HudPosition.LEFT, 22, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[2] > false], "+{0} max HP".format(localPlayer.potions[2] * 20), HudPosition.LEFT, 23, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[3] > false], "+{0}% movement speed".format(localPlayer.potions[3] * 5), HudPosition.LEFT, 24, Color.AQUA, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[4] > false], "+{0}% max ammo".format(localPlayer.potions[4] * 20), HudPosition.LEFT, 25, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[5] > false], "-{0} {1} on cooldowns".format(localPlayer.potions[5], "seconds" if localPlayer.potions[5] > true else "second"), HudPosition.LEFT, 26, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[6] > false], "{0}% healing from damage".format(localPlayer.potions[6] * 5), HudPosition.LEFT, 27, Color.ROSE, HudReeval.VISIBILITY_AND_STRING)
-    hudSubtext([player for player in getAllPlayers() if player.potions[7] > false], "{0}% chance to inflict burning".format(localPlayer.potions[7] * 5), HudPosition.LEFT, 28, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[0] > false), "+{0}% damage dealt".format(localPlayer.potions[0] * 5), HudPosition.LEFT, 21, Color.RED, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[true] > false), "+{0}% healing dealt".format(localPlayer.potions[true] * 5), HudPosition.LEFT, 22, Color.YELLOW, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[2] > false), "+{0} max HP".format(localPlayer.potions[2] * 20), HudPosition.LEFT, 23, Color.GREEN, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[3] > false), "+{0}% movement speed".format(localPlayer.potions[3] * 5), HudPosition.LEFT, 24, Color.AQUA, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[4] > false), "+{0}% max ammo".format(localPlayer.potions[4] * 20), HudPosition.LEFT, 25, Color.BLUE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[5] > false), "-{0} {1} on cooldowns".format(localPlayer.potions[5], "seconds" if localPlayer.potions[5] > true else "second"), HudPosition.LEFT, 26, Color.PURPLE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[6] > false), "{0}% healing from damage".format(localPlayer.potions[6] * 5), HudPosition.LEFT, 27, Color.ROSE, HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[7] > false), "{0}% chance to inflict burning".format(localPlayer.potions[7] * 5), HudPosition.LEFT, 28, Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
     numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    hudSubtext([player for player in getAllPlayers() if player.potions[8] - player.extra_lives_used > false], "{0} extra {1}".format(localPlayer.potions[8] - localPlayer.extra_lives_used, "lives" if localPlayer.potions[8] - localPlayer.extra_lives_used > true else "life"), HudPosition.LEFT, 29, rgb(112, 179, 134), HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.potions[8] - player.extra_lives_used > false), "{0} extra {1}".format(localPlayer.potions[8] - localPlayer.extra_lives_used, "lives" if localPlayer.potions[8] - localPlayer.extra_lives_used > true else "life"), HudPosition.LEFT, 29, rgb(112, 179, 134), HudReeval.VISIBILITY_AND_STRING)
     hudText(getAllPlayers(), "  JUNKENSTEIN'S VICTORY V1.5.19  ", null, " \n\n", HudPosition.RIGHT, -1, Color.AQUA, Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_AND_STRING)
     hudSubtext(getAllPlayers(), "A Gamemode by Therister#1251", HudPosition.RIGHT, -0.9, rgb(148, 255, 248), HudReeval.VISIBILITY_AND_STRING)
     hudText(getAllPlayers(), null, "Check out my YouTube and Discord!", "\u2003\u2003{0} bit.ly/therister".format(iconString(Icon.HEART)), HudPosition.RIGHT, -0.8, Color.WHITE, rgb(174, 158, 255), rgb(196, 102, 255), HudReeval.VISIBILITY_AND_STRING)
     hudText(getAllPlayers(), null, "With support from Grandeur Hammers", " {0} bit.ly/grandeurhammers\n".format(abilityIconString(Hero.TORBJORN, Button.ABILITY_2)), HudPosition.RIGHT, -0.7, Color.WHITE, rgb(255, 183, 120), Color.ORANGE, HudReeval.VISIBILITY_AND_STRING)
     hudText(getPlayers(Team.2), "  Difficulty:{0}  ".format("\u2028Cinematic:\u2028Dead Easy:\u2028Para-Normal:\u2028Terrifying!: JUNKTASTICALLY NIGHTMARISH!!!".split(":")[difficulty + 1]), " ", " ", HudPosition.RIGHT, -0.5, [Color.GREEN, Color.WHITE, Color.YELLOW, Color.ORANGE, Color.RED][difficulty + 1], Color.WHITE, Color.WHITE, HudReeval.VISIBILITY_STRING_AND_COLOR)
     wait(false)
-    hudSubtext([player for player in getAllPlayers() if player.scrolls_equip != []], " {0}{1} Scroll effects:".format(newline, iconString(Icon.SPIRAL)), HudPosition.LEFT, 11, rgb(255, 248, 176), HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if null in player.scrolls_equip], null, "• Chaos Magic:• Junkenstein's Revenge:• Evil Stitched To Evil:• Reap What You Sow".split(":")[t2_heroes_array.index(localPlayer.getHero())], ["Heal yourself for 50% damage your heal target takes and 50%\ndamage they deal. Your health regen is drastically reduced.", "When downed, repeatedly release Total Mayhem\nbombs at your corpse every second.", "Every killing blow grants you +100 unrecoverable HP.", "Every killing blow refreshes\none of your cooldowns."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 12, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if 1 in player.scrolls_equip], null, "• Mystic Transfusion:• Superconductive:• It's Alive!:• Marked For Death".split(":")[t2_heroes_array.index(localPlayer.getHero())], ["Press ''{0}'' while healing a player to instantly heal\nthem for 100HP, sacrificing 60HP of your own.".format(inputBindingString(Button.RELOAD)), "When under 66.6% health, nearby enemies\ntake electric damage over time.", "Become nanoboosted for 10 seconds whenever\nyou revive. Allies revive you twice as quickly.", "Shoot an enemy to mark them, making them\nvisible through walls and take 1.25× damage.\n{0}".format("You can only mark one enemy at a time.")][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 13, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if 2 in player.scrolls_equip], null, "• Bewitching Grasp/• Discharged/• Recycling/• The Reaper's Scythe".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Replaces Damage Boost with a beam that locks\nonto enemies and drains their health.", "Every killing blow causes the victim to discharge\nelectricity, damaging nearby enemies and stunning them.", "When crouching, deal 2× damage,\nbut every shot takes 100HP from you.", "Gain 2× melee range and 2.5× melee damage."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 14, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if 3 in player.scrolls_equip], null, "• Flying Broomstick/• Shocking Surprise/• Chain Reaction/• Vengeful Ghost".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Guardian Angel now damages and\nknocks back enemies in your path.", "Concussion Mine and Riptire now also\nelectrify enemies, stunning them.", "Successfully landing a hook sets its cooldown to 1 second,\nhowever missing a hook sets its cooldown to 12 seconds.", "While in Wraith Form, nearby enemies\ntake damage over time."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 15, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if 4 in player.scrolls_equip], null, "• Undying Servitude/• Faraday Trap/• Monstrous Roar/• Jumpscare".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Replaces Resurrect. Casts a spell on a living teammate that\nmakes them invulnerable to all damage for 8 seconds.", "When an enemy is caught in your Steel Trap, they start\nelectrifying nearby enemies, damaging and rooting them.", "Replaces Take A Breather with a roar that heals you and\ngrants 60% damage reduction for 5 seconds. All enemies\n{0}".format("immediately target you."), "Upon exiting Shadow Step, all nearby\nenemies become frozen in fear."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 16, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
-    hudText([player for player in getAllPlayers() if 5 in player.scrolls_equip], null, "• Hex Mania/• Zombardier/• Beware; For I Am Fearless/• Dance With The Reaper".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Upon activating Valkyrie, all enemies in a 30 meter radius go\ninsane for 8 seconds, becoming hacked and confused.", "Upon activating Riptire, a zombardier is summoned\nthat fights for you for 20 seconds.", "Whole Hog now deals zero knockback.\n2× movement speed while Whole Hog is active.", "While using Death Blossom, you become\ninvincible and move 3× as fast."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 17, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudSubtext(getAllPlayers().filter(lambda player: player.scrolls_equip != []), " {0}{1} Scroll effects:".format(newline, iconString(Icon.SPIRAL)), HudPosition.LEFT, 11, rgb(255, 248, 176), HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: null in player.scrolls_equip), null, "• Chaos Magic:• Junkenstein's Revenge:• Evil Stitched To Evil:• Reap What You Sow".split(":")[t2_heroes_array.index(localPlayer.getHero())], ["Heal yourself for 50% damage your heal target takes and 50%\ndamage they deal. Your health regen is drastically reduced.", "When downed, repeatedly release Total Mayhem\nbombs at your corpse every second.", "Every killing blow grants you +100 unrecoverable HP.", "Every killing blow refreshes\none of your cooldowns."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 12, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: 1 in player.scrolls_equip), null, "• Mystic Transfusion:• Superconductive:• It's Alive!:• Marked For Death".split(":")[t2_heroes_array.index(localPlayer.getHero())], ["Press ''{0}'' while healing a player to instantly heal\nthem for 100HP, sacrificing 60HP of your own.".format(inputBindingString(Button.RELOAD)), "When under 66.6% health, nearby enemies\ntake electric damage over time.", "Become nanoboosted for 10 seconds whenever\nyou revive. Allies revive you twice as quickly.", "Shoot an enemy to mark them, making them\nvisible through walls and take 1.25× damage.\n{0}".format("You can only mark one enemy at a time.")][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 13, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: 2 in player.scrolls_equip), null, "• Bewitching Grasp/• Discharged/• Recycling/• The Reaper's Scythe".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Replaces Damage Boost with a beam that locks\nonto enemies and drains their health.", "Every killing blow causes the victim to discharge\nelectricity, damaging nearby enemies and stunning them.", "When crouching, deal 2× damage,\nbut every shot takes 100HP from you.", "Gain 2× melee range and 2.5× melee damage."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 14, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: 3 in player.scrolls_equip), null, "• Flying Broomstick/• Shocking Surprise/• Chain Reaction/• Vengeful Ghost".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Guardian Angel now damages and\nknocks back enemies in your path.", "Concussion Mine and Riptire now also\nelectrify enemies, stunning them.", "Successfully landing a hook sets its cooldown to 1 second,\nhowever missing a hook sets its cooldown to 12 seconds.", "While in Wraith Form, nearby enemies\ntake damage over time."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 15, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: 4 in player.scrolls_equip), null, "• Undying Servitude/• Faraday Trap/• Monstrous Roar/• Jumpscare".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Replaces Resurrect. Casts a spell on a living teammate that\nmakes them invulnerable to all damage for 8 seconds.", "When an enemy is caught in your Steel Trap, they start\nelectrifying nearby enemies, damaging and rooting them.", "Replaces Take A Breather with a roar that heals you and\ngrants 60% damage reduction for 5 seconds. All enemies\n{0}".format("immediately target you."), "Upon exiting Shadow Step, all nearby\nenemies become frozen in fear."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 16, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
+    hudText(getAllPlayers().filter(lambda player: 5 in player.scrolls_equip), null, "• Hex Mania/• Zombardier/• Beware; For I Am Fearless/• Dance With The Reaper".split("/")[t2_heroes_array.index(localPlayer.getHero())], ["Upon activating Valkyrie, all enemies in a 30 meter radius go\ninsane for 8 seconds, becoming hacked and confused.", "Upon activating Riptire, a zombardier is summoned\nthat fights for you for 20 seconds.", "Whole Hog now deals zero knockback.\n2× movement speed while Whole Hog is active.", "While using Death Blossom, you become\ninvincible and move 3× as fast."][t2_heroes_array.index(localPlayer.getHero())], HudPosition.LEFT, 17, Color.WHITE, name_colors_2[t2_heroes_array.index(localPlayer.getHero())], t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())], HudReeval.VISIBILITY_AND_STRING)
     chaseAtRate(pentagram_angle, 9999800320, 120, ChaseRateReeval.NONE)
     wait(0.1)
     createDummy(Hero.ZENYATTA, Team.2, 5, vect(-12.94, true, -0.41), vect(-0.16, false, 0.99))
@@ -455,7 +455,7 @@ def InitialGlobal_4():
         for compressBakeStringLoop in range(0, len(compressedNodes[compressBakeNodeLoop]), true):
             compressMapper = []
             compressMapper[strLen(compressedNodes[compressBakeNodeLoop][compressBakeStringLoop]) - true] = null
-            compressCurrentNodeArray.append([compressBakeMatcher.strIndex(compressedNodes[compressBakeNodeLoop][compressBakeStringLoop].substring(i, 1)) for _, i in compressMapper])
+            compressCurrentNodeArray.append(compressMapper.map(lambda _, i: compressBakeMatcher.strIndex(compressedNodes[compressBakeNodeLoop][compressBakeStringLoop].substring(i, 1))))
             wait(false)
         compressBakeResult[compressBakeNodeLoop] = compressCurrentNodeArray
     _extendedGlobalCollection[true] = _classIndexes.index(null)
@@ -496,14 +496,14 @@ rule "Pathfinder: Resolve Next":
     
     eventPlayer.destination = eventPlayer.zomnic_dest if eventPlayer.zomnic == 1 else vect(111, 11.15, -5.36) if eventPlayer.piss_ending else eventPlayer.target.getPosition()
     eventPlayer.startThrottleInDirection(directionTowards(eventPlayer.getPosition(), eventPlayer.destination if eventPlayer.pathfinderCurrent == -1 else lol3[eventPlayer.pathfinderCurrent]), 1, Relativity.TO_WORLD)
-    eventPlayer.parentArray = lol2[all_nodes.index((sorted(all_nodes, lambda player: (distance(player, eventPlayer.destination) + (1000 * (verticalAngleOfDirection(directionTowards(player, eventPlayer.destination)) < -50))) + (1000 * (not isInLoS(player, eventPlayer.destination + Vector.UP)))))[0])]
-    eventPlayer.pathfinderCurrent = lol3.index((sorted(lol3, lambda player: (distance(eventPlayer.getPosition(), player) + distance(eventPlayer.target.getPosition(), player) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer.getPosition(), player)) < -50))) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), player + Vector.UP)))))[0])
+    eventPlayer.parentArray = lol2[all_nodes.index((sorted(all_nodes, lambda x: (distance(x, eventPlayer.destination) + (1000 * (verticalAngleOfDirection(directionTowards(x, eventPlayer.destination)) < -50))) + (1000 * (not isInLoS(x, eventPlayer.destination + Vector.UP)))))[0])]
+    eventPlayer.pathfinderCurrent = lol3.index((sorted(lol3, lambda x: (distance(eventPlayer.getPosition(), x) + distance(eventPlayer.target.getPosition(), x) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer.getPosition(), x)) < -50))) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), x + Vector.UP)))))[0])
     while eventPlayer.isAlive() and eventPlayer.start_pathfind:
         if distance(eventPlayer.getPosition(), lol3[eventPlayer.pathfinderCurrent]) <= 0.4:
             wait(wait)
             if not eventPlayer.zomnic:
                 eventPlayer.destination = eventPlayer.zomnic_dest if eventPlayer.zomnic == 1 else vect(111, 11.15, -5.36) if eventPlayer.piss_ending else eventPlayer.target.getPosition()
-                eventPlayer.parentArray = lol2[all_nodes.index((sorted(all_nodes, lambda player: (distance(player, eventPlayer.destination) + (1000 * (verticalAngleOfDirection(directionTowards(player, eventPlayer.destination)) < -50))) + (1000 * (not isInLoS(player, eventPlayer.destination + Vector.UP)))))[0])]
+                eventPlayer.parentArray = lol2[all_nodes.index((sorted(all_nodes, lambda x: (distance(x, eventPlayer.destination) + (1000 * (verticalAngleOfDirection(directionTowards(x, eventPlayer.destination)) < -50))) + (1000 * (not isInLoS(x, eventPlayer.destination + Vector.UP)))))[0])]
             eventPlayer.pathfinderCurrent = eventPlayer.parentArray[eventPlayer.pathfinderCurrent] - true
         wait(wait)
 
@@ -516,7 +516,7 @@ rule "bot target":
     @Condition roar == false
     @Condition eventPlayer.hex == false
     
-    eventPlayer.target = (sorted([player for player in getPlayers(Team.2) if (not player.isDummy() or player.zomnic and not eventPlayer.boss_ID and eventPlayer.enemy_ID != 10) and not player.is_downed], lambda i: (distance(eventPlayer, i) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), i.getEyePosition())))) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer, i)) < -50))))[0]
+    eventPlayer.target = (sorted(getPlayers(Team.2).filter(lambda player: (not player.isDummy() or player.zomnic and not eventPlayer.boss_ID and eventPlayer.enemy_ID != 10) and not player.is_downed), lambda x: (distance(eventPlayer, x) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), x.getEyePosition())))) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer, x)) < -50))))[0]
     wait(5, Wait.ABORT_WHEN_FALSE)
     if ruleCondition:
         loop()
@@ -716,7 +716,7 @@ rule "bot stuck too long":
 rule "spawn doors":
     spawn_doors = [vect(-12.054, 2.313, -6.509), vect(-25.135, 2.279, -0.134), vect(-0.763, 7.237, 0.767)]
     for i_vocal in range(0, len(spawn_doors), true):
-        createInWorldText([player for player in getAllPlayers() if not phase or player.egg], "Ø", spawn_doors[evalOnce(i_vocal)] + Vector.DOWN * 0.7, 4, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.RED)
+        createInWorldText(getAllPlayers().filter(lambda player: not phase or player.egg), "Ø", spawn_doors[evalOnce(i_vocal)] + Vector.DOWN * 0.7, 4, Clip.SURFACES, WorldTextReeval.VISIBILITY, Color.RED)
         spawn_door_effects.append(getLastCreatedText())
 
 
@@ -750,7 +750,7 @@ rule "player downed":
         eventPlayer.extra_lives_used++
         _tempAttributes = eventPlayer
     else:
-        if (len([player for player in getLivingPlayers(Team.2) if not player.isDummy() and not player.is_downed])) > false:
+        if (len(getLivingPlayers(Team.2).filter(lambda player: not player.isDummy() and not player.is_downed))) > false:
             eventPlayer.pos_cache = nearestWalkablePosition(eventPlayer) + directionFromAngles(horizontalAngleOfDirection(directionTowards(eventPlayer, nearestWalkablePosition(eventPlayer))), -10) * 2
             if eventWasEnvironment:
                 eventPlayer.resurrect()
@@ -789,7 +789,7 @@ rule "player reviving 2":
     @Team 2
     @Condition eventPlayer.is_downed == true
     
-    eventPlayer.rezzing_players = [player for player in getLivingPlayers(Team.2) if not player.isDummy() and not player.is_downed and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and distance(eventPlayer, player) < 5]
+    eventPlayer.rezzing_players = getLivingPlayers(Team.2).filter(lambda player: not player.isDummy() and not player.is_downed and isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and distance(eventPlayer, player) < 5)
     wait(wait)
     if ruleCondition:
         loop()
@@ -1016,7 +1016,7 @@ rule "teammate bot say hi":
     @Condition eventPlayer.isCommunicating(Comms.HELLO) == true
     
     wait(0.5)
-    [player for player in getPlayers(Team.2) if player.isDummy()].communicate(Comms.HELLO)
+    getPlayers(Team.2).filter(lambda player: player.isDummy()).communicate(Comms.HELLO)
 
 
 rule "late joiner":
@@ -1027,7 +1027,7 @@ rule "late joiner":
     @Condition eventPlayer.isDummy() == false
     @Condition eventPlayer.hasSpawned() == true
     
-    eventPlayer.teleport(random.choice([i for i in getPlayers(Team.2).exclude(eventPlayer) if not i.isDummy()]))
+    eventPlayer.teleport(random.choice(getPlayers(Team.2).exclude(eventPlayer).filter(lambda x: not x.isDummy())))
     wait(true)
     if eventPlayer.isInSpawnRoom():
         loop()
@@ -1339,7 +1339,7 @@ def spawn_enemies():
     
     wait(0.25)
     for i4 in range(0, len(enemy_ID_sequence), true):
-        respawn_enemy = [player for player in getDeadPlayers(Team.1) if player.enemy_ID][0]
+        respawn_enemy = getDeadPlayers(Team.1).filter(lambda player: player.enemy_ID)[0]
         if respawn_enemy.enemy_ID == 5 and enemy_ID_sequence[i4] < 20:
             respawn_enemy.safeguard_fix = true
             respawn_enemy.teleport(_extendedGlobalCollection)
@@ -1371,7 +1371,7 @@ rule "enemy died":
             if 2 in attacker.scrolls_equip:
                 playEffect(getAllPlayers(), DynamicEffect.SIGMA_ACCRETION_IMPACT, Team.2, eventPlayer.getEyePosition(), 1)
                 damage(getPlayersInRadius(eventPlayer, 6, Team.1, LosCheck.SURFACES), attacker, 50)
-                ([player for player in getPlayersInRadius(eventPlayer, 6, Team.1, LosCheck.SURFACES) if not player.hasStatus(Status.PHASED_OUT)]).electrify = 2
+                (getPlayersInRadius(eventPlayer, 6, Team.1, LosCheck.SURFACES).filter(lambda player: not player.hasStatus(Status.PHASED_OUT))).electrify = 2
         if attacker in getPlayers(Team.2):
             if not first_kill:
                 first_kill = true
@@ -1446,7 +1446,7 @@ rule "instant target switch":
     
     if eventPlayer.hex:
         return
-    eventPlayer.target = (sorted([player for player in getPlayers(Team.2) if (not player.isDummy() or player.zomnic) and not player.is_downed], lambda i: (distance(eventPlayer, i) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), i.getEyePosition())))) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer, i)) < -50))))[0]
+    eventPlayer.target = (sorted(getPlayers(Team.2).filter(lambda player: (not player.isDummy() or player.zomnic) and not player.is_downed), lambda x: (distance(eventPlayer, x) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), x.getEyePosition())))) + (1000 * (verticalAngleOfDirection(directionTowards(eventPlayer, x)) < -50))))[0]
 
 
 rule "v/instakillager start hammering":
@@ -1525,7 +1525,7 @@ rule "gri/chi/chernobyllager explode":
     @Condition eventPlayer.grillager_activate == true
     @Condition (eventPlayer.isDead() or not eventPlayer.isUsingAbility2()) == true
     
-    eventPlayer.grillager_victims = [player for player in (getPlayersInRadius(eventPlayer, 12 if eventPlayer.enemy_ID == 10 else 5, Team.2, LosCheck.SURFACES)) if player.isAlive() and not player.hasStatus(Status.PHASED_OUT)]
+    eventPlayer.grillager_victims = getPlayersInRadius(eventPlayer, 12 if eventPlayer.enemy_ID == 10 else 5, Team.2, LosCheck.SURFACES).filter(lambda player: player.isAlive() and not player.hasStatus(Status.PHASED_OUT))
     if eventPlayer.enemy_ID == 4:
         playEffect(getAllPlayers(), DynamicEffect.ASHE_DYNAMITE_EXPLOSION, Color.ORANGE, eventPlayer.getEyePosition(), 5)
         playEffect(getAllPlayers(), DynamicEffect.ASHE_DYNAMITE_EXPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 200)
@@ -1769,7 +1769,7 @@ rule "lifeguard heal":
     @Condition eventPlayer.enemy_ID == 23
     
     wait(random.uniform(1, 2))
-    eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), sorted([i for i in getLivingPlayers(Team.1).exclude([eventPlayer, dialogue_bot]) if isInLoS(eventPlayer.getEyePosition(), i.getEyePosition())], lambda i: i.getNormalizedHealth()).concat(eventPlayer.target)[0].getEyePosition()), 1000)
+    eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), sorted(getLivingPlayers(Team.1).exclude([eventPlayer, dialogue_bot]).filter(lambda x: isInLoS(eventPlayer.getEyePosition(), x.getEyePosition())), lambda x: x.getNormalizedHealth()).concat(eventPlayer.target)[0].getEyePosition()), 1000)
     wait(0.1)
     eventPlayer.forceButtonPress(Button.ABILITY_2)
     wait(0.1)
@@ -1927,7 +1927,7 @@ rule "genji normal attack":
     @Condition eventPlayer.boss_ID == 1
     
     wait(0.9)
-    if any([distance(eventPlayer, i) < 5 and eventPlayer.isInViewAngle(i, 60) for i in [player for player in getPlayers(Team.2) if not player.isDummy()]]):
+    if getPlayers(Team.2).filter(lambda player: not player.isDummy()).any(lambda x: distance(eventPlayer, x) < 5 and eventPlayer.isInViewAngle(x, 60)):
         eventPlayer.forceButtonPress(Button.PRIMARY_FIRE)
     if ruleCondition:
         loop()
@@ -2112,7 +2112,7 @@ rule "objective completed ding":
 rule "skip cutscene":
     @Condition main_dialogue != null
     @Condition skip_cutscene_pos.y < 100
-    @Condition (all([distance(i, skip_cutscene_pos) < 2.3 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, skip_cutscene_pos) < 2.3)) == true
     
     is_dialoguing = true
     waitUntil(not main_dialogue, 99999)
@@ -2202,8 +2202,8 @@ rule "phase 1+ cannot re-enter spawn":
 
 rule "first cutscene":
     @Condition phase == false
-    @Condition (_objectVariable_0 == 1 or all([i.hasSpawned() for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
-    @Condition ([player for player in getPlayers(Team.2) if not player.isDummy()]) != []
+    @Condition (_objectVariable_0 == 1 or getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: x.hasSpawned())) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy())) != []
     
     wait(true, Wait.ABORT_WHEN_FALSE)
     phase = 0.1
@@ -2248,7 +2248,7 @@ rule "first kill":
 
 rule "phase 1 spawning event 1":
     @Condition phase == true
-    @Condition any([player.egg for player in getPlayers(Team.2)]) == true
+    @Condition getPlayers(Team.2).any(lambda player: player.egg) == true
     
     for i4 in range(0, 2, true):
         enemy_spawn = ([vect(-2.644, 3.451, -34.464), vect(-25.77, 3.221, -34.308)])[i4]
@@ -2260,7 +2260,7 @@ rule "phase 1 spawning event 1":
 rule "phase 1 spawning event 2":
     @Condition phase == 1
     @Condition scripted_spawns[0] == false
-    @Condition (any([isInLoS(i.getEyePosition(), vect(21.683, 5.254, -28.292)) for i in [player for player in getPlayers(Team.2) if not player.isDummy() and player.hasSpawned()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy() and player.hasSpawned()).any(lambda x: isInLoS(x.getEyePosition(), vect(21.683, 5.254, -28.292)))) == true
     
     scripted_spawns[false] = true
     for i4 in range(0, 3, true):
@@ -2273,7 +2273,7 @@ rule "phase 1 spawning event 2":
 rule "phase 1 spawning event 3":
     @Condition phase == 1
     @Condition scripted_spawns[true] == false
-    @Condition (any([isInLoS(i.getEyePosition(), vect(13.6, 6.002, -50.9)) for i in [player for player in getPlayers(Team.2) if not player.isDummy() and player.hasSpawned()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy() and player.hasSpawned()).any(lambda x: isInLoS(x.getEyePosition(), vect(13.6, 6.002, -50.9)))) == true
     
     scripted_spawns[true] = true
     for i4 in range(0, 3, true):
@@ -2287,7 +2287,7 @@ rule "second cutscene":
     @Condition phase == 1
     @Condition dialogue_priority < 3
     @Condition objective_pos.y < 100
-    @Condition all([distance(player, objective_pos) < 4 for player in getPlayers(Team.2)]) == true
+    @Condition getPlayers(Team.2).all(lambda player: distance(player, objective_pos) < 4) == true
     
     objective_complete = true
     phase = 2
@@ -2493,7 +2493,7 @@ rule "end of slaughter + genji intro cutscene":
 
 rule "phase 5 spawning event":
     @Condition phase == 5
-    @Condition len([player for player in getPlayersOnHero(Hero.TORBJORN, Team.1) if player.isAlive()]) <= true
+    @Condition len(getPlayersOnHero(Hero.TORBJORN, Team.1).filter(lambda player: player.isAlive())) <= true
     
     wait(random.uniform(3, 6), Wait.ABORT_WHEN_FALSE)
     enemy_ID_sequence = [1, 2, random.choice([1, 2, 4].concat(6 if difficulty == 3 else []))]
@@ -2549,7 +2549,7 @@ rule "sixth cutscene (merchant)":
 rule "regrouped after merchant":
     @Condition phase == 8
     @Condition objective_pos.y < 100
-    @Condition (all([distance(i, objective_pos) < 4 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, objective_pos) < 4)) == true
     
     enemy_spawn_2 = enemy_spawn
     phase = 9
@@ -2568,7 +2568,7 @@ rule "regrouped after merchant":
 rule "phase 9 spawning event 1":
     @Condition phase == 9
     @Condition scripted_spawns[2] == false
-    @Condition (any([isInLoS(i.getEyePosition(), vect(44.274, 6.973, -71.715)) for i in [player for player in getPlayers(Team.2) if not player.isDummy() and player.hasSpawned()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy() and player.hasSpawned()).any(lambda x: isInLoS(x.getEyePosition(), vect(44.274, 6.973, -71.715)))) == true
     
     scripted_spawns[2] = true
     for i4 in range(0, 4, true):
@@ -2581,7 +2581,7 @@ rule "phase 9 spawning event 1":
 rule "phase 9 spawning event 2":
     @Condition phase == 9
     @Condition scripted_spawns[3] == false
-    @Condition (any([isInLoS(i.getEyePosition(), vect(70.683, 14.273, -89.002)) for i in [player for player in getPlayers(Team.2) if not player.isDummy() and player.hasSpawned()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy() and player.hasSpawned()).any(lambda x: isInLoS(x.getEyePosition(), vect(70.683, 14.273, -89.002)))) == true
     
     scripted_spawns[3] = true
     enemy_spawn = [vect(73.4, 11.002, -109.24), vect(96.938, 13.189, -106.7), vect(92.205, 13.193, -114.037)]
@@ -2593,9 +2593,9 @@ rule "seventh cutscene":
     @Condition phase == 9
     @Condition dialogue_priority < 3
     @Condition objective_pos.y < 100
-    @Condition (all([distance(i, objective_pos) < 4 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, objective_pos) < 4)) == true
     
-    createIcon(getAllPlayers() if hint >= 60 else [], ([player for player in dragon_blood_actual_spawn if player.y < 100])[0], Icon.EYE, IconReeval.VISIBILITY_AND_POSITION, Color.ORANGE)
+    createIcon(getAllPlayers() if hint >= 60 else [], (dragon_blood_actual_spawn.filter(lambda x: x.y < 100))[0], Icon.EYE, IconReeval.VISIBILITY_AND_POSITION, Color.ORANGE)
     dragon_blood_hint_icon = getLastCreatedEntity()
     dragon_blood_spawn = [vect(67.048, 5.341, -83.57), vect(55.7, 21.801, -68.705), vect(51.195, 18.501, -104.655), vect(60.065, 12.973, -75.713), vect(53.161, 7.33, -60.78), vect(105.71, 13.284, -73.852), vect(101.553, 10.602, -93.124), vect(86.02, 13.85, -107.137), vect(41.65, 11.321, -96.409), vect(57.872, 18.146, -112.741), vect(50.761, 18.65, -83.244), vect(76.753, 13.49, -74.067), vect(53.264, 7.082, -107.511), vect(60.86, 7.243, -72.185), vect(52.091, 12.922, -79.863), vect(50.205, 9.2, -85.327), vect(46.037, 5.631, -49.559), vect(35.516, 6.977, -70.508), vect(31.337, 9.455, -86.835)]
     getPlayers(Team.2).blood_cache = 5
@@ -2653,7 +2653,7 @@ rule "collect blood":
     @Condition phase == 11
     
     if hint > true:
-        if distance(eventPlayer, sorted(dragon_blood_actual_spawn, lambda player: distance(eventPlayer, player))[0]) < 1.5:
+        if distance(eventPlayer, sorted(dragon_blood_actual_spawn, lambda x: distance(eventPlayer, x))[0]) < 1.5:
             if mercy_drop in [1, 1.9]:
                 if not eventPlayer.no_pickup:
                     smallMessage(eventPlayer, "You cannot pick this up during a cutscene.")
@@ -2662,7 +2662,7 @@ rule "collect blood":
                 hint = null
                 chaseAtRate(hint, 60, true)
                 last_collected_blood = eventPlayer
-                eventPlayer.blood_collected = dragon_blood_actual_spawn.index(sorted(dragon_blood_actual_spawn, lambda player: distance(eventPlayer, player))[0])
+                eventPlayer.blood_collected = dragon_blood_actual_spawn.index(sorted(dragon_blood_actual_spawn, lambda x: distance(eventPlayer, x))[0])
                 playEffect(getAllPlayers(), DynamicEffect.GOOD_PICKUP_EFFECT, Color.RED, dragon_blood_actual_spawn[eventPlayer.blood_collected], 1)
                 wait(false)
                 dragon_blood_actual_spawn[eventPlayer.blood_collected] = _extendedGlobalCollection
@@ -2737,7 +2737,7 @@ rule "drop blood 1":
     @Condition letter_scroll >= 50
     
     playEffect(getAllPlayers(), DynamicEffect.ANA_BIOTIC_GRENADE_EXPLOSION_SOUND, Team.1, (getPlayersOnHero(Hero.MERCY, Team.2)[0] if getPlayersOnHero(Hero.MERCY, Team.2) != [] else random.choice(getPlayers(Team.2))).getEyePosition(), 200)
-    smallMessage([player for player in getAllPlayers() if player.getHero() != Hero.MERCY], "{0} dropped a bottle of dragon's blood.".format(getPlayersOnHero(Hero.MERCY, Team.2)[0] if isHeroBeingPlayed(Hero.MERCY, Team.2) else "The Witch"))
+    smallMessage(getAllPlayers().filter(lambda player: player.getHero() != Hero.MERCY), "{0} dropped a bottle of dragon's blood.".format(getPlayersOnHero(Hero.MERCY, Team.2)[0] if isHeroBeingPlayed(Hero.MERCY, Team.2) else "The Witch"))
     smallMessage(getPlayersOnHero(Hero.MERCY, Team.2), "You dropped a bottle of dragon's blood.")
     waitUntil(line_number == 3, 20)
     if mercy_drop == 2:
@@ -2782,7 +2782,7 @@ rule "junkrat cap mines at 2":
 rule "cowboy intro cutscene":
     @Condition phase == 12
     @Condition objective_pos.y < 100
-    @Condition (all([distance(i, objective_pos) < 4 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, objective_pos) < 4)) == true
     
     stopChasingVariable(hint)
     async(delete_bound_effects, AsyncBehavior.RESTART)
@@ -2800,7 +2800,7 @@ rule "cowboy intro cutscene":
     main_dialogue()
     dialogue_priority = false
     skip_cutscene_pos = _extendedGlobalCollection
-    ([player for player in getLivingPlayers(Team.1) if player.enemy_ID > false]).teleport(compressBakeMatcher)
+    (getLivingPlayers(Team.1).filter(lambda player: player.enemy_ID > false)).teleport(compressBakeMatcher)
     destroyDummy(Team.1, 7)
     destroyDummy(Team.1, 8)
     wait(0.1)
@@ -3046,7 +3046,7 @@ rule "tp dead body":
 rule "summoner intro cutscene":
     @Condition phase == 16
     @Condition objective_pos.y < 100
-    @Condition (all([distance(i, objective_pos) < 4 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, objective_pos) < 4)) == true
     
     stopChasingVariable(shop_angle)
     door_color = Color.WHITE
@@ -3201,7 +3201,7 @@ rule "zomnic explode":
     playEffect(getAllPlayers(), DynamicEffect.SIGMA_ACCRETION_IMPACT, Team.1, eventPlayer.getPosition() + Vector.UP, 1.5)
     playEffect(getAllPlayers(), DynamicEffect.JUNKRAT_RIP_TIRE_EXPLOSION_SOUND, Team.1, eventPlayer.getEyePosition(), 200)
     door_health -= 10 if difficulty == -1 else 5
-    eventPlayer.grillager_victims = [player for player in getPlayersInRadius(eventPlayer, 5, Team.1, LosCheck.SURFACES) if player.enemy_ID]
+    eventPlayer.grillager_victims = getPlayersInRadius(eventPlayer, 5, Team.1, LosCheck.SURFACES).filter(lambda player: player.enemy_ID)
     for eventPlayer.i in range(0, len(eventPlayer.grillager_victims), true):
         damage(eventPlayer.grillager_victims[evalOnce(eventPlayer.i)], eventPlayer, 40 * (6 - distance(eventPlayer, eventPlayer.grillager_victims[evalOnce(eventPlayer.i)])))
         eventPlayer.grillager_victims[evalOnce(eventPlayer.i)].applyImpulse(directionTowards(eventPlayer, eventPlayer.grillager_victims[evalOnce(eventPlayer.i)]) + Vector.UP * 0.7, 20, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
@@ -3218,7 +3218,7 @@ rule "phase 18/20 spawning event":
         wait(wait)
     wait(random.uniform(0.5, 1.5))
     if phase in [18, 20] and getNumberOfDeadPlayers(Team.1):
-        enemy_ID_sequence = [10 if (random.uniform(0, 100) < (7 if difficulty == 3 else -1)) else random.choice((5 if random.uniform(0, 100) < 35 else random.randint(true, 7)).concat([] if len([player for player in getPlayersOnHero(Hero.BRIGITTE, Team.1) if player.isAlive()]) >= 2 else 26 if (random.uniform(0, 100) < (20 if difficulty == 3 else -1)) else random.randint(21, 24)))]
+        enemy_ID_sequence = [10 if (random.uniform(0, 100) < (7 if difficulty == 3 else -1)) else random.choice((5 if random.uniform(0, 100) < 35 else random.randint(true, 7)).concat([] if len(getPlayersOnHero(Hero.BRIGITTE, Team.1).filter(lambda player: player.isAlive())) >= 2 else 26 if (random.uniform(0, 100) < (20 if difficulty == 3 else -1)) else random.randint(21, 24)))]
         spawn_enemies()
     if ruleCondition:
         loop()
@@ -3265,7 +3265,7 @@ rule "zomnic dead":
 
 rule "first zomnic rises":
     @Condition phase == 17
-    @Condition len([player for player in getPlayersOnHero(Hero.ZENYATTA, Team.ALL) if player.zomnic == 1]) > false
+    @Condition len(getPlayersOnHero(Hero.ZENYATTA, Team.ALL).filter(lambda player: player.zomnic == 1)) > false
     
     wait(true)
     destroyDummy(Team.1, 6)
@@ -3672,7 +3672,7 @@ rule "door 0 health - ana dies cutscene":
     createEffect(getAllPlayers(), Effect.BAD_AURA, Color.GRAY, door + Vector.UP * 4, 8, EffectReeval.NONE)
     kill(getPlayers(Team.1).exclude(dialogue_bot))
     destroyAllProgressBarInWorldTexts()
-    kill([player for player in getPlayersOnHero(Hero.ZENYATTA, Team.2) if player.zomnic == 1])
+    kill(getPlayersOnHero(Hero.ZENYATTA, Team.2).filter(lambda player: player.zomnic == 1))
     wait(2)
     destroyDummy(Team.1, 7)
     destroyDummy(Team.2, 7)
@@ -3738,7 +3738,7 @@ rule "ana friend target":
     @Team 1
     @Condition eventPlayer.ana_target_friends == true
     
-    eventPlayer.target = ((sorted([player for player in getLivingPlayers(Team.1) if isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and player.enemy_ID], lambda i: i.getNormalizedHealth())).concat(eventPlayer.target))[0]
+    eventPlayer.target = ((sorted(getLivingPlayers(Team.1).filter(lambda player: isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and player.enemy_ID), lambda x: x.getNormalizedHealth())).concat(eventPlayer.target))[0]
     wait(5, Wait.ABORT_WHEN_FALSE)
     if ruleCondition:
         loop()
@@ -3748,28 +3748,28 @@ def shop_ui_setup():
     @Name "shop ui setup"
     
     chaseAtRate(shop_angle, 9999800320, 250, ChaseRateReeval.NONE)
-    createInWorldText([player for player in getAllPlayers() if player.shop > false], "{0}{1}".format("▶ " if localPlayer.shop_selection == 69 else "", "[Exit Shop]" if localPlayer.shop == 1 else "[Back]"), ((shop_campos.last() + (shop_left * (-3.1 if localPlayer.shop_selection == 69 else -3))) + Vector.DOWN) + ((shop_left * (0.1 if localPlayer.shop_selection == 69 else false)) * sinDeg(shop_angle)), 2, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop > false), "{0}{1}".format("▶ " if localPlayer.shop_selection == 69 else "", "[Exit Shop]" if localPlayer.shop == 1 else "[Back]"), ((shop_campos.last() + (shop_left * (-3.1 if localPlayer.shop_selection == 69 else -3))) + Vector.DOWN) + ((shop_left * (0.1 if localPlayer.shop_selection == 69 else false)) * sinDeg(shop_angle)), 2, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING)
     #page 1
-    createInWorldText([player for player in getAllPlayers() if player.shop == 1], "{0}Potions {1}".format("" if localPlayer.shop_selection else "▶ ", iconString(Icon.POISON_2)), shop_campos.last() + shop_left * 1.5 + (Vector.UP * sinDeg(shop_angle) * (false if localPlayer.shop_selection else 0.1)), 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.PURPLE)
-    createInWorldText([player for player in getAllPlayers() if player.shop == 1], "{0}Scrolls {1}".format("▶ " if localPlayer.shop_selection == 1 else "", iconString(Icon.SPIRAL)), shop_campos.last() + shop_left * -1.5 + ((Vector.UP * (0.1 if localPlayer.shop_selection == 1 else false)) * sinDeg(shop_angle)), 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
-    createInWorldText([player for player in getAllPlayers() if player.shop == 1], "Come forth and browse my alchemical goods,\u2028{0}Or gaze upon my collection of forbidden academia.".format(newline), shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, t2_hero_colours[6])
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop == 1), "{0}Potions {1}".format("" if localPlayer.shop_selection else "▶ ", iconString(Icon.POISON_2)), shop_campos.last() + shop_left * 1.5 + (Vector.UP * sinDeg(shop_angle) * (false if localPlayer.shop_selection else 0.1)), 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.PURPLE)
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop == 1), "{0}Scrolls {1}".format("▶ " if localPlayer.shop_selection == 1 else "", iconString(Icon.SPIRAL)), shop_campos.last() + shop_left * -1.5 + ((Vector.UP * (0.1 if localPlayer.shop_selection == 1 else false)) * sinDeg(shop_angle)), 3, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.YELLOW)
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop == 1), "Come forth and browse my alchemical goods,\u2028{0}Or gaze upon my collection of forbidden academia.".format(newline), shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, t2_hero_colours[6])
     #page 2
     for eventPlayer.i in range(0, 5, true):
-        createInWorldText([player for player in getAllPlayers() if player.shop == 2], "{0}Potion of {1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Vengeance {0}".format(iconString(Icon.SKULL)), "Salvation {0}".format(abilityIconString(Hero.MERCY, Button.ABILITY_2)), "Endurance {0}".format(abilityIconString(Hero.BAPTISTE, Button.ABILITY_1)), "Frenzy {0}".format(abilityIconString(Hero.MOIRA, Button.ABILITY_1)), "More Gun {0}".format(abilityIconString(Hero.CASSIDY, Button.PRIMARY_FIRE))][evalOnce(eventPlayer.i)]), (shop_campos.last() + (Vector.UP * (true - 0.3 * evalOnce(eventPlayer.i))) + (shop_left * (1.4 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros > potions_price[evalOnce(eventPlayer.i)] else false)), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.RED, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE][evalOnce(eventPlayer.i)] if localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros >= potions_price[evalOnce(eventPlayer.i)] else Color.GRAY)
+        createInWorldText(getAllPlayers().filter(lambda player: player.shop == 2), "{0}Potion of {1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Vengeance {0}".format(iconString(Icon.SKULL)), "Salvation {0}".format(abilityIconString(Hero.MERCY, Button.ABILITY_2)), "Endurance {0}".format(abilityIconString(Hero.BAPTISTE, Button.ABILITY_1)), "Frenzy {0}".format(abilityIconString(Hero.MOIRA, Button.ABILITY_1)), "More Gun {0}".format(abilityIconString(Hero.CASSIDY, Button.PRIMARY_FIRE))][evalOnce(eventPlayer.i)]), (shop_campos.last() + (Vector.UP * (true - 0.3 * evalOnce(eventPlayer.i))) + (shop_left * (1.4 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros > potions_price[evalOnce(eventPlayer.i)] else false)), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.RED, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE][evalOnce(eventPlayer.i)] if localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros >= potions_price[evalOnce(eventPlayer.i)] else Color.GRAY)
         wait(false)
         eventPlayer.i += 5
-        createInWorldText([player for player in getAllPlayers() if player.shop == 2], "{0}Potion of {1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Proficiency {0}".format(iconString(Icon.EYE)), "Vampirism {0}".format(abilityIconString(Hero.MOIRA, Button.ABILITY_2)), "Pyromancy {0}".format(iconString(Icon.FIRE)), "Necromancy {0}".format(abilityIconString(Hero.BAPTISTE, Button.ABILITY_2)), "Water {0}".format(abilityIconString(Hero.ROADHOG, Button.ABILITY_2))][evalOnce(eventPlayer.i) - 5]), (shop_campos.last() + (Vector.UP * (true - (0.3 * (evalOnce(eventPlayer.i) - 5)))) - (shop_left * (1.6 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros > potions_price[evalOnce(eventPlayer.i)] else false)), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.PURPLE, Color.ROSE, Color.ORANGE, rgb(112, 179, 134), Color.WHITE][evalOnce(eventPlayer.i) - 5] if localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros >= potions_price[evalOnce(eventPlayer.i)] else Color.GRAY)
+        createInWorldText(getAllPlayers().filter(lambda player: player.shop == 2), "{0}Potion of {1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Proficiency {0}".format(iconString(Icon.EYE)), "Vampirism {0}".format(abilityIconString(Hero.MOIRA, Button.ABILITY_2)), "Pyromancy {0}".format(iconString(Icon.FIRE)), "Necromancy {0}".format(abilityIconString(Hero.BAPTISTE, Button.ABILITY_2)), "Water {0}".format(abilityIconString(Hero.ROADHOG, Button.ABILITY_2))][evalOnce(eventPlayer.i) - 5]), (shop_campos.last() + (Vector.UP * (true - (0.3 * (evalOnce(eventPlayer.i) - 5)))) - (shop_left * (1.6 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros > potions_price[evalOnce(eventPlayer.i)] else false)), 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.PURPLE, Color.ROSE, Color.ORANGE, rgb(112, 179, 134), Color.WHITE][evalOnce(eventPlayer.i) - 5] if localPlayer.potions[evalOnce(eventPlayer.i)] < localPlayer.potions_max[evalOnce(eventPlayer.i)] and localPlayer.euros >= potions_price[evalOnce(eventPlayer.i)] else Color.GRAY)
         wait(false)
         eventPlayer.i -= 5
-    createInWorldText([player for player in getAllPlayers() if player.shop == 2 and player.shop_selection != 69], "{0}\u2028- STOCK: {1} - PRICE: €{2}".format("{0}{1}{2}".format(["Indulge in your destructive lust for revenge.", "Not the holy kind. More akin to dumpster-diving salvation.", "Pain is but an illusion. Free your soul from it.", "Let the hysteria take over your feeble limbs.", "It’s just a glass bottle full of bullets.", "Expand your mind. Unlock your repressed potential.", "Brewed with the fangs of a powerful ancient deity.", "The dragon’s fire consumes all.", "Death is merely a temporary illness.", " "][localPlayer.shop_selection], newline, ["Increases damage dealt by 5%.", "Increases healing dealt by 5%.", "Increases maximum health by 20HP.", "Increases movement speed by 5%.", "Increases ammo clip by 20%.", "Decreases ability cooldowns by 1 second.", "Converts 5% of damage to health (Does not stack with Salvation).", "Adds a 5% chance to light enemies on fire per attack.", "On your next death, you will immediately revive.", "A refreshing, hydrating drink."][localPlayer.shop_selection]), localPlayer.potions_max[localPlayer.shop_selection] - localPlayer.potions[localPlayer.shop_selection], potions_price[localPlayer.shop_selection]), shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.RED, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE, Color.ROSE, Color.ORANGE, rgb(112, 179, 134), Color.WHITE][localPlayer.shop_selection] if localPlayer.potions_max[localPlayer.shop_selection] - localPlayer.potions[localPlayer.shop_selection] > false and localPlayer.euros >= potions_price[localPlayer.shop_selection] else Color.GRAY)
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop == 2 and player.shop_selection != 69), "{0}\u2028- STOCK: {1} - PRICE: €{2}".format("{0}{1}{2}".format(["Indulge in your destructive lust for revenge.", "Not the holy kind. More akin to dumpster-diving salvation.", "Pain is but an illusion. Free your soul from it.", "Let the hysteria take over your feeble limbs.", "It’s just a glass bottle full of bullets.", "Expand your mind. Unlock your repressed potential.", "Brewed with the fangs of a powerful ancient deity.", "The dragon’s fire consumes all.", "Death is merely a temporary illness.", " "][localPlayer.shop_selection], newline, ["Increases damage dealt by 5%.", "Increases healing dealt by 5%.", "Increases maximum health by 20HP.", "Increases movement speed by 5%.", "Increases ammo clip by 20%.", "Decreases ability cooldowns by 1 second.", "Converts 5% of damage to health (Does not stack with Salvation).", "Adds a 5% chance to light enemies on fire per attack.", "On your next death, you will immediately revive.", "A refreshing, hydrating drink."][localPlayer.shop_selection]), localPlayer.potions_max[localPlayer.shop_selection] - localPlayer.potions[localPlayer.shop_selection], potions_price[localPlayer.shop_selection]), shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, [Color.RED, Color.YELLOW, Color.GREEN, Color.AQUA, Color.BLUE, Color.PURPLE, Color.ROSE, Color.ORANGE, rgb(112, 179, 134), Color.WHITE][localPlayer.shop_selection] if localPlayer.potions_max[localPlayer.shop_selection] - localPlayer.potions[localPlayer.shop_selection] > false and localPlayer.euros >= potions_price[localPlayer.shop_selection] else Color.GRAY)
     for eventPlayer.i in range(0, 3, true):
-        createInWorldText([player for player in getAllPlayers() if player.shop == 3], "{0}{1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Chaos Magic/Mystic Transfusion/Bewitching Grasp/Flying Broomstick/Undying Servitude/Hex Mania".split("/"), "Junkenstein's Revenge/Superconductive/Discharged/Shocking Surprise/Faraday Trap/Zombardier".split("/"), "Evil Stitched To Evil/It's Alive!/Recycling/Chain Reaction/Monstrous Roar/Beware; For I Am Fearless".split("/"), "Reap What You Sow/Marked For Death/The Reaper's Scythe/Vengeful Ghost/Jumpscare/Dance With The Reaper".split("/")][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[evalOnce(eventPlayer.i)]] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else "Mysterious Scroll"), (shop_campos.last() + (Vector.UP * (0.4 - 0.3 * evalOnce(eventPlayer.i))) + (shop_left * (1.4 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and not localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip and localPlayer.real > 99 else false)), 1.8, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
+        createInWorldText(getAllPlayers().filter(lambda player: player.shop == 3), "{0}{1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Chaos Magic/Mystic Transfusion/Bewitching Grasp/Flying Broomstick/Undying Servitude/Hex Mania".split("/"), "Junkenstein's Revenge/Superconductive/Discharged/Shocking Surprise/Faraday Trap/Zombardier".split("/"), "Evil Stitched To Evil/It's Alive!/Recycling/Chain Reaction/Monstrous Roar/Beware; For I Am Fearless".split("/"), "Reap What You Sow/Marked For Death/The Reaper's Scythe/Vengeful Ghost/Jumpscare/Dance With The Reaper".split("/")][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[evalOnce(eventPlayer.i)]] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else "Mysterious Scroll"), (shop_campos.last() + (Vector.UP * (0.4 - 0.3 * evalOnce(eventPlayer.i))) + (shop_left * (1.4 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and not localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip and localPlayer.real > 99 else false)), 1.8, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
         wait(false)
         eventPlayer.i += 3
-        createInWorldText([player for player in getAllPlayers() if player.shop == 3], "{0}{1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Chaos Magic/Mystic Transfusion/Bewitching Grasp/Flying Broomstick/Undying Servitude/Hex Mania".split("/"), "Junkenstein's Revenge/Superconductive/Discharged/Shocking Surprise/Faraday Trap/Zombardier".split("/"), "Evil Stitched To Evil/It's Alive!/Recycling/Chain Reaction/Monstrous Roar/Beware; For I Am Fearless".split("/"), "Reap What You Sow/Marked For Death/The Reaper's Scythe/Vengeful Ghost/Jumpscare/Dance With The Reaper".split("/")][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[evalOnce(eventPlayer.i)]] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else "Mysterious Scroll"), (shop_campos.last() + (Vector.UP * (0.4 - (0.3 * (evalOnce(eventPlayer.i) - 3)))) - (shop_left * (1.6 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and not localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip and localPlayer.real > 99 else false)), 1.8, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
+        createInWorldText(getAllPlayers().filter(lambda player: player.shop == 3), "{0}{1}".format("▶ " if localPlayer.shop_selection == evalOnce(eventPlayer.i) else "", ["Chaos Magic/Mystic Transfusion/Bewitching Grasp/Flying Broomstick/Undying Servitude/Hex Mania".split("/"), "Junkenstein's Revenge/Superconductive/Discharged/Shocking Surprise/Faraday Trap/Zombardier".split("/"), "Evil Stitched To Evil/It's Alive!/Recycling/Chain Reaction/Monstrous Roar/Beware; For I Am Fearless".split("/"), "Reap What You Sow/Marked For Death/The Reaper's Scythe/Vengeful Ghost/Jumpscare/Dance With The Reaper".split("/")][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[evalOnce(eventPlayer.i)]] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else "Mysterious Scroll"), (shop_campos.last() + (Vector.UP * (0.4 - (0.3 * (evalOnce(eventPlayer.i) - 3)))) - (shop_left * (1.6 if localPlayer.shop_selection == evalOnce(eventPlayer.i) else 1.5))) + (shop_left * sinDeg(shop_angle) * (0.1 if localPlayer.shop_selection == evalOnce(eventPlayer.i) and not localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip and localPlayer.real > 99 else false)), 1.8, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[evalOnce(eventPlayer.i)] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
         wait(false)
         eventPlayer.i -= 3
-    createInWorldText([player for player in getAllPlayers() if player.shop == 3 and player.shop_selection != 69], [["Heal\u2028yourself for 50% damage your heal target takes and 50%\ndamage they deal. Your health regen is drastically reduced.", "Press ''{0}'' while healing a player to instantly heal\nthem for\u2028100HP, sacrificing 60HP of your own.".format(inputBindingString(Button.RELOAD)), "Replaces Damage Boost with a beam\u2028that locks\nonto enemies and drains their health.", "Guardian Angel now damages and\nknocks back\u2028enemies in your path.", "Replaces Resurrect.\u2028Casts a spell on a living teammate that\nmakes them invulnerable to all damage for 8 seconds.", "Upon activating Valkyrie,\u2028all enemies in a 30 meter radius go\ninsane for 8 seconds, becoming hacked and confused."], ["When downed, repeatedly\u2028release Total Mayhem\nbombs at your corpse every second.", "When under 66.6%\u2028health, nearby enemies\ntake electric damage over time.", "Every\u2028killing blow causes the victim to discharge\nelectricity, damaging nearby enemies and stunning them.", "Concussion\u2028Mine and Riptire\nnow also electrify enemies, stunning them.", "When\u2028an enemy is caught in your Steel Trap, they start\nelectrifying nearby enemies, damaging and rooting them.", "Upon\u2028activating Riptire, a zombardier is summoned\nthat fights for you for 20 seconds."], ["Every\u2028killing blow grants you +100 unrecoverable HP.", "Become\u2028nanoboosted for 10 seconds whenever\nyou revive. Allies revive you twice as quickly.", "When crouching,\u2028deal 2× damage,\nbut every shot takes 100HP from you.", "Successfully\u2028landing a hook sets its cooldown to 1 second,\nhowever missing a hook sets its cooldown to 12 seconds.", "Replaces\u2028Take A Breather with a roar that heals you and\ngrants 60% damage reduction for 5 seconds. All enemies\n{0}".format("immediately target you."), "Whole\u2028Hog now deals zero knockback.\n2× movement speed while Whole Hog is active."], ["Every\u2028killing blow refreshes\none of your cooldowns.", "Shoot an enemy to mark them, making them\nvisible through walls and take 1.25× damage.\n{0}".format("You can only mark one enemy at a time."), "Gain 2× melee\u2028range and 2.5× melee damage.", "While\u2028in Wraith Form, nearby enemies\ntake damage over time.", "Upon\u2028exiting Shadow Step, all nearby\nenemies become frozen in fear.", "While\u2028using Death Blossom, you become\ninvincible and move 3× as fast."]][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[localPlayer.shop_selection]] if localPlayer.scrolls_random[localPlayer.shop_selection] in localPlayer.scrolls_equip else "Unlock this scroll to attain unique, mysterious powers. -\u2028PRICE: R$100", shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[localPlayer.shop_selection] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
+    createInWorldText(getAllPlayers().filter(lambda player: player.shop == 3 and player.shop_selection != 69), [["Heal\u2028yourself for 50% damage your heal target takes and 50%\ndamage they deal. Your health regen is drastically reduced.", "Press ''{0}'' while healing a player to instantly heal\nthem for\u2028100HP, sacrificing 60HP of your own.".format(inputBindingString(Button.RELOAD)), "Replaces Damage Boost with a beam\u2028that locks\nonto enemies and drains their health.", "Guardian Angel now damages and\nknocks back\u2028enemies in your path.", "Replaces Resurrect.\u2028Casts a spell on a living teammate that\nmakes them invulnerable to all damage for 8 seconds.", "Upon activating Valkyrie,\u2028all enemies in a 30 meter radius go\ninsane for 8 seconds, becoming hacked and confused."], ["When downed, repeatedly\u2028release Total Mayhem\nbombs at your corpse every second.", "When under 66.6%\u2028health, nearby enemies\ntake electric damage over time.", "Every\u2028killing blow causes the victim to discharge\nelectricity, damaging nearby enemies and stunning them.", "Concussion\u2028Mine and Riptire\nnow also electrify enemies, stunning them.", "When\u2028an enemy is caught in your Steel Trap, they start\nelectrifying nearby enemies, damaging and rooting them.", "Upon\u2028activating Riptire, a zombardier is summoned\nthat fights for you for 20 seconds."], ["Every\u2028killing blow grants you +100 unrecoverable HP.", "Become\u2028nanoboosted for 10 seconds whenever\nyou revive. Allies revive you twice as quickly.", "When crouching,\u2028deal 2× damage,\nbut every shot takes 100HP from you.", "Successfully\u2028landing a hook sets its cooldown to 1 second,\nhowever missing a hook sets its cooldown to 12 seconds.", "Replaces\u2028Take A Breather with a roar that heals you and\ngrants 60% damage reduction for 5 seconds. All enemies\n{0}".format("immediately target you."), "Whole\u2028Hog now deals zero knockback.\n2× movement speed while Whole Hog is active."], ["Every\u2028killing blow refreshes\none of your cooldowns.", "Shoot an enemy to mark them, making them\nvisible through walls and take 1.25× damage.\n{0}".format("You can only mark one enemy at a time."), "Gain 2× melee\u2028range and 2.5× melee damage.", "While\u2028in Wraith Form, nearby enemies\ntake damage over time.", "Upon\u2028exiting Shadow Step, all nearby\nenemies become frozen in fear.", "While\u2028using Death Blossom, you become\ninvincible and move 3× as fast."]][t2_heroes_array.index(localPlayer.getHero())][localPlayer.scrolls_random[localPlayer.shop_selection]] if localPlayer.scrolls_random[localPlayer.shop_selection] in localPlayer.scrolls_equip else "Unlock this scroll to attain unique, mysterious powers. -\u2028PRICE: R$100", shop_campos.last() + Vector.DOWN * 1.5, 1.5, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_STRING_AND_COLOR, t2_hero_colours[t2_heroes_array.index(localPlayer.getHero())] if localPlayer.scrolls_random[localPlayer.shop_selection] in localPlayer.scrolls_equip else Color.WHITE if localPlayer.real > 99 else Color.GRAY)
 
 
 rule "zomnic init":
@@ -3808,9 +3808,9 @@ def phase_11_spawn():
     if dragon_blood_qty == 4 and mercy_drop == 1:
         return
     waitUntil(getNumberOfLivingPlayers(Team.1) <= 3, 99999)
-    enemy_spawn = [player for player in enemy_spawn_2 if distance(player, last_collected_blood) < 40 and not isInLoS(player, last_collected_blood.getEyePosition())]
+    enemy_spawn = enemy_spawn_2.filter(lambda x: distance(x, last_collected_blood) < 40 and not isInLoS(x, last_collected_blood.getEyePosition()))
     if enemy_spawn == []:
-        enemy_spawn = [player for player in enemy_spawn_2 if distance(player, last_collected_blood) < 60]
+        enemy_spawn = enemy_spawn_2.filter(lambda x: distance(x, last_collected_blood) < 60)
     if dragon_blood_qty > 3:
         enemy_ID_sequence = [random.randint(true, 4), random.randint(6, 7), random.randint(true, 4), random.randint(21, 23)].concat(7 if difficulty == 3 else [])
     elif dragon_blood_qty > true:
@@ -3860,7 +3860,7 @@ rule "ana nana":
 rule "enter castle":
     @Condition phase == 22
     @Condition objective_pos.y < 100
-    @Condition (all([distance(i, objective_pos) < 4 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, objective_pos) < 4)) == true
     
     getPlayers(Team.2).exclude(merchant).teleport(vect(89.583, 13.378, -61.666))
     boundary_corners_2 = [boundary_corners.last(), boundary_corners[0]]
@@ -4051,7 +4051,7 @@ rule "enemy init":
 rule "phase 23 waves":
     @Condition phase == 23
     @Condition scripted_spawns[4] == false
-    @Condition (any([i.getPosition().x > 113 for i in [player for player in getPlayers(Team.2) if not player.isDummy() and player.hasSpawned()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy() and player.hasSpawned()).any(lambda x: x.getPosition().x > 113)) == true
     
     scripted_spawns[4] = true
     for i4 in range(0, 4, true):
@@ -4477,7 +4477,7 @@ rule "rein dead":
 
 rule "phase 26 spawning event 1":
     @Condition phase == 26
-    @Condition len([player for player in getPlayersOnHero(Hero.BRIGITTE, Team.1) if player.isAlive()]) <= true
+    @Condition len(getPlayersOnHero(Hero.BRIGITTE, Team.1).filter(lambda player: player.isAlive())) <= true
     
     wait(random.uniform(3, 6), Wait.ABORT_WHEN_FALSE)
     waitUntil(not boss.hasStatus(Status.ROOTED), 99999)
@@ -4616,8 +4616,8 @@ rule "boss special attack followup":
             eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), eventPlayer.target.getEyePosition()), 1000)
             eventPlayer.setDamageDealt(eventPlayer.damage_dealt * (0.6 if difficulty <= 0 else 1))
             for eventPlayer.i in range(0, random.randint(true, 3), true):
-                if any([isInLoS(player + Vector.UP, eventPlayer.target.getEyePosition()) for player in cowboy_tp_array]):
-                    eventPlayer.pos_cache[true] = random.choice(([player for player in cowboy_tp_array if isInLoS(eventPlayer.target.getEyePosition(), player + Vector.UP)]).exclude(eventPlayer.pos_cache))
+                if cowboy_tp_array.any(lambda x: isInLoS(x + Vector.UP, eventPlayer.target.getEyePosition())):
+                    eventPlayer.pos_cache[true] = random.choice((cowboy_tp_array.filter(lambda x: isInLoS(eventPlayer.target.getEyePosition(), x + Vector.UP))).exclude(eventPlayer.pos_cache))
                 else:
                     eventPlayer.pos_cache[true] = nearestWalkablePosition(raycast(eventPlayer.target.getEyePosition(), eventPlayer.target.getEyePosition() + directionFromAngles(random.uniform(0, 360), 0) * 10, null, eventPlayer, true).getHitPosition())
                 cowboy_tp()
@@ -4776,7 +4776,7 @@ rule "boss special attack followup":
                 eventPlayer.cancelPrimaryAction()
                 playEffect(getAllPlayers(), DynamicEffect.DOOMFIST_METEOR_STRIKE_IMPACT, Team.1, eventPlayer.getPosition(), 1)
                 playEffect(getAllPlayers(), DynamicEffect.DOOMFIST_METEOR_STRIKE_IMPACT_SOUND, Team.1, eventPlayer.getPosition(), 200)
-                eventPlayer.grillager_victims = [player for player in getPlayersInRadius(eventPlayer, 8, Team.2, LosCheck.SURFACES_AND_ENEMY_BARRIERS) if player.isAlive() and (not (player.getHero() == Hero.REAPER and player.isUsingAbility1()))]
+                eventPlayer.grillager_victims = getPlayersInRadius(eventPlayer, 8, Team.2, LosCheck.SURFACES_AND_ENEMY_BARRIERS).filter(lambda player: player.isAlive() and (not (player.getHero() == Hero.REAPER and player.isUsingAbility1())))
                 for eventPlayer.i in range(0, len(eventPlayer.grillager_victims), true):
                     damage(eventPlayer.grillager_victims[evalOnce(eventPlayer.i)], eventPlayer, 37.5 * (9 - distance(eventPlayer, eventPlayer.grillager_victims[evalOnce(eventPlayer.i)])))
                     eventPlayer.grillager_victims[evalOnce(eventPlayer.i)].applyImpulse(directionFromAngles(horizontalAngleOfDirection(directionTowards(eventPlayer, eventPlayer.grillager_victims[evalOnce(eventPlayer.i)])), -37), 18, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
@@ -4824,7 +4824,7 @@ rule "all player init":
             eventPlayer.setStatusEffect(null, Status.INVINCIBLE, 9999)
             eventPlayer.setGravity(false)
             eventPlayer.startForcingName("Dialogue-chan")
-            eventPlayer.startForcingPosition(([player for player in getPlayersOnHero(main_speaker, Team.ALL) if not player.no_dialogue and player.getHero() != Hero.REINHARDT])[0] if vocalisation else vect(9999, 9999, 9999))
+            eventPlayer.startForcingPosition((getPlayersOnHero(main_speaker, Team.ALL).filter(lambda player: not player.no_dialogue and player.getHero() != Hero.REINHARDT))[0] if vocalisation else vect(9999, 9999, 9999))
             eventPlayer.pre_init = true
             eventPlayer.disablePlayerCollision()
         elif eventPlayer.boss_ID > 0.9:
@@ -4971,12 +4971,12 @@ rule "all player init":
                 eventPlayer.communicate(Comms.HELLO)
                 eventPlayer.enableNameplatesFor(getAllPlayers())
                 wait(2)
-                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getPlayers(Team.2) if player.getSlot() < 4], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 500)
+                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted(getPlayers(Team.2).filter(lambda player: player.getSlot() < 4), lambda x: distance(eventPlayer, x)))[0]).getEyePosition()), 500)
                 shop_open = true
                 getAllPlayers().stopCamera()
                 waitUntil(shop_open, 99999)
                 createEffect(getAllPlayers(), Effect.RING, Color.PURPLE, worldVector(Vector.UP, eventPlayer, Transform.ROTATION_AND_TRANSLATION) + evalOnce(eventPlayer.getFacingDirection()) * 0.2, 3, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
-                createInWorldText([player for player in getPlayersInRadius(eventPlayer, 3, Team.ALL, LosCheck.SURFACES) if not player.is_downed and not player.shop], "Press ''{0}'' to shop".format(inputBindingString(Button.INTERACT)), worldVector(Vector.UP * 1.5, eventPlayer, Transform.ROTATION_AND_TRANSLATION), 2, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.PURPLE)
+                createInWorldText(getPlayersInRadius(eventPlayer, 3, Team.ALL, LosCheck.SURFACES).filter(lambda player: not player.is_downed and not player.shop), "Press ''{0}'' to shop".format(inputBindingString(Button.INTERACT)), worldVector(Vector.UP * 1.5, eventPlayer, Transform.ROTATION_AND_TRANSLATION), 2, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, Color.PURPLE)
                 createDummy(Hero.MOIRA, Team.1, -1, shop_campos.last() + Vector.DOWN, directionTowards(shop_campos.last(), shop_campos[0]))
                 eventPlayer.attack = getLastCreatedEntity()
                 eventPlayer.attack.startForcingName("The Merchant")
@@ -5002,7 +5002,7 @@ rule "all player init":
                 __skipIf__(phase > 18, true)
                 bigMessage(getAllPlayers(), "The Summoner")
                 wait(1.1)
-                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getPlayers(Team.2) if player.getSlot() < 4], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 500)
+                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted(getPlayers(Team.2).filter(lambda player: player.getSlot() < 4), lambda x: distance(eventPlayer, x)))[0]).getEyePosition()), 500)
             elif eventPlayer.dead_summoner:
                 eventPlayer.setStatusEffect(null, Status.BURNING, 9999)
                 playEffect(getAllPlayers(), DynamicEffect.SOMBRA_EMP_EXPLOSION_SOUND, Color.ORANGE, eventPlayer.getEyePosition(), 200)
@@ -5039,7 +5039,7 @@ rule "all player init":
                 createInWorldText(getPlayersInRadius(eventPlayer, 3.5, Team.ALL), "Check the WORKSHOP SETTINGS page to change the difficulty or subtitle speed!{0}{1}{0}{0}{2}".format(newline, "(Go to ''Show Lobby'', then ''Settings'' in the top right, then ''Workshop Settings'' in the bottom left!)", "If the gamemode keeps crashing, try changing the ''Data Center Preference'' to ''Singapore 2''.{0}{1}".format(newline, "(Go to ''Show Lobby'', then ''Settings'' in the top right, then ''Lobby'' in the top middle and check under ''Match''!)")), eventPlayer, true, Clip.NONE, WorldTextReeval.VISIBILITY_POSITION_AND_STRING, rgb(145, 227, 153))
                 wait(true)
                 eventPlayer.teleport(vect(-12.94, true, -0.41))
-                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted([player for player in getPlayers(Team.2) if player.getSlot() < 4], lambda i: distance(eventPlayer, i)))[0]).getEyePosition()), 500)
+                eventPlayer.startFacing(directionTowards(eventPlayer.getEyePosition(), ((sorted(getPlayers(Team.2).filter(lambda player: player.getSlot() < 4), lambda x: distance(eventPlayer, x)))[0]).getEyePosition()), 500)
         else:
             eventPlayer.disableGamemodeHud()
             eventPlayer.scrolls_equip = []
@@ -5052,7 +5052,7 @@ rule "all player init":
             createEffect(getAllPlayers() if eventPlayer.is_downed else [], Effect.WINSTON_PRIMAL_RAGE, Team.1, eventPlayer.getEyePosition(), true, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
             createEffect(getAllPlayers() if eventPlayer.is_downed else [], Effect.RING, Color.RED if eventPlayer.revive_timer >= 8 else Color.YELLOW, eventPlayer.getEyePosition(), 5, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
             progressBarHud(getPlayers(Team.2) if eventPlayer.is_downed else [], eventPlayer.death_timer * 2.5 if eventPlayer.revive_timer >= 8 else (8 - eventPlayer.revive_timer) * 12.5, "{0} {1} needs to be revived!".format(heroIcon(eventPlayer.getHero()), eventPlayer) if eventPlayer.revive_timer >= 8 else "Reviving {0} {1}...".format(heroIcon(eventPlayer.getHero()), eventPlayer), HudPosition.RIGHT, -0.01, Color.RED if eventPlayer.revive_timer >= 8 else Color.YELLOW, Color.RED if eventPlayer.revive_timer >= 8 else Color.YELLOW)
-            createIcon([player for player in getPlayers(Team.2) if not player.shop] if eventPlayer.is_downed else [], eventPlayer.getEyePosition(), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
+            createIcon(getPlayers(Team.2).filter(lambda player: not player.shop) if eventPlayer.is_downed else [], eventPlayer.getEyePosition(), Icon.SKULL, IconReeval.VISIBILITY_AND_POSITION, Color.YELLOW)
             eventPlayer.potions_max[9] = 200
     if eventPlayer.getHero() == Hero.TORBJORN and not eventPlayer.enemy_ID:
         eventPlayer.teleport(compressBakeMatcher)
@@ -5070,7 +5070,7 @@ rule "rein stand charge":
     
     wait(random.uniform(1, 2) if eventPlayer.bright >= 3 else random.uniform(3, 5))
     waitUntil(not boss.hasStatus(Status.ROOTED), 99999)
-    eventPlayer.target = random.choice([player for player in getLivingPlayers(Team.2) if not player.isDummy()])
+    eventPlayer.target = random.choice(getLivingPlayers(Team.2).filter(lambda player: not player.isDummy()))
     eventPlayer.boss_target_location = raycast(worldVector(Vector.UP, eventPlayer.target, Transform.ROTATION_AND_TRANSLATION), worldVector(Vector.UP, eventPlayer.target, Transform.ROTATION_AND_TRANSLATION) + directionFromAngles(random.uniform(0, 360), 0) * 10, null, eventPlayer, true).getHitPosition()
     eventPlayer.boss_target_location_2 = raycast(worldVector(Vector.UP, eventPlayer.target, Transform.ROTATION_AND_TRANSLATION), worldVector(Vector.UP, eventPlayer.target, Transform.ROTATION_AND_TRANSLATION) + directionTowards(eventPlayer.boss_target_location, worldVector(Vector.UP, eventPlayer.target, Transform.ROTATION_AND_TRANSLATION)) * 100, null, eventPlayer, true).getHitPosition()
     createBeam(getAllPlayers(), Beam.ECHO_FOCUSING, eventPlayer.boss_target_location, eventPlayer.boss_target_location_2, Team.1, EffectReeval.VISIBILITY)
@@ -5158,7 +5158,7 @@ rule "killing b\ufefflow":
             eventPlayer.addHealthPool(Health.NORMAL, 100, false, false)
     if eventPlayer.getHero() == Hero.REAPER:
         if null in eventPlayer.scrolls_equip:
-            eventPlayer.setAbilityCooldown(random.choice([i for i in [Button.ABILITY_1, Button.ABILITY_2] if eventPlayer.getAbilityCooldown(i)]), false)
+            eventPlayer.setAbilityCooldown(random.choice([Button.ABILITY_1, Button.ABILITY_2].filter(lambda x: eventPlayer.getAbilityCooldown(x))), false)
 
 
 rule "electrify effect":
@@ -5229,7 +5229,7 @@ rule "mercy bewitching grasp":
         eventPlayer.cancelPrimaryAction()
     eventPlayer.is_grasping = true
     while eventPlayer.isHoldingButton(eventPlayer.button_damageboost) and eventPlayer.getCurrentWeapon() == 1 and not eventPlayer.isFiringPrimaryFire() and not eventPlayer.has_status:
-        eventPlayer.damage_target = (sorted([player for player in getLivingPlayers(Team.1) if (isInLoS(eventPlayer.getEyePosition(), player.getEyePosition(), BarrierLos.BLOCKED_BY_ALL_BARRIERS) and angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition() - eventPlayer.getFacingDirection(), player)) < 30 and not player.hasStatus(Status.PHASED_OUT) and (distance(eventPlayer, player) < (30 if eventPlayer.isUsingUltimate() else 15)))], lambda i: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i.getEyePosition()))))[0]
+        eventPlayer.damage_target = (sorted(getLivingPlayers(Team.1).filter(lambda player: isInLoS(eventPlayer.getEyePosition(), player.getEyePosition(), BarrierLos.BLOCKED_BY_ALL_BARRIERS) and angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition() - eventPlayer.getFacingDirection(), player)) < 30 and not player.hasStatus(Status.PHASED_OUT) and (distance(eventPlayer, player) < (30 if eventPlayer.isUsingUltimate() else 15))), lambda x: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), x.getEyePosition()))))[0]
         damage(eventPlayer.damage_target, eventPlayer, 15)
         wait(0.2)
         damage(eventPlayer.damage_target, eventPlayer, 15)
@@ -5291,7 +5291,7 @@ rule "mercy undying servitude":
     @Condition eventPlayer.getAbilityCooldown(eventPlayer.button_rez) == false
     @Condition eventPlayer.isHoldingButton(eventPlayer.button_rez) == true
     
-    eventPlayer.ubercharge_target = (sorted([player for player in getLivingPlayers(Team.2) if isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and eventPlayer.isInViewAngle(player.getEyePosition(), 45) and not player.isDummy() and distance(eventPlayer, player) <= 15], lambda i: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), i.getEyePosition()))))[0]
+    eventPlayer.ubercharge_target = (sorted(getLivingPlayers(Team.2).filter(lambda player: isInLoS(eventPlayer.getEyePosition(), player.getEyePosition()) and eventPlayer.isInViewAngle(player.getEyePosition(), 45) and not player.isDummy() and distance(eventPlayer, player) <= 15), lambda x: angleBetweenVectors(eventPlayer.getFacingDirection(), directionTowards(eventPlayer.getEyePosition(), x.getEyePosition()))))[0]
     if eventPlayer.ubercharge_target != null:
         eventPlayer.ubercharge_target.setStatusEffect(eventPlayer, Status.INVINCIBLE, 8)
         heal(eventPlayer.ubercharge_target, eventPlayer, 99999)
@@ -5396,7 +5396,7 @@ rule "junkrat faraday trap":
     createBeam(getAllPlayers(), Beam.WINSTON_TESLA_CANNON, eventPlayer, getPlayersInRadius(eventPlayer, 8, Team.1, LosCheck.SURFACES)[getTotalTimeElapsed() * 3 % (len(getPlayersInRadius(eventPlayer, 8, Team.1, LosCheck.SURFACES)) - true)], Team.2, EffectReeval.VISIBILITY_POSITION_AND_RADIUS)
     eventPlayer.faraday_effect.append(getLastCreatedEntity())
     while eventPlayer.hasStatus(Status.ROOTED):
-        damage([player for player in getPlayersInRadius(eventPlayer, 8, Team.1, LosCheck.SURFACES) if not player.hasStatus(Status.ROOTED)], junkrat, 50)
+        damage(getPlayersInRadius(eventPlayer, 8, Team.1, LosCheck.SURFACES).filter(lambda player: not player.hasStatus(Status.ROOTED)), junkrat, 50)
         getPlayersInRadius(eventPlayer, 8, Team.1, LosCheck.SURFACES).exclude(eventPlayer).setStatusEffect(junkrat, Status.ROOTED, 0.3)
         wait(0.2)
     while eventPlayer.faraday_effect != []:
@@ -5421,7 +5421,7 @@ rule "zombardier target":
     @Hero zenyatta
     @Condition eventPlayer.zomnic == 2
     
-    eventPlayer.target = (sorted([player for player in getPlayers(Team.1) if player.isAlive() and not player.hasStatus(Status.PHASED_OUT) and not player.hasStatus(Status.INVINCIBLE)], lambda i: distance(eventPlayer, i) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), i.getEyePosition())))))[0]
+    eventPlayer.target = (sorted(getPlayers(Team.1).filter(lambda player: player.isAlive() and not player.hasStatus(Status.PHASED_OUT) and not player.hasStatus(Status.INVINCIBLE)), lambda x: distance(eventPlayer, x) + (1000 * (not isInLoS(eventPlayer.getEyePosition(), x.getEyePosition())))))[0]
     wait(2)
     if ruleCondition:
         loop()
@@ -5600,7 +5600,7 @@ rule "reaper jumpscare":
     @Condition 4 in eventPlayer.scrolls_equip == true
     
     wait(1.7, Wait.ABORT_WHEN_FALSE)
-    ([player for player in getPlayersInRadius(eventPlayer, 7, Team.1, LosCheck.SURFACES) if not player.hasStatus(Status.PHASED_OUT)]).setStatusEffect(eventPlayer, Status.FROZEN, 3)
+    (getPlayersInRadius(eventPlayer, 7, Team.1, LosCheck.SURFACES).filter(lambda player: not player.hasStatus(Status.PHASED_OUT))).setStatusEffect(eventPlayer, Status.FROZEN, 3)
     playEffect(getAllPlayers(), DynamicEffect.PHARAH_CONCUSSIVE_BLAST, Team.2, eventPlayer.getEyePosition(), 5)
     playEffect(getAllPlayers(), DynamicEffect.WINSTON_JUMP_PACK_LANDING, Team.2, eventPlayer.getEyePosition(), 5)
     playEffect(getAllPlayers(), DynamicEffect.SIGMA_HYPERSPHERE_IMPLOSION_SOUND, Color.WHITE, eventPlayer.getEyePosition(), 200)
@@ -5644,7 +5644,7 @@ rule "mystery skull visual":
 rule "mystery skull":
     @Condition phase == 9
     @Condition sombra_egg == false
-    @Condition any([distance(player, vect(-5.36, 2, -40.78)) < 3.5 for player in getPlayers(Team.2)]) == true
+    @Condition getPlayers(Team.2).any(lambda player: distance(player, vect(-5.36, 2, -40.78)) < 3.5) == true
     
     sombra_egg = 1
     if difficulty == 3:
@@ -5683,7 +5683,7 @@ rule "mystery door":
     if mystery_door >= 15:
         playEffect(getAllPlayers(), DynamicEffect.HANZO_SONIC_ARROW_INITIAL_PULSE_SOUND, Team.1, map, 200)
         mystery_door = false
-    if any([distance(player, map) < 2.3 for player in getPlayers(Team.2)]):
+    if getPlayers(Team.2).any(lambda player: distance(player, map) < 2.3):
         sombra_egg = 3
         smallMessage(getPlayers(Team.2), "A clicking sound was heard...")
         playEffect(getAllPlayers(), DynamicEffect.BRIGITTE_REPAIR_PACK_ARMOR_SOUND, Team.2, map, 200)
@@ -5696,10 +5696,10 @@ rule "mystery door":
 
 rule "enter mystery door":
     @Condition sombra_egg == 3
-    @Condition (all([distance(i, map) < 2.3 for i in [player for player in getPlayers(Team.2) if not player.isDummy()]])) == true
+    @Condition (getPlayers(Team.2).filter(lambda player: not player.isDummy()).all(lambda x: distance(x, map) < 2.3)) == true
     
     sombra_egg = 4
-    ([player for player in getPlayers(Team.1) if player.enemy_ID > false]).teleport(compressBakeMatcher)
+    (getPlayers(Team.1).filter(lambda player: player.enemy_ID > false)).teleport(compressBakeMatcher)
     getPlayers(Team.2).teleport(vect(54.93, 11.21, -102.17))
     createDummy(Hero.LUCIO, Team.1, -1, vect(54.44, 11.21, -122.39), Vector.UP)
     getLastCreatedEntity().boss_ID = 5
@@ -5772,7 +5772,7 @@ rule "console check":
     @Condition eventPlayer.button_rez == false
     @Condition magnitude(eventPlayer.getThrottle()) > 0
     
-    if all([not i % 1 for i in [eventPlayer.getThrottle().x, eventPlayer.getThrottle().z]]):
+    if [eventPlayer.getThrottle().x, eventPlayer.getThrottle().z].all(lambda x: not x % 1):
         eventPlayer.button_damageboost = Button.SECONDARY_FIRE
         eventPlayer.button_rez = Button.ABILITY_2
     else:
@@ -5784,7 +5784,7 @@ rule "restart no players":
     @Event playerLeft
     
     wait(true)
-    if ([player for player in getPlayers(Team.2) if not player.isDummy()]) == []:
+    if (getPlayers(Team.2).filter(lambda player: not player.isDummy())) == []:
         restartMatch()
 
 

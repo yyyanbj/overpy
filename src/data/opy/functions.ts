@@ -27,6 +27,7 @@ export const opyFuncs: Record<
         class?: string,
         return: Type;
         isConstant?: boolean;
+        hideFromAutocomplete?: boolean;
     }
 > = {
     "_": {
@@ -89,7 +90,7 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
         "return": "String",
     },
     "all": {
-        "description": "Whether every value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `all([player.A == 2 for player in getAllPlayers()])`",
+        "description": "Whether every value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `all([player.A == 2 for player in getAllPlayers()])`\n\n**Note**: The `.all()` member function is preferred over this syntax: `getAllPlayers().all(lambda player: player.A == 2)`",
         "args": [
             {
                 "name": "array",
@@ -100,10 +101,11 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
             }
         ],
         "isConstant": true,
-        "return": "bool"
+        "return": "bool",
+        "hideFromAutocomplete": true
     },
     "any": {
-        "description": "Whether any value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `any([player.A == 2 for player in getAllPlayers()])`",
+        "description": "Whether any value in the specified array evaluates to true. Can use mapped arrays.\n\nExample: `any([player.A == 2 for player in getAllPlayers()])`\n\n**Note**: The `.any()` member function is preferred over this syntax: `getAllPlayers().any(lambda player: player.A == 2)`",
         "args": [
             {
                 "name": "array",
@@ -114,7 +116,8 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
             }
         ],
         "isConstant": true,
-        "return": "bool"
+        "return": "bool",
+        "hideFromAutocomplete": true
     },
     ".append": {
         "description": "Appends the specified value to the specified array. Note that this function is really the equivalent of `extend()`, that is, `[1,2].append([3,4])` will produce `[1,2,3,4]` instead of `[1,2,[3,4]]`. Modifies the array in-place; use `concat` to instead return a copy of the array.\n\nExample: `A.append(3)`",
@@ -131,6 +134,92 @@ Wrapping a string with \`___\` has the same caveats as putting a translated stri
         ],
         class: "Array",
         return: "void",
+    },
+    ".all": {
+        "description": "Whether the lambda function evaluates to true for every element of the array. If no argument is provided, checks whether every element is truthy. Returns true for an empty array.\n\nExample: `getAllPlayers().all(lambda player: player.A == 2)`\n\nWith index: `array.all(lambda elem, idx: elem > idx)`\n\nWithout lambda: `array.all()` (equivalent to `array.all(lambda x: x)`)",
+        "args": [
+            {
+                "name": "array",
+                "description": "The array whose values will be considered.",
+                "type": {
+                    "Array": "Object"
+                },
+            },
+            {
+                "name": "lambda",
+                "description": "The lambda function that is evaluated for each element of the array. Must return a boolean. If omitted, defaults to the element itself.",
+                "type": "Lambda",
+                "default": "<current array element>"
+            }
+        ],
+        class: "Array",
+        "isConstant": true,
+        "return": "bool"
+    },
+    ".any": {
+        "description": "Whether the lambda function evaluates to true for any element of the array. If no lambda is provided, checks whether any element is truthy. Returns false for an empty array.\n\nExample: `getAllPlayers().any(lambda player: player.A == 2)`\n\nWith index: `array.any(lambda elem, idx: elem > idx)`\n\nWithout lambda: `array.any()` (equivalent to `array.any(lambda x: x)`)",
+        "args": [
+            {
+                "name": "array",
+                "description": "The array whose values will be considered.",
+                "type": {
+                    "Array": "Object"
+                },
+            },
+            {
+                "name": "lambda",
+                "description": "The lambda function that is evaluated for each element of the array. Must return a boolean. If omitted, defaults to the element itself.",
+                "type": "Lambda",
+                "default": "<current array element>"
+            }
+        ],
+        class: "Array",
+        "isConstant": true,
+        "return": "bool"
+    },
+    ".filter": {
+        "description": "A copy of the specified array with any values that do not match the lambda condition removed.\n\nExample: `getAllPlayers().filter(lambda player: player.A == 2)`\n\nWith index: `array.filter(lambda elem, idx: elem > idx)`",
+        "args": [
+            {
+                "name": "array",
+                "description": "The array whose copy will be filtered.",
+                "type": {
+                    "Array": "Object"
+                },
+            },
+            {
+                "name": "lambda",
+                "description": "The lambda function that is evaluated for each element of the copied array. If it returns true, the element is kept; otherwise, it is removed.",
+                "type": "Lambda",
+            }
+        ],
+        class: "Array",
+        "isConstant": true,
+        "return": {
+            "Array": "Object"
+        }
+    },
+    ".map": {
+        "description": "A copy of the specified array with the values mapped according to the lambda function that is evaluated for each element.\n\nExample: `getAllPlayers().map(lambda player: player.A + 2)`\n\nWith index: `array.map(lambda elem, idx: elem + idx)`",
+        "args": [
+            {
+                "name": "array",
+                "description": "The array whose copy will be mapped.",
+                "type": {
+                    "Array": "Object"
+                },
+            },
+            {
+                "name": "lambda",
+                "description": "The lambda function that is evaluated for each element. The return value is used as the new element.",
+                "type": "Lambda",
+            }
+        ],
+        class: "Array",
+        "isConstant": true,
+        "return": {
+            "Array": "Object"
+        }
     },
     "arrayToString": {
         "description": "Displays an array (otherwise, casting an array to a string will only display the first value). The second argument is the maximum length of the array (arrays can go up to 1000, which would generate a lot of elements). If the array length is above the maximum length, an ellipsis (...) will be displayed along with the amount of elements remaining.",

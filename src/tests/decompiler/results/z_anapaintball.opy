@@ -311,8 +311,8 @@ rule "Detect players":
     @Event playerJoined
     @Condition eventPlayer.isDummy() == false
     
-    eventPlayer.startForcingName("\u200b [ -C°▥°]-C Ana Bot #{0}".format(len([player for player in getAllPlayers() if player.IsAIBot])))
-    if "{0}".format(eventPlayer) == "\u200b [ -C°▥°]-C Ana Bot #{0}".format(len([player for player in getAllPlayers() if player.IsAIBot])):
+    eventPlayer.startForcingName("\u200b [ -C°▥°]-C Ana Bot #{0}".format(len(getAllPlayers().filter(lambda player: player.IsAIBot))))
+    if "{0}".format(eventPlayer) == "\u200b [ -C°▥°]-C Ana Bot #{0}".format(len(getAllPlayers().filter(lambda player: player.IsAIBot))):
         eventPlayer.IsPlayer = false
         eventPlayer.IsAIBot = true
     else:
@@ -457,8 +457,8 @@ rule "PLAYER HUDs":
     hudSubtext(localPlayer.IsPlayer, " \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n                                                                                                         {0}".format("                      "), HudPosition.TOP, 5, Color.WHITE, HudReeval.VISIBILITY, SpecVisibility.NEVER)
     #Aligns the ScoreBoard Wallpapers horizontally
     hudSubheader(localPlayer.IsPlayer, "\n \u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003{0}".format("\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003"), HudPosition.RIGHT, 0, Color.RED, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-    hudSubtext(localPlayer.IsPlayer, "{0}".format("                                                         {0}    {0}       {0}    {0}".format(iconString(Icon.WARNING)) if any([player.getScore() == NANO_SCORE for player in getAllPlayers()]) else "                                                         {0}    {0}       {0}    {0}".format(abilityIconString(Hero.KIRIKO, Button.ULTIMATE))), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
-    hudSubtext([localPlayer.IsPlayer and getNumberOfPlayers(Team.ALL) > 1], "\n{0}".format("                                                         {0}    {0}       {0}    {0}".format(iconString(Icon.WARNING)) if len([player for player in getAllPlayers() if player.getScore() == NANO_SCORE]) >= 2 and localPlayer.getScore() == NANO_SCORE else "                                                         {0}    {0}       {0}    {0}".format(abilityIconString(Hero.DVA, Button.ULTIMATE))), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudSubtext(localPlayer.IsPlayer, "{0}".format("                                                         {0}    {0}       {0}    {0}".format(iconString(Icon.WARNING)) if getAllPlayers().any(lambda player: player.getScore() == NANO_SCORE) else "                                                         {0}    {0}       {0}    {0}".format(abilityIconString(Hero.KIRIKO, Button.ULTIMATE))), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
+    hudSubtext([localPlayer.IsPlayer and getNumberOfPlayers(Team.ALL) > 1], "\n{0}".format("                                                         {0}    {0}       {0}    {0}".format(iconString(Icon.WARNING)) if len(getAllPlayers().filter(lambda player: player.getScore() == NANO_SCORE)) >= 2 and localPlayer.getScore() == NANO_SCORE else "                                                         {0}    {0}       {0}    {0}".format(abilityIconString(Hero.DVA, Button.ULTIMATE))), HudPosition.RIGHT, 0, Color.WHITE, HudReeval.VISIBILITY_AND_STRING, SpecVisibility.NEVER)
     #MAIN STATS (with icons)
     hudSubtext(localPlayer.IsPlayer, "▼ use [{0}] to toggle stats\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003{1}".format(inputBindingString(Button.INTERACT), "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003") if localPlayer.DisplayStats else "▶ use [{0}] to toggle stats\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003{1}".format(inputBindingString(Button.INTERACT), "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003"), HudPosition.LEFT, 8, rgb(63, 191, 116) if localPlayer.DisplayStats else rgb(63, 191, 116, 50), HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.NEVER)
     hudText(localPlayer.DisplayStats, "{0}".format(abilityIconString(Hero.SOJOURN, Button.SECONDARY_FIRE)), "Scoped Accuracy\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003{0}".format("\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003"), "{0}%".format(localPlayer.ScopedAccuracy), HudPosition.LEFT, 10, rgb(min(max(abs(getTotalTimeElapsed() * 85 % 841.5 - 420.75) - 25.5, 114.75), 255), min(max(abs((getTotalTimeElapsed() * 85 + 280.5) % 841.5 - 420.75) - 25.5, 114.75), 255), min(max(abs((getTotalTimeElapsed() * 85 + 561) % 841.5 - 420.75) - 25.5, 114.75), 255)) if localPlayer.ScopedAccuracy == BestScopedAccuracyValue and localPlayer.ScopedShots >= 15 and localPlayer.ScopedAccuracy > 0 else rgb(63, 191, 116), Color.WHITE, rgb(min(max(abs(getTotalTimeElapsed() * 85 % 841.5 - 420.75) - 25.5, 114.75), 255), min(max(abs((getTotalTimeElapsed() * 85 + 280.5) % 841.5 - 420.75) - 25.5, 114.75), 255), min(max(abs((getTotalTimeElapsed() * 85 + 561) % 841.5 - 420.75) - 25.5, 114.75), 255)) if localPlayer.ScopedAccuracy == BestScopedAccuracyValue and localPlayer.ScopedShots >= 15 and localPlayer.ScopedAccuracy > 0 else rgb(63, 191, 116), HudReeval.VISIBILITY_SORT_ORDER_STRING_AND_COLOR, SpecVisibility.NEVER)
@@ -513,15 +513,15 @@ rule "Initial spawn point & message":
 def RespawnSystem():
     @Name "Subroutine RespawnSystem"
     
-    eventPlayer.AlivePlayers = [player for player in getAllPlayers() if player != eventPlayer and player.isAlive() and player.hasSpawned() and player.getHero() == Hero.ANA]
-    eventPlayer.SpawnPointsNotInLOS = [player for player in SpawnPointSettings if ((((((((not isInLoS(eventPlayer.AlivePlayers[0], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[0] != null else true) and (not isInLoS(eventPlayer.AlivePlayers[1], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[1] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[2], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[2] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[3], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[3] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[4], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[4] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[5], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[5] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[6], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[6] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[7], player[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[7] != null else true))]
+    eventPlayer.AlivePlayers = getAllPlayers().filter(lambda player: player != eventPlayer and player.isAlive() and player.hasSpawned() and player.getHero() == Hero.ANA)
+    eventPlayer.SpawnPointsNotInLOS = SpawnPointSettings.filter(lambda x: (((((((not isInLoS(eventPlayer.AlivePlayers[0], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[0] != null else true) and (not isInLoS(eventPlayer.AlivePlayers[1], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[1] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[2], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[2] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[3], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[3] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[4], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[4] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[5], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[5] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[6], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[6] != null else true)) and (not isInLoS(eventPlayer.AlivePlayers[7], x[0] + vect(0, 1.8, 0)) if eventPlayer.AlivePlayers[7] != null else true))
     if len(eventPlayer.SpawnPointsNotInLOS) == 0:
         #failsafe
         eventPlayer.SpawnPointsNotInLOS = SpawnPointSettings
-    eventPlayer.SpawnPointsFarEnoughFromPlayers = [player for player in eventPlayer.SpawnPointsNotInLOS if ((((((((abs(distance(player[0], eventPlayer.AlivePlayers[0]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[0] != null else true) and (abs(distance(player[0], eventPlayer.AlivePlayers[1]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[1] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[2]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[2] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[3]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[3] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[4]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[4] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[5]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[5] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[6]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[6] != null else true)) and (abs(distance(player[0], eventPlayer.AlivePlayers[7]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[7] != null else true))]
+    eventPlayer.SpawnPointsFarEnoughFromPlayers = eventPlayer.SpawnPointsNotInLOS.filter(lambda x: (((((((abs(distance(x[0], eventPlayer.AlivePlayers[0]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[0] != null else true) and (abs(distance(x[0], eventPlayer.AlivePlayers[1]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[1] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[2]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[2] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[3]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[3] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[4]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[4] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[5]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[5] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[6]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[6] != null else true)) and (abs(distance(x[0], eventPlayer.AlivePlayers[7]) - ((RespawnHigherDistance + RespawnLowerDistance) / 2)) <= (RespawnHigherDistance - RespawnLowerDistance) / 2 if eventPlayer.AlivePlayers[7] != null else true))
     if len(eventPlayer.SpawnPointsFarEnoughFromPlayers) == 0:
         #failsafe
-        eventPlayer.SpawnPointsFarEnoughFromPlayers = [player for player in eventPlayer.SpawnPointsNotInLOS if (((((((((distance(player[0], eventPlayer.AlivePlayers[0]) if eventPlayer.AlivePlayers[0] != null else 999999) >= RespawnFailsafeDistance) and ((distance(player[0], eventPlayer.AlivePlayers[1]) if eventPlayer.AlivePlayers[1] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[2]) if eventPlayer.AlivePlayers[2] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[3]) if eventPlayer.AlivePlayers[3] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[4]) if eventPlayer.AlivePlayers[4] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[5]) if eventPlayer.AlivePlayers[5] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[6]) if eventPlayer.AlivePlayers[6] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(player[0], eventPlayer.AlivePlayers[7]) if eventPlayer.AlivePlayers[7] != null else 999999) >= RespawnFailsafeDistance))]
+        eventPlayer.SpawnPointsFarEnoughFromPlayers = eventPlayer.SpawnPointsNotInLOS.filter(lambda x: ((((((((distance(x[0], eventPlayer.AlivePlayers[0]) if eventPlayer.AlivePlayers[0] != null else 999999) >= RespawnFailsafeDistance) and ((distance(x[0], eventPlayer.AlivePlayers[1]) if eventPlayer.AlivePlayers[1] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[2]) if eventPlayer.AlivePlayers[2] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[3]) if eventPlayer.AlivePlayers[3] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[4]) if eventPlayer.AlivePlayers[4] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[5]) if eventPlayer.AlivePlayers[5] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[6]) if eventPlayer.AlivePlayers[6] != null else 999999) >= RespawnFailsafeDistance)) and ((distance(x[0], eventPlayer.AlivePlayers[7]) if eventPlayer.AlivePlayers[7] != null else 999999) >= RespawnFailsafeDistance))
     if len(eventPlayer.SpawnPointsFarEnoughFromPlayers) == 0:
         #failsafe
         eventPlayer.SpawnPointsFarEnoughFromPlayers = eventPlayer.SpawnPointsNotInLOS
@@ -1051,12 +1051,12 @@ rule "Remove scores from players who killed the AI bot that just left":
 
 rule "Remove AI bots to leave space for human players":
     @Event eachPlayer
-    @Condition getNumberOfPlayers(Team.ALL) - len([player for player in getAllPlayers() if player.isDummy()]) == getNumberOfSlots(Team.ALL)
-    @Condition eventPlayer == [player for player in getAllPlayers() if player.IsAIBot][0]
+    @Condition getNumberOfPlayers(Team.ALL) - len(getAllPlayers().filter(lambda player: player.isDummy())) == getNumberOfSlots(Team.ALL)
+    @Condition eventPlayer == getAllPlayers().filter(lambda player: player.IsAIBot)[0]
     
     #let the setup playerJoined rule run first, so IsAIBot is set
     wait(0, Wait.ABORT_WHEN_FALSE)
-    TempAIBotBeingRemoved = [player for player in getAllPlayers() if player.IsAIBot][0]
+    TempAIBotBeingRemoved = getAllPlayers().filter(lambda player: player.IsAIBot)[0]
     TempAIBotBeingRemovedName = "{0}".format(TempAIBotBeingRemoved)
     if not TempAIBotBeingRemoved:
         return
@@ -1100,7 +1100,7 @@ rule "If nanoboosted player uses disabled buttons":
     @Event eachPlayer
     @Hero ana
     @Condition eventPlayer.getScore() == NANO_SCORE
-    @Condition any([eventPlayer.isHoldingButton(i_) for i_ in [Button.MELEE, Button.RELOAD, Button.PRIMARY_FIRE, Button.SECONDARY_FIRE]]) == true
+    @Condition [Button.MELEE, Button.RELOAD, Button.PRIMARY_FIRE, Button.SECONDARY_FIRE].any(lambda x: eventPlayer.isHoldingButton(x)) == true
     
     eventPlayer.MedalQueue = [0].concat(eventPlayer.MedalQueue)
     smallMessage(eventPlayer, "    {0}  Use sleep dart to win  {0}".format(iconString(Icon.EXCLAMATION_MARK)))
@@ -1116,7 +1116,7 @@ rule "Scoped shots":
     
     eventPlayer.ScopedShots++
     eventPlayer.ScopedAccuracy = round(eventPlayer.ScopedHits / eventPlayer.ScopedShots * 100)
-    BestScopedAccuracyValue = ((sorted([player for player in getAllPlayers() if player.ScopedShots >= 15], lambda i_: i_.ScopedAccuracy)).last()).ScopedAccuracy
+    BestScopedAccuracyValue = ((sorted(getAllPlayers().filter(lambda player: player.ScopedShots >= 15), lambda x: x.ScopedAccuracy)).last()).ScopedAccuracy
 
 
 rule "Noscope shots":
@@ -1127,7 +1127,7 @@ rule "Noscope shots":
     
     eventPlayer.NoscopeShots++
     eventPlayer.NoscopeAccuracy = round(eventPlayer.NoscopeHits / eventPlayer.NoscopeShots * 100)
-    BestNoscopeAccuracyValue = ((sorted([player for player in getAllPlayers() if player.NoscopeShots >= 15], lambda i_: i_.NoscopeAccuracy)).last()).NoscopeAccuracy
+    BestNoscopeAccuracyValue = ((sorted(getAllPlayers().filter(lambda player: player.NoscopeShots >= 15), lambda x: x.NoscopeAccuracy)).last()).NoscopeAccuracy
 
 
 rule "Noscope hits":
@@ -1138,7 +1138,7 @@ rule "Noscope hits":
     
     attacker.NoscopeHits++
     attacker.NoscopeAccuracy = round(attacker.NoscopeHits / attacker.NoscopeShots * 100)
-    BestNoscopeAccuracyValue = ((sorted([player for player in getAllPlayers() if player.NoscopeShots >= 15], lambda i_: i_.NoscopeAccuracy)).last()).NoscopeAccuracy
+    BestNoscopeAccuracyValue = ((sorted(getAllPlayers().filter(lambda player: player.NoscopeShots >= 15), lambda x: x.NoscopeAccuracy)).last()).NoscopeAccuracy
     BestNoscopeAccuracyPlayer = eventPlayer
     if attacker.NoscopeHits == 10:
         attacker.MedalQueue.append(34)
@@ -1154,7 +1154,7 @@ rule "Sleep Dart shots":
     wait(0.3, Wait.ABORT_WHEN_FALSE)
     eventPlayer.SleepShots++
     eventPlayer.SleepAccuracy = round(eventPlayer.SleepHits / eventPlayer.SleepShots * 100)
-    BestSleepAccuracyValue = ((sorted([player for player in getAllPlayers() if player.SleepShots >= 10], lambda i_: i_.SleepAccuracy)).last()).SleepAccuracy
+    BestSleepAccuracyValue = ((sorted(getAllPlayers().filter(lambda player: player.SleepShots >= 10), lambda x: x.SleepAccuracy)).last()).SleepAccuracy
 
 
 def SleepDarts():
@@ -1168,7 +1168,7 @@ def SleepDarts():
         victim.startForcingOutlineFor(getAllPlayers()[i], true, rgb(63, 191, 116) if victim.getScore() > getAllPlayers()[i].getScore() else Color.SKY_BLUE)
     attacker.SleepHits++
     attacker.SleepAccuracy = round(attacker.SleepHits / attacker.SleepShots * 100)
-    BestSleepAccuracyValue = ((sorted([player for player in getAllPlayers() if player.SleepShots >= 10], lambda i_: i_.SleepAccuracy)).last()).SleepAccuracy
+    BestSleepAccuracyValue = ((sorted(getAllPlayers().filter(lambda player: player.SleepShots >= 10), lambda x: x.SleepAccuracy)).last()).SleepAccuracy
     BestSleepAccuracyPlayer = attacker
     wait(0.5)
     victim.SleepsOnground = true
@@ -1244,7 +1244,7 @@ rule "Kill logic":
             attacker.KillStreak++
             attacker.EarnedCollateral++
         attacker.ScopedAccuracy = round(attacker.ScopedHits / attacker.ScopedShots * 100)
-        BestScopedAccuracyPlayer = (sorted([player for player in getAllPlayers() if player.ScopedShots >= 15], lambda i_: i_.ScopedAccuracy)).last()
+        BestScopedAccuracyPlayer = (sorted(getAllPlayers().filter(lambda player: player.ScopedShots >= 15), lambda x: x.ScopedAccuracy)).last()
         BestScopedAccuracyValue = BestScopedAccuracyPlayer.ScopedAccuracy
         if attacker.EarnedCollateral > 1:
             attacker.MedalQueue.append(30)
@@ -1461,7 +1461,7 @@ rule "Quadfeed":
     @Event playerEarnedElimination
     @Hero ana
     
-    attacker.QuadFeedTimes = [player for player in attacker.QuadFeedTimes if getTotalTimeElapsed() - player <= 7.5]
+    attacker.QuadFeedTimes = attacker.QuadFeedTimes.filter(lambda x: getTotalTimeElapsed() - x <= 7.5)
     attacker.QuadFeedTimes.append(getTotalTimeElapsed())
     getAllPlayers().exclude(attacker).QuadFeedTimes = []
     if len(attacker.QuadFeedTimes) == 4:
@@ -2040,9 +2040,9 @@ rule "TRIGGER any jump pad":
     @Hero ana
     @Condition eventPlayer.hasSpawned() == true
     @Condition len(JumpPadPos) > 0
-    @Condition any([distance(eventPlayer, player) <= JumpPadSize[i_] for player, i_ in JumpPadPos]) == true
+    @Condition JumpPadPos.any(lambda x, i_: distance(eventPlayer, x) <= JumpPadSize[i_]) == true
     
-    eventPlayer.ClosestPadIndex = JumpPadPos.index(sorted(JumpPadPos, lambda player: distance(eventPlayer, player)))
+    eventPlayer.ClosestPadIndex = JumpPadPos.index(sorted(JumpPadPos, lambda x: distance(eventPlayer, x)))
     eventPlayer.applyImpulse(Vector.UP, JumpPadPower[eventPlayer.ClosestPadIndex], Relativity.TO_WORLD)
     playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.WHITE, eventPlayer, 30)
 

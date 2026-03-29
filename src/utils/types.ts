@@ -75,7 +75,7 @@ export function isTypeSuitable(expectedType: Type | Type[], receivedType: Type |
             var expectedTypeName = Object.keys(expectedType)[0];
             if (expectedTypeName === "Array") {
                 //The only string type that would be suitable for Array is the special "value" type.
-                return receivedType === "Value";
+                return receivedType === "Value" && valueTypeIsSuitable;
             } else if (["Vector", "Direction", "Position", "Velocity"].includes(expectedTypeName)) {
                 return isTypeSuitable(expectedTypeName, receivedType);
             }

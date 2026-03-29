@@ -250,7 +250,7 @@ rule "init":
 
 rule "loop":
     #start game when any player spawns for the first time
-    @Condition any([player.hasSpawned() for player in getPlayers(Team.1)]) == true
+    @Condition getPlayers(Team.1).any(lambda player: player.hasSpawned()) == true
     
     #intermission
     destroyEffect(threatFx)
@@ -316,7 +316,7 @@ rule "loop":
         if not threatText in threatList:
             threatList.append(threatText)
     #prevent multiple dummy-using threats to be used, to prevent conflicts on botA and botB vars or exceeding skin limit.
-    if len([player for player in threatList if player in dummyThreats]) >= 2:
+    if len(threatList.filter(lambda x: x in dummyThreats)) >= 2:
         threatList = threatList.slice(0, len(threatList) - 1)
     #threatList.append(THREATS.SUN)
     #threatList.append(THREATS.CAGE)
@@ -490,7 +490,7 @@ rule "mob retarget":
             wait(0.12)
             #1st-3rd closest player
             if mobs[i].isAlive():
-                mobs[i].mobTarget = sorted([player for player in getLivingPlayers(Team.1) if player.hasSpawned()], lambda i_: distance(i_, mobs[i].getPosition()))[random.randint(0, 2) % getNumberOfLivingPlayers(Team.1)]
+                mobs[i].mobTarget = sorted(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned()), lambda x: distance(x, mobs[i].getPosition()))[random.randint(0, 2) % getNumberOfLivingPlayers(Team.1)]
         #change boss target
         if obj == 3:
             objPos.mobTarget = mobs[0].mobTarget
@@ -533,7 +533,7 @@ rule "more maugas charge attack":
         createBeam(getAllPlayers(), Beam.WINSTON_TESLA_CANNON, attackingClone.cacheB, nipman.cacheB, Color.TEAM_2, EffectReeval.VISIBILITY)
         moreFx.append(getLastCreatedEntity())
         bigMessage(getAllPlayers(), "{0} deadly attack incoming! attack the sensitive spots! {1}".format(iconString(Icon.WARNING), iconString(Icon.WARNING)))
-        random.choice([player for player in getLivingPlayers(Team.1) if player.hasSpawned()]).communicate(Comms.PRESS_THE_ATTACK)
+        random.choice(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned())).communicate(Comms.PRESS_THE_ATTACK)
         #all hammond dummies get weak spot init
         createDummy(Hero.WRECKING_BALL, Team.2, -1, Vector.UP, Vector.UP)
         #left
@@ -561,7 +561,7 @@ rule "more maugas charge attack":
             attackingClone.setStatusEffect(null, Status.STUNNED, 1)
             destroyEffect(moreFx)
             moreFx = []
-            random.choice([player for player in getLivingPlayers(Team.1) if player.hasSpawned()]).communicate(Comms.YES)
+            random.choice(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned())).communicate(Comms.YES)
             bigMessage(getAllPlayers(), "success! stopped the attack!")
             wait(1.2)
             attackingClone.setStatusEffect(null, Status.FROZEN, 99999)
@@ -571,13 +571,13 @@ rule "more maugas charge attack":
         for iMores in range(len(weakSpots)):
             destroyDummy(Team.2, weakSpots[iMores].getSlot())
         weakSpots = []
-        random.choice([player for player in getLivingPlayers(Team.1) if player.hasSpawned()]).communicate(Comms.COUNTDOWN)
+        random.choice(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned())).communicate(Comms.COUNTDOWN)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.TEAM_2, nipman.getEyePosition(), 9999)
         wait(1)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.TEAM_2, nipman.getEyePosition(), 9999)
         wait(1)
         playEffect(getAllPlayers(), DynamicEffect.RING_EXPLOSION_SOUND, Color.TEAM_2, nipman.getEyePosition(), 9999)
-        random.choice([player for player in getLivingPlayers(Team.1) if player.hasSpawned()]).communicate(Comms.INCOMING)
+        random.choice(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned())).communicate(Comms.INCOMING)
         wait(1)
         if obj != 1:
             return
@@ -656,8 +656,8 @@ rule "grab":
         grabLeft = nipman.cacheA
         grabRight = nipman.cacheB
         #select
-        grabLeftPlayer = random.choice([player for player in getLivingPlayers(Team.1) if player.getPosition().x > 0])
-        grabRightPlayer = random.choice([player for player in getLivingPlayers(Team.1) if player.getPosition().x < 0])
+        grabLeftPlayer = random.choice(getLivingPlayers(Team.1).filter(lambda player: player.getPosition().x > 0))
+        grabRightPlayer = random.choice(getLivingPlayers(Team.1).filter(lambda player: player.getPosition().x < 0))
         #attack
         if entityExists(grabLeftPlayer):
             grabLeftPlayer = grabLeftPlayer.getPosition() + Vector.UP * 0.5
@@ -671,12 +671,12 @@ rule "grab":
         if obj == -1:
             return
         #check landing
-        grabLeftPlayer = [player for player in getPlayersInRadius(grabLeft, 2, Team.1) if player.isAlive() and player.hasSpawned()]
+        grabLeftPlayer = getPlayersInRadius(grabLeft, 2, Team.1).filter(lambda player: player.isAlive() and player.hasSpawned())
         grabLeftPlayer.startForcingPosition(grabLeft)
         smallMessage(grabLeftPlayer, "{0} you were grabbed!".format(abilityIconString(Hero.MOIRA, Button.SECONDARY_FIRE)))
         playEffect(getAllPlayers(), DynamicEffect.ORISA_HALT_IMPLOSION_SOUND, Color.TEAM_2, grabLeft, 20)
         playEffect(getAllPlayers(), DynamicEffect.ORISA_HALT_IMPLOSION, Color.TEAM_2, grabLeft, 20)
-        grabRightPlayer = [player for player in getPlayersInRadius(grabRight, 2, Team.1) if player.isAlive() and player.hasSpawned()]
+        grabRightPlayer = getPlayersInRadius(grabRight, 2, Team.1).filter(lambda player: player.isAlive() and player.hasSpawned())
         grabRightPlayer.startForcingPosition(grabRight)
         smallMessage(grabRightPlayer, "{0} you were grabbed!".format(abilityIconString(Hero.MOIRA, Button.SECONDARY_FIRE)))
         playEffect(getAllPlayers(), DynamicEffect.ORISA_HALT_IMPLOSION_SOUND, Color.TEAM_2, grabRight, 20)
@@ -748,7 +748,7 @@ rule "milk wall + collision":
         #collision
         for wallI in range(25):
             wait(0.096)
-            nipman.mobTarget = [player for player in getLivingPlayers(Team.1) if abs(player.getPosition().z - wallPos.z) < 1.3 and player.getPosition().x > wallPos.x and player.getPosition().x < wallPos.x + 13.2 and player.getPosition().y <= 19.8]
+            nipman.mobTarget = getLivingPlayers(Team.1).filter(lambda player: abs(player.getPosition().z - wallPos.z) < 1.3 and player.getPosition().x > wallPos.x and player.getPosition().x < wallPos.x + 13.2 and player.getPosition().y <= 19.8)
             #nipman.mobTarget.applyImpulse(Vector.BACKWARD + Vector.UP * 0.1, 100, Relativity.TO_WORLD, Impulse.CANCEL_CONTRARY_MOTION)
             nipman.mobTarget.setStatusEffect(null, Status.KNOCKED_DOWN, 1.5)
             #multihits except when it doesn't
@@ -805,9 +805,9 @@ rule "twister":
     createProjectileEffect(getAllPlayers(), Projectile.ZARYA_PARTICLE_CANNON, null, twisterPos + 7 * Vector.DOWN, Vector.DOWN, 1, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
     threatFx.append(getLastCreatedEntity())
     twisterPos = nipman.cacheA * vect(1, 0, 1)
-    chaseAtRate(twisterPos, sorted([player for player in getLivingPlayers(Team.1) if player.hasSpawned()], lambda i_: distance(i_, twisterPos))[0].getPosition() * vect(1, 0, 1), 1.6)
+    chaseAtRate(twisterPos, sorted(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned()), lambda x: distance(x, twisterPos))[0].getPosition() * vect(1, 0, 1), 1.6)
     while obj != -1:
-        twisterCache = [player for player in getLivingPlayers(Team.1) if distance(player.getPosition() * vect(1, 0, 1), twisterPos) < 5 and player.getPosition().y < 25]
+        twisterCache = getLivingPlayers(Team.1).filter(lambda player: distance(player.getPosition() * vect(1, 0, 1), twisterPos) < 5 and player.getPosition().y < 25)
         twisterCache.applyImpulse(Vector.UP, 7, Relativity.TO_WORLD, Impulse.INCORPORATE_CONTRARY_MOTION)
         damage(twisterCache, null, 35)
         wait(0.24)
@@ -883,8 +883,8 @@ rule "laser":
     threatFx.append(getLastCreatedEntity())
     createProjectileEffect(getAllPlayers(), Projectile.ZARYA_PARTICLE_CANNON, null, area2 + 4 * Vector.DOWN, Vector.DOWN, 0.55, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
     threatFx.append(getLastCreatedEntity())
-    chaseAtRate(area1, sorted([player for player in getLivingPlayers(Team.1) if player.hasSpawned()], lambda i_: distance(i_, area1))[0].getPosition() * vect(1, 0, 1), 0.8)
-    chaseAtRate(area2, sorted([player for player in getLivingPlayers(Team.1) if player.hasSpawned()], lambda i_: distance(i_, area2))[0].getPosition() * vect(1, 0, 1), 0.8)
+    chaseAtRate(area1, sorted(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned()), lambda x: distance(x, area1))[0].getPosition() * vect(1, 0, 1), 0.8)
+    chaseAtRate(area2, sorted(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned()), lambda x: distance(x, area2))[0].getPosition() * vect(1, 0, 1), 0.8)
     while obj != -1:
         createProjectile(Projectile.RAMATTRA_RAVENOUS_VORTEX_SPHERE, nipman, area1 + 0.5 * Vector.UP, Vector.DOWN, Relativity.TO_WORLD, ModifyHealth.DAMAGE, Team.1, 20, 1, 3, DynamicEffect.ZARYA_PARTICLE_CANNON_EXPLOSION, DynamicEffect.ORISA_HALT_IMPLOSION_SOUND, 0, getTotalTimeElapsed(), 10, 55)
         wait(0.08)
@@ -964,7 +964,7 @@ rule "nuke":
     while obj != -1:
         missileFx = []
         missilePos = vect(0, 1, 20)
-        chaseAtRate(missilePos, sorted([player for player in getLivingPlayers(Team.1) if player.hasSpawned()], lambda i_: distance(i_, missilePos))[0].getPosition() * vect(1, 0, 1) + Vector.UP, 4)
+        chaseAtRate(missilePos, sorted(getLivingPlayers(Team.1).filter(lambda player: player.hasSpawned()), lambda x: distance(x, missilePos))[0].getPosition() * vect(1, 0, 1) + Vector.UP, 4)
         #chaser
         createProjectileEffect(getAllPlayers(), Projectile.ZARYA_GRAVITON, null, missilePos, Vector.UP, 0.1, ProjectileEffectReeval.VISIBILITY_POSITION_DIRECTION_AND_SIZE)
         missileFx.append(getLastCreatedEntity())
@@ -1178,7 +1178,7 @@ rule "init suns":
 
 rule "missing mauga":
     @Condition obj == 1
-    @Condition (all([not entityExists(player) for player in objPos])) == true
+    @Condition (objPos.all(lambda x: not entityExists(x))) == true
     
     wait(2, Wait.ABORT_WHEN_FALSE)
     smallMessage(getAllPlayers(), "something went wrong. skipping phase...")
@@ -1708,7 +1708,7 @@ rule "you are dead, not big surprise":
     #eventPlayer.teleport(Vector.DOWN * getTotalTimeElapsed())
     if isHardcore:
         #eventPlayer.setRespawnTime(99999)
-        if ([player for player in getPlayers(Team.1) if player.isAlive() and player.hasSpawned()]) == []:
+        if (getPlayers(Team.1).filter(lambda player: player.isAlive() and player.hasSpawned())) == []:
             bigMessage(getAllPlayers(), "game over. all players died.")
             setSlowMotion(50)
             wait(1)

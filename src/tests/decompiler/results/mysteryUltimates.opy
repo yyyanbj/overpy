@@ -659,7 +659,7 @@ rule "When the player presses their ult button in NORMAL mode, activate ult":
     @Condition eventPlayer.getUltCharge() == 100
     @Condition eventPlayer.trueHero != eventPlayer.ultimateHero
     @Condition eventPlayer.isHoldingButton(Button.ULTIMATE) == true
-    @Condition any([eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)]) == false
+    @Condition [eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)].any() == false
     
     eventPlayer.preparingUltEvent = "STATE_ENTER"
     PreparingUltimateEventHandler()
@@ -760,9 +760,9 @@ rule "While attempting to cast ult, if player has a placeable ult and they get h
     @Event eachPlayer
     @Condition eventPlayer.ultimateState == "PREPARING_ULT"
     @Condition eventPlayer.getHero() in placeableUltimateHeroes == true
-    @Condition any([eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)]) == true
+    @Condition [eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)].any() == true
     
-    waitUntil(any([eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)]) == false, 1000000)
+    waitUntil([eventPlayer.hackAbilityLockout > 0, eventPlayer.hasStatus(Status.ASLEEP), eventPlayer.hasStatus(Status.FROZEN), eventPlayer.hasStatus(Status.KNOCKED_DOWN), eventPlayer.hasStatus(Status.STUNNED)].any() == false, 1000000)
     eventPlayer.forceButtonPress(Button.ULTIMATE)
 
 
