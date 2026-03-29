@@ -1,6 +1,7 @@
 "use strict";
 
 import { QuickJSContext, QuickJSHandle, QuickJSSyncVariant, QuickJSWASMModule, memoizePromiseFactory, newQuickJSWASMModuleFromVariant, newVariant, shouldInterruptAfterDeadline } from "quickjs-emscripten-core";
+import {IS_IN_BROWSER} from "./globalVars";
 
 export const QUICKJS_WASM_ASSET_NAME = "quickjs-ng.wasm";
 
@@ -19,6 +20,10 @@ type ScriptExecutionOptions = {
 
 let quickJSModule: QuickJSWASMModule | null = null;
 const scriptCache: Record<string, string> = {};
+
+function isNodeRuntime(): boolean {
+    return typeof process !== "undefined" && typeof process.versions?.node === "string";
+}
 
 function loadQuickJSFFI(): ReturnType<QuickJSSyncVariant["importFFI"]> {
     return Promise.resolve()
@@ -50,10 +55,6 @@ const quickJSVariant: QuickJSSyncVariant = {
     importModuleLoader: loadQuickJSModuleLoader,
 };
 
-function isNodeRuntime(): boolean {
-    return typeof process !== "undefined" && typeof process.versions?.node === "string";
-}
-
 function getQuickJSWasmLocation(): string {
     if (isNodeRuntime()) {
         const path = require("path") as typeof import("path");
@@ -76,6 +77,7 @@ const loadQuickJSModule: () => Promise<QuickJSWASMModule> = memoizePromiseFactor
 });
 
 export async function initializeQuickJSRuntime(): Promise<void> {
+    if (IS_IN_BROWSER) return; //can't execute scripts in browser
     await loadQuickJSModule();
 }
 
@@ -129,6 +131,9 @@ function getTimeoutMs(kind: ScriptExecutionKind): number {
 }
 
 export function executeQuickJSScript(script: string, options: ScriptExecutionOptions = {}): string {
+    if (IS_IN_BROWSER) {
+        throw new Error("Javascript macro execution is not supported in browser environment");
+    }
     if (script in scriptCache) {
         return scriptCache[script];
     }
