@@ -17,18 +17,8 @@
 
 "use strict";
 
-import { IS_IN_BROWSER, fileStack, incrementUniqueNumber, uniqueNumber } from "../globalVars";
-import { debug, error } from "./logging";
-// @ts-ignore - no declared types for Neil Fraser's js-interpreter
-import Interpreter from "js-interpreter";
-import { JSInterpreter, reinitInterpreter } from "../jsInterpreter";
-
-import { transform } from "@babel/standalone";
-
-const MAX_SCRIPT_STEP_COUNT = 655360;
-const MAX_SCRIPT_STACK_SIZE = 100_000_000;
-
-const scriptCache: Record<string, string> = {};
+import { fileStack, incrementUniqueNumber, uniqueNumber } from "../globalVars";
+import { error } from "./logging";
 
 //camelCase -> UPPER_CASE
 export function camelCaseToUpperCase(str: string): string {
@@ -125,85 +115,4 @@ export function sleep(ms: number): Promise<void> {
 export function getUniqueNumber(): number {
     incrementUniqueNumber();
     return uniqueNumber;
-}
-
-//eval with js-interpreter
-export function safeEval(script: string): string {
-
-    //The interpreter is very slow, so caching script results is worth it
-    if (script in scriptCache) {
-        return scriptCache[script];
-    }
-    
-    reinitInterpreter("");
-
-    // Transform code with Babel so that js-interpreter can understand
-    // more modern JavaScript syntax
-    const transformedScript = transform(script, {
-        presets: ["es2015"],
-        // TODO: Figure out how to support ES6+ polyfills
-        // plugins: [
-        // 	[require("babel-plugin-polyfill-es-shims").default, { "method": "usage-global" }]
-        // ],
-    }).code;
-
-    //console.debug("Transformed script: ", transformedScript);
-
-    JSInterpreter.appendCode(transformedScript);
-
-    let step = 0;
-    const STACK_SIZE_CHECK_INTERVAL = 10;
-    while (JSInterpreter.getStatus() === Interpreter.Status.STEP) {
-        JSInterpreter.step();
-
-        // Check stack size of the interpreter to check for memory bombs
-        if (step % STACK_SIZE_CHECK_INTERVAL === 0 && roughValueMemoryBytes(JSInterpreter.getStateStack()) > MAX_SCRIPT_STACK_SIZE) {
-            error("Maximum stack size exceeded while executing JavaScript macro.");
-        }
-
-        ++step;
-
-        // Check if maximum steps have been exceeded
-        if (step > MAX_SCRIPT_STEP_COUNT) {
-            error("Maximum step count exceeded while executing JavaScript macro.");
-        }
-    }
-
-    const scriptResult = JSInterpreter.value;
-    if (typeof scriptResult !== "string") {
-        //console.debug("Script result is: ", scriptResult);
-        error(`JavaScript macro returned value with type of ${typeof scriptResult}, expected string. Try using .toString()`);
-    }
-    scriptCache[script] = scriptResult;
-    return scriptResult;
-}
-
-function roughValueMemoryBytes(value: any) {
-    const measured = new Set();
-    let notMeasured = [value];
-    let bytes = 0;
-
-    while (notMeasured.length) {
-        const val = notMeasured.pop();
-        bytes += 8; // Rough estimate of overhead per value.
-
-        const type = typeof val;
-        if (type === "string" && !measured.has(val)) {
-            // Assume that the native JS environment has a string table
-            // and that each string is only counted once.
-            bytes += val.length * 2;
-            measured.add(val);
-        } else if (type === "object" && val !== null && !measured.has(val)) {
-            const keys = Object.keys(val);
-            const vals = Object.values(val);
-            try {
-                notMeasured.push(...keys, ...vals);
-            } catch (_e) {
-                // Arguments too long.  Use much slower concat.
-                notMeasured = notMeasured.concat(keys, vals);
-            }
-            measured.add(val);
-        }
-    }
-    return bytes;
 }

@@ -162,7 +162,7 @@ async function getNpmToken() {
     pkg.bin = {
         overpy: "./cli.js",
     };
-    pkg.files = ["overpy.js", "overpy.d.ts", "cli.js", "README.md", "LICENSE"];
+    pkg.files = ["overpy.js", "overpy.d.ts", "cli.js", "quickjs-ng.wasm", "README.md", "LICENSE"];
     delete pkg.contributes;
     delete pkg["lint-staged"];
     delete pkg.packageManager;
@@ -171,6 +171,7 @@ async function getNpmToken() {
     fs.writeFileSync(path.join(__dirname, "npm", "package.json"), JSON.stringify(pkg, null, 4) + "\n", "utf-8");
     fs.copyFileSync(path.join(__dirname, "out/overpy_standalone.js"), path.join(__dirname, "npm", "overpy.js"));
     fs.copyFileSync(path.join(__dirname, "out/overpy_cli.js"), path.join(__dirname, "npm", "cli.js"));
+    fs.copyFileSync(path.join(__dirname, "out/quickjs-ng.wasm"), path.join(__dirname, "npm", "quickjs-ng.wasm"));
     fs.chmodSync(path.join(__dirname, "npm", "cli.js"), 0o755);
     fs.copyFileSync(path.join(__dirname, "src/overpy_standalone.d.ts"), path.join(__dirname, "npm", "overpy.d.ts"));
     fs.copyFileSync(path.join(__dirname, "README.md"), path.join(__dirname, "npm", "README.md"));

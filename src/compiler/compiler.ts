@@ -35,11 +35,11 @@ import { Token, tokenize } from "./tokenizer";
 import { addVariable } from "../utils/varNames";
 import { AstConstantData, AstMacroData, CompilationDiagnostic, MacroData, OWLanguage, ScriptFileStackMember, Subroutine, Variable } from "../types";
 import { compileCustomGameSettingsDict } from "../utils/compilation";
-import { reinitInterpreter } from "../jsInterpreter";
 import PO from "pofile";
 import { importFromPoFiles, TranslatedString, exportToPoFiles } from "./translations";
 import { constantValues } from "../data/constants";
 import { escapeString } from "../utils/strings";
+import { initializeQuickJSRuntime } from "../runtime/quickjs";
 
 /**
  * @returns An object containing the compiled result along with associated metadata
@@ -70,6 +70,7 @@ export async function compile(
     const t0 = performance.now();
 
     if (DEBUG_PROFILER) console.profile();
+    await initializeQuickJSRuntime();
     resetGlobalVariables(language);
     _rootPath = _rootPath.trim().replaceAll("\\", "/");
     if (!_rootPath.endsWith("/")) {

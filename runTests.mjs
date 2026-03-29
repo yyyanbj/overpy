@@ -5,6 +5,7 @@ import { readdirSync, readFileSync, existsSync, writeFileSync } from "fs";
 import { Diff } from "diff";
 import colors from "colors";
 import * as readline from "readline";
+import assert from "node:assert/strict";
 import { stdin as input, stdout as output } from 'node:process';
 
 const rl = readline.createInterface({ input, output });
@@ -151,6 +152,51 @@ for (let file of opyFiles) {
         }
     }
 }
+
+await readyPromise;
+
+{
+    const modernScriptInput = `#!define modern(value) __script__("quickjs-modern.js")
+
+rule "quickjs-modern":
+    A = modern(4)
+`;
+    const modernScriptResult = await compile(modernScriptInput, "en-US", compileTestsFolder, "quickjs-modern.opy");
+    assert.ok(modernScriptResult.result.includes("Set Global Variable(A, 4);"), "modern QuickJS syntax should compile without Babel");
+}
+
+async function expectCompileFailure(content, expectedMessage, fileName) {
+    await assert.rejects(
+        async () => {
+            await compile(content, "en-US", compileTestsFolder, fileName);
+        },
+        (error) => {
+            assert.ok(error instanceof Error, "compile should reject with an Error");
+            assert.ok(error.message.includes(expectedMessage), `expected "${expectedMessage}" in "${error.message}"`);
+            return true;
+        },
+    );
+}
+
+await expectCompileFailure(
+    `#!define invalid() __script__("quickjs-invalid-return.js")
+
+rule "quickjs-invalid":
+    A = invalid()
+`,
+    "expected string",
+    "quickjs-invalid.opy",
+);
+
+await expectCompileFailure(
+    `#!define runaway() __script__("quickjs-runaway.js")
+
+rule "quickjs-runaway":
+    A = runaway()
+`,
+    "interrupted",
+    "quickjs-runaway.opy",
+);
 
 const decompileTestsFolder = "./src/tests/decompiler/";
 const decompilerExpectedResultsFolder = "./src/tests/decompiler/results/";
