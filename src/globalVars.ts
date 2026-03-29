@@ -761,7 +761,7 @@ export function computeCustomGameSettingsSchema() {
     //Apply general settings to each gamemode... but not Elimination for some reason lmao
     for (var gamemode in customGameSettingsSchema.gamemodes.values) {
         if (gamemode === "elimination") {
-            for (var key of ["enabledMaps", "disabledMaps", "enableEnemyHealthBars", "gamemodeStartTrigger", "healthPackRespawnTime%", "enableKillCam", "enableKillFeed", "enableSkins", "spawnHealthPacks", "perkEliminationCatchupLevelAmount%", "perkGeneration%"]) {
+            for (var key of ["enabledMaps", "disabledMaps", "enableEnemyHealthBars", "gamemodeStartTrigger", "healthPackRespawnTime%", "enableKillCam", "enableKillFeed", "enableSkins", "spawnHealthPacks", "perkEliminationCatchupLevelAmount%", "perkGeneration%", "teamOverlay"]) {
                 customGameSettingsSchema.gamemodes.values[gamemode].values[key] = customGameSettingsSchema.gamemodes.values.general.values[key];
             }
         } else {

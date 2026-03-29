@@ -882,6 +882,10 @@ export const customGameSettingsSchema: CustomGameSettingSchema =
                         "zh-CN": "重装职责被动生命值加成",
                         "zh-TW": "肉盾角色類型被動生命值加成"
                     },
+                    "teamOverlay": {
+                        "values": "__boolOnOff__",
+                        "en-US": "Team Overlay",
+                    },
                     "disabledMaps": {
                         "guid": "000000010041",
                         "en-US": "disabled maps",
