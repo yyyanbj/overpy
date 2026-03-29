@@ -272,7 +272,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function showOverPyExtensionError(message: string): void {
-    vscode.window.showErrorMessage(`Error: ${message}. Please ensure the code is copied directly from Overwatch. If it is, contact CactusPuppy about this.`);
+    vscode.window.showErrorMessage(`Error: ${message}. Please ensure the code is copied directly from Overwatch. If so, send a message in #hll-scripting about this.`);
 }
 
 function applyCompilationDiagnostics(diagnostics: vscode.DiagnosticCollection, content: CompilationDiagnostic[]) {
